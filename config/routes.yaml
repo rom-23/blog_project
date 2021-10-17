@@ -1,0 +1,12 @@
+#index:
+#  path: /{wildcard}
+#  controller: App\Controller\BaseController::index
+#  requirements:
+#    wildcard: .*
+logout:
+  path: /logout
+apiplatform:
+  path: /apiplatform
+dashboard:
+  path: /admin
+  controller: App\Controller\Admin\DashboardController::index

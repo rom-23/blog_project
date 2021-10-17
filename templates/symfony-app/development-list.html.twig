@@ -1,0 +1,61 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="container">
+        <div class="d-flex text-center">
+            <div class="container mt-1">
+                <span>Symfony Single Page Application</span><br>
+                <span><small><em>Use Fetch API to call Symfony controller, Response from ApiPlatform</em></small></span><br>
+                <a href="{{ path('symfony_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
+            </div>
+        </div>
+        <div class="jumbotron jumbotron mb-1">
+            <div class="container">
+                <div class="alert alert-primary text-center p-2" role="alert">
+                    All documentations and development tutorials
+                </div>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="container mb-4 mt-1">
+                {{ form_start(form) }}
+                {{ form_widget(form.words) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <table class="table table-striped table-hover table-sm">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Section</th>
+                        <th>Tags</th>
+                        <th>Posts</th>
+                        <th>Created At</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for dev in developments %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('development_view',{'id':dev.id}) }}" class="dev_item">{{ dev.title }}</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('section_view',{'id':dev.section.id}) }}" class="dev_item">{{ dev.section.title }}</a>
+                            </td>
+                            <td>{% if dev.tags|length > 0 %}{{ dev.tags|length }}{% endif %}</td>
+                            <td>{% if dev.posts|length > 0 %}{{ dev.posts|length }}{% endif %}</td>
+                            <td>{{ dev.createdAt|date('d/m/y') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        <div id="display-view"></div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,22 @@
+<div class="container dev-by-section">
+    <div class="d-flex float-end">
+        <div class="container">
+            <a href="{{ path('development_list') }}" class="btn btn-outline-danger btn-sm">X</a>
+        </div>
+    </div>
+    <div class="dev-view">
+        {% for development in dev %}
+            <div class="card" style="width: 25rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ development.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ development.section.title }}</h6>
+                    <a href="#" class="btn btn-outline-success btn-sm">View content...</a>
+                    <p class="card-text">{{ development.tags|length }} Tags</p>
+                    <p class="card-text">{{ development.notes|length }} Notes</p>
+                    <p class="card-text">{{ development.posts|length }} Posts</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+

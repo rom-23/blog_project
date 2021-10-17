@@ -1,0 +1,36 @@
+@import '~bootstrap/dist/css/bootstrap.css';
+@import '~bootstrap-vue/dist/bootstrap-vue.css';
+@import '~vuetify/dist/vuetify.min.css';
+@import '~tom-select/dist/css/tom-select.bootstrap5.css';
+@import '~select2/dist/css/select2.css';
+@import '~vue-select/src/scss/vue-select.scss';
+@import '~@mdi/font/css/materialdesignicons.css';
+
+html{
+    scroll-behavior: smooth;
+}
+a{
+    text-decoration: none;
+}
+#new-model{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#add-images{
+    margin-left: 20px;
+}
+.main-container{
+    background: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+#display-view{
+    background: white;
+}
+
+[v-cloak] { display: none; }

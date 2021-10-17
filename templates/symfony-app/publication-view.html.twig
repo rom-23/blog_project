@@ -1,0 +1,81 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="d-flex text-center">
+        <div class="container mt-3">
+            <a href="{{ path('development_publication') }}" class="btn btn-outline-primary btn-sm mt-3"><< Back</a>
+        </div>
+    </div>
+    <div class="jumbotron jumbotron mt-3">
+        <div class="container text-center">
+            <div class="alert alert-primary p-2" role="alert">
+                Publish / Reply post
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-message text-center" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    <div class="d-flex">
+        <div class="container-fluid dev-by-section">
+            <div class="d-flex float-end">
+                <div class="container">
+                    <a href="{{ path('development_publication') }}" class="btn btn-outline-danger btn-sm">X</a>
+                </div>
+            </div>
+            <div class="dev-view">
+                <div class="card border-0 p-2" style="max-width: 40rem;">
+                    <div class="card-body">
+                        <h5 class="text-primary">{{ dev.title }}</h5>
+                        <h6 class="text-success">{{ dev.section.title }}</h6>
+                        <small><em>Created on {{ dev.createdAt|date('d/m/y') }}</em></small>
+                        <p class="card-text">{{ dev.content|raw }}</p>
+                    </div>
+                </div>
+                <div class="card border-0 bg-transparent" style="max-width: 30rem;">
+                    <div class="card-header">
+                        {% if dev.posts|length > 0 %}
+                            <p class="card-header mt-4 text-center mb-3">{{ dev.posts|length }} POSTS</p>
+                            <div class="container">
+                                {% for post in dev.posts|reverse(true) %}
+                                    {% if post.parent == null %}
+                                        <div class="container">
+                                            <h6 class="card-title"><strong>{{ post.title }}</strong></h6>
+                                            <p class="card-title text-muted"><em>Published by {{ post.user.email }}</em>
+                                            </p>
+                                            <p class="card-text"><small>{{ post.content|raw }}</small></p>
+                                            <a href="#add-post" data-reply data-id="{{ post.id }}" class="btn btn-info btn-sm text-white">Reply</a>
+                                        </div>
+                                        {# affichage des reponses #}
+                                        {% for reply in post.replies %}
+                                            <div class="container bg-white mt-3">
+                                                <h6 class="card-title"><strong>{{ reply.title }}</strong></h6>
+                                                <p class="card-title text-muted">
+                                                    <em>Reply by {{ reply.user.email }}</em></p>
+                                                <p class="card-text"><small>{{ reply.content|raw }}</small></p>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card border-0 bg-transparent" style="max-width: 30rem;">
+                    <div class="container text-center">
+                        {{ form_start(postForm) }}
+                        {{ form_widget(postForm.title,{'attr':{'class':'mb-2','id':'add-post'}}) }}
+                        {{ form_widget(postForm.content) }}
+                        {{ form_end(postForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

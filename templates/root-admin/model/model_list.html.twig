@@ -1,0 +1,27 @@
+{%- set navbar = '/navbars/admin_navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="container">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for model in models %}
+                <tr>
+                    <td>{{ model.id }}</td>
+                    <td>{{ model.name }}</td>
+                    <td>
+                        <a href="{{ path('root_admin_model_edit', {id: model.id}) }}" class="btn btn-secondary">Editer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,12 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="main-container">
+        <div class="row">
+            <div class="container front-app text-center text-white mt-5">
+                <h4>Symfony App</h4>
+                {% include 'navbars/symfony-app-navbar.html.twig' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

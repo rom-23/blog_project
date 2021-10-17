@@ -1,0 +1,22 @@
+vich_uploader:
+    db_driver: orm
+    mappings:
+        model_images:
+            uri_prefix: /uploads/images/models
+            upload_destination: '%kernel.project_dir%/public/uploads/images/models'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer
+
+        attachments:
+            uri_prefix: /uploads/images/modelsAttachments
+            upload_destination: '%kernel.project_dir%/public/uploads/images/modelsAttachments'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer
+
+        model_original:
+            uri_prefix: /uploads/images/original
+            upload_destination: '%kernel.project_dir%/public/uploads/images/original'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer
+
+        dev_documentation:
+            uri_prefix: /uploads/devFiles
+            upload_destination: '%kernel.project_dir%/public/uploads/devFiles'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer

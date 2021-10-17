@@ -1,0 +1,38 @@
+<table id="new-model" class="table-expend table-sm mt-5">
+    <tr>
+        <td>{{- form_label(form.title) -}}</td>
+        <td>{{- form_widget(form.title) -}}</td>
+        <td>{{- form_label(form.section) -}}</td>
+        <td>{{- form_widget(form.section) -}}</td>
+    </tr>
+    <tr>
+        <td>{{- form_label(form.tags) -}}</td>
+        <td>{{- form_widget(form.tags) -}}</td>
+    </tr>
+    <tr>
+        <td>{{- form_label(form.content) -}}</td>
+        <td>{{- form_widget(form.content) -}}</td>
+        <td>{{- form_label(form.file) -}}</td>
+        <td>{{- form_widget(form.file,{ 'attr': {'class': 'form-control text-primary'}}) -}}</td>
+    </tr>
+</table>
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-outline-primary btn-new-post mt-3 btn-sm" type="button" data-collection="#posts">Add New Note</button>
+    </div>
+    <div class="row justify-content-center mt-3" id="posts"
+         data-prototype="{{ include('root-admin/development/prototype/_note.html.twig', {form:form.notes.vars.prototype})|e('html_attr') }}"
+         data-index="{{ form.notes|length > 0 ? form.notes|last.vars.name + 1 : 0 }}">
+        {% for note in form.notes %}
+            <div class="col-4">
+                {{ include('root-admin/development/prototype/_note.html.twig', {form:note}) }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row justify-content-end mt-5 mb-5">
+        <hr>
+        <div class="col-2">
+            {{- form_widget(form.submit, {'attr':{'class':'btn btn-warning w-100'}}) -}}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+{%- set navbar = '/navbars/admin_navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    {{ form_start(form) }}
+    {{ form_widget(form._token) }}
+    <div class="main-container">
+        <div class="row">
+{#            {% if app.user %}{{ app.user.email }}{% endif %}#}
+            <div class="container form-model mb-5 mt-5">
+                <div class="jumbotron jumbotron mb-3">
+                    <div class="container">
+                        <span class="lead"><strong>Add new Development documentation</strong></span>
+                        <p>
+                            <small>- Use Tom-select with for multi-select fields(No JQuery)</small><br>
+                            <small>- Use Symfony CollectionType and custom Searchable EntityType</small><br>
+                            <small>- Use VichUploader Bundle for uploading</small>
+                        </p>
+                    </div>
+                </div>
+                <hr>
+                {{ include('root-admin/development/form/_form.html.twig', {form: form}) }}
+            </div>
+        </div>
+    </div>
+    {{ form_end(form,{ render_rest: false }) }}
+{% endblock %}
+
+
+

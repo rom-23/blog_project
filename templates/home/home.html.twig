@@ -1,0 +1,20 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="menu-app">
+        <div class="col-3">
+            <div class="container">
+                <div class="card text-center">
+                    <div class="card-header">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Symfony Application</h5>
+                        <a href="{{ path('symfony_app') }}" class="btn btn-primary mt-4">Start</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
