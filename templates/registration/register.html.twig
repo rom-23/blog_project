@@ -1,0 +1,27 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    {% for flashError in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+    {% endfor %}
+    <div class="container">
+        <div class="d-flex text-center">
+            <div class="container mt-1">
+                <span>Registration Form</span><br>
+                <a href="{{ path('symfony_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
+            </div>
+            <div class="container">
+                {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm.email) }}
+                {{ form_row(registrationForm.password, {
+                    label: 'Password'
+                }) }}
+                {{ form_row(registrationForm.agreeTerms) }}
+                <button type="submit" class="btn">Register</button>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

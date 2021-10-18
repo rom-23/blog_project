@@ -1,0 +1,9 @@
+<div class="wrapper">
+    <div id="formContent">
+        <p>To activate your account, please click here :
+            <a href="{{ absolute_url(path('app_verify_account',{'id':userID,'token':registrationToken})) }}">Confirm your account</a><br>
+           This link will expire at {{ tokenLifeTime }}.
+        </p>
+    </div>
+</div>
+
