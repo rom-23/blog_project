@@ -25,5 +25,13 @@ class HomeController extends AbstractController
         return $this->render('symfony-app/home.html.twig');
     }
 
+    /**
+     * @Route("/app", name="front_end_app")
+     */
+    public function frontApp(): Response
+    {
+        return $this->render('symfony-app/model/home.html.twig');
+    }
+
 
 }

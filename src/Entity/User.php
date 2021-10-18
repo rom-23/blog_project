@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ApiPlatform\UserLoginController;
+use App\Entity\Development\Note;
 use App\Entity\Development\Post;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -105,6 +106,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $posts;
 
     /**
+     * @var Collection<int, Note>
+     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
+     * @Groups({"user:get"})
+     */
+    #[Groups(['user:read'])]
+    private $notes;
+
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $registrationToken;
@@ -152,6 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->notes = new ArrayCollection();
         $this->isVerified = false;
         $this->registeredAt = new \DateTimeImmutable('now');
         $this->roles = ['ROLE_USER'];
@@ -261,6 +272,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->posts->removeElement($post)) {
             if ($post->getUser() === $this) {
                 $post->setUser(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): self
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes[] = $note;
+            $note->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeNote(Note $note): self
+    {
+        if ($this->notes->removeElement($note)) {
+            if ($note->getUser() === $this) {
+                $note->setUser(null);
             }
         }
         return $this;

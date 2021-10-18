@@ -16,7 +16,6 @@ class NoteType extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('content', TextareaType::class)
-
         ;
     }
 

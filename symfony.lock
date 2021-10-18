@@ -114,6 +114,9 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
+    "dompdf/dompdf": {
+        "version": "v1.0.2"
+    },
     "easycorp/easyadmin-bundle": {
         "version": "3.0",
         "recipe": {
@@ -177,6 +180,12 @@
     "phar-io/version": {
         "version": "3.1.0"
     },
+    "phenx/php-font-lib": {
+        "version": "0.5.2"
+    },
+    "phenx/php-svg-lib": {
+        "version": "0.3.4"
+    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
@@ -232,6 +241,9 @@
     },
     "psr/log": {
         "version": "2.0.0"
+    },
+    "sabberworm/php-css-parser": {
+        "version": "8.3.1"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"

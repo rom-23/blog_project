@@ -14,23 +14,21 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraints\File;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class DevelopmentAddType extends AbstractType
 {
-    private $token;
     private $router;
+    private $security;
 
-    public function __construct(TokenStorageInterface $token,UrlGeneratorInterface $router)
+    public function __construct(Security $security, UrlGeneratorInterface $router)
     {
-        $this->token = $token;
-        $this->router = $router;
-
+        $this->router   = $router;
+        $this->security = $security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -87,28 +85,13 @@ class DevelopmentAddType extends AbstractType
                 'label' => 'Save'
             ])
             ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-                $dev = $event->getForm()->getViewData();
-                dd($event->getForm()->getConfig()->getOptions());
-                if (count($dev->getNotes()) > 0) {
-                    if ($this->token->getToken() === null) {
-
-                        $url = $this->router->generate('app_login');
-
-                        return new RedirectResponse($url);
-
-                    }else{
-//                        dd($this->token->getToken()->getUser(),$dev->getPosts());
-                        $user =$this->token->getToken()->getUser();
-//                        dd($dev->getPosts());
-                        foreach ($dev->getNotes() as $note) {
-                            $user->addNote($note);
-                        }
-                        dd($user);
-
+                $dev  = $event->getForm()->getViewData();
+                if(count($dev->getNotes()) > 0) {
+                    foreach ($dev->getNotes() as $note) {
+                        $note->setUser($this->security->getUser());
                     }
                 }
-            })
-        ;
+            });
     }
 
     public function configureOptions(OptionsResolver $resolver)

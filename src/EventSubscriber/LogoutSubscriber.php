@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,8 @@ class LogoutSubscriber implements EventSubscriberInterface
         };
     }
 
-    public static function getSubscribedEvents()
+    #[ArrayShape([LogoutEvent::class => "string"])]
+    public static function getSubscribedEvents(): array
     {
         return [
             LogoutEvent::class => 'onLogoutEvent',

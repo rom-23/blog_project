@@ -1,0 +1,13 @@
+{%- set navbar = '/navbars/admin_navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="container">
+        <div class="jumbotron jumbotron mb-3">
+            <div class="container">
+                <span class="lead"><strong>User Admin</strong></span><br>
+                <a href="{{ path('remove_inactive_account') }}" class="btn btn-outline-warning">Remove inactives accounts from database</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

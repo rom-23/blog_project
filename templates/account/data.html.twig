@@ -1,0 +1,56 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+<div class="wrapper">
+    <div id="user_account">
+        <div class="container">
+            <div class="row justify-content-center mb-5">User Personnal data</div>
+            <hr>
+            <a href="{{ path('download_user_data') }}" class="btn btn-outline-warning btn-sm">Download Pdf</a>
+        </div>
+        <table class="table mt-4 mb-5">
+            <thead>
+            <tr>
+                <th scope="col">Email</th>
+                <th scope="col">Roles</th>
+                <th scope="col">Is verified</th>
+                <th scope="col">Verified at</th>
+                <th scope="col">Registered at</th>
+                <th scope="col">Posts</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ app.user.userIdentifier }}</td>
+                <td>{{ app.user.roles[0] }}</td>
+                <td>{{ app.user.isVerified }}</td>
+                <td>{{ app.user.accountVerifiedAt|date('d/m/y at H:i') }}</td>
+                <td>{{ app.user.registeredAt|date('d/m/y at H:i') }}</td>
+                <td>{{ app.user.posts|length }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="col-xs4">
+            <h6>Posts of {{ app.user.userIdentifier }} ({{ app.user.posts|length }})</h6>
+        </div>
+        <table class="table mt-4 mb-5">
+            <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Content</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for post in app.user.posts %}
+                <tr>
+                    <td>{{ post.title }}</td>
+                    <td><small>{{ post.content|raw }}</small></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="container">
+            <a href="{{ path('user_account') }}" class="btn btn-outline-info btn-sm mb-2"><< Back</a>
+        </div>
+    </div>
+    {% endblock %}

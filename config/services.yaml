@@ -25,6 +25,11 @@ services:
       - '../src/Kernel.php'
       - '../src/Tests/'
 
+  App\EventListener\UserPasswordEncoderEntityListener:
+    tags:
+      - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\User' }
+      - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\User' }
+
   App\EventListener\DevelopmentListener:
     arguments: [ '@security.token_storage' ]
     tags:

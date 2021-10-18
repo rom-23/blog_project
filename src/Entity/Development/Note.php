@@ -3,6 +3,7 @@
 namespace App\Entity\Development;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\User;
 use App\Repository\Development\NoteRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -57,6 +58,13 @@ class Note
     #[Groups(['note:read'])]
     private ?Development $development = null;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notes")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    #[Groups(['note:read'])]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -109,6 +117,17 @@ class Note
     {
         $this->development = $development;
 
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 
