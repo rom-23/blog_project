@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\User;
 
 use App\Entity\User;
 use App\Extensions\FormExtension\RepeatPasswordType;
@@ -17,7 +17,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label'    => 'email',
+                'label'    => false,
                 'required' => true,
                 'attr'     => [
                     'autofocus'   => true,
@@ -34,8 +34,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('password', RepeatPasswordType::class)
-        ;
+            ->add('password', RepeatPasswordType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

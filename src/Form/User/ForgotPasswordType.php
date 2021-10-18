@@ -1,17 +1,12 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\User;
 
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ForgotPasswordType extends AbstractType
 {
@@ -27,13 +22,13 @@ class ForgotPasswordType extends AbstractType
 //                    new Email()
 //                ],
                 'first_options'   => [
-                    'label' => 'Your email',
+                    'label' => false,
                     'attr'  => [
                         'placeholder' => 'Type your email'
                     ]
                 ],
                 'second_options'  => [
-                    'label' => 'Confirm your email',
+                    'label' => false,
                     'attr'  => [
                         'placeholder' => 'Confirm your email'
                     ]

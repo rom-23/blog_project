@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Security;
 
 use App\Entity\User;
-use App\Form\ForgotPasswordType;
-use App\Form\ResetPasswordType;
+use App\Form\User\ForgotPasswordType;
+use App\Form\User\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Service\SendEmail;
 use DateTimeImmutable;
@@ -89,10 +89,7 @@ class ForgotPasswordController extends AbstractController
             'userEmail' => $userEmail
         ] = $this->getCredentialsFromSession();
 
-        $user = $this->userRepository->findOneBy([
-            'email' => $userEmail
-        ]);
-
+        $user = $this->userRepository->findOneBy(['email' => $userEmail]);
         if (!$user) {
             return $this->redirectToRoute('forgot_password');
         }
@@ -111,7 +108,6 @@ class ForgotPasswordController extends AbstractController
             $user->setForgotPasswordToken(null);
             $user->setForgotPasswordTokenVerifiedAt(new \DateTimeImmutable('now'));
             $this->em->flush();
-
             $this->removeCredentialsFromSession();
             $this->addFlash('success', 'Your password has been updated');
 

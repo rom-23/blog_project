@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Security;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Form\User\RegistrationFormType;
 use App\Service\SendEmail;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +14,6 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
-use Symfony\Component\Validator\Constraints\Date;
 
 class RegistrationController extends AbstractController
 {
@@ -44,7 +43,7 @@ class RegistrationController extends AbstractController
             $sendEmail->send([
                 'recipient_email' => $user->getEmail(),
                 'subject'         => 'Verify your email to activate your account',
-                'html_template'   => 'registration/registerConfirmationEmail.html.twig',
+                'html_template'   => 'registration/register-confirmation-email.html.twig',
                 'context'         => [
                     'userID'            => $user->getId(),
                     'registrationToken' => $registrationToken,

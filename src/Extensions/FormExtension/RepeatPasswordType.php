@@ -17,20 +17,22 @@ class RepeatPasswordType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'label'           => 'Password',
+            'label'           => false,
             'type'            => PasswordType::class,
             'invalid_message' => 'Password must be the same',
             'required'        => true,
             'first_options'   => [
-                'label' => 'password',
+                'label' => false,
                 'attr'  => [
-                    'placeholder' => 'Your password'
+                    'placeholder' => 'Your password',
+                    'class'=>'mb-3'
                 ]
             ],
             'second_options'  => [
-                'label' => 'confirm your password',
+                'label' => false,
                 'attr'  => [
-                    'placeholder' => 'Your password'
+                    'placeholder' => 'Confirm your password',
+                    'class'=>'mb-3'
                 ]
             ]
         ]);

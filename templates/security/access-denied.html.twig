@@ -1,10 +1,13 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}
-
-{% endblock %}
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block title %}Log in!{% endblock %}
 {% block body %}
-    <div class="container">You must be logged as ADMIN to access this ressource</div>
+    <div class="wrapper">
+        <div id="formContent">
+            <div class="alert alert-danger">
+                <p>You must be logged as ADMIN to access this page</p>
+                <a href="{{ path('home') }}" class="btn btn-secondary btn-sm mt-2"><< Back</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-
-
