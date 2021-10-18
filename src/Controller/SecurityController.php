@@ -61,6 +61,6 @@ class SecurityController extends AbstractController
      */
     public function denied(): Response
     {
-        return $this->render('security/access_denied.html.twig');
+        return $this->render('security/access-denied.html.twig');
     }
 }
