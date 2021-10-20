@@ -5,10 +5,10 @@ namespace App\Form\Development;
 use App\Entity\Development\Development;
 use App\Entity\Development\Section;
 use App\Entity\Development\Tag;
+use App\Extensions\FormExtension\CustomSelectEntityType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +17,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Validator\Constraints\File;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class DevelopmentAddType extends AbstractType
@@ -47,19 +46,16 @@ class DevelopmentAddType extends AbstractType
                     'label'  => false
                 ]
             )
-            ->add('file', FileType::class, [
-                'required'    => false,
-                'label'       => false,
-                'constraints' => [
-                    new File([
-                        'maxSize'          => '5M',
-                        'mimeTypes'        => [
-                            'application/pdf',
-                            'application/x-pdf',
-                        ],
-                        'mimeTypesMessage' => 'Please upload a valid PDF document',
-                    ])
-                ]
+            ->add('files', CollectionType::class, [
+                'mapped' => false,
+                'label'          => 'Files',
+                'entry_type'     => DevelopmentFileType::class,
+                'prototype'      => true,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'by_reference'   => false,
+                'required'       => false,
+                'error_bubbling' => false
             ])
             ->add('section', EntityType::class, [
                 'label'       => false,
@@ -85,8 +81,8 @@ class DevelopmentAddType extends AbstractType
                 'label' => 'Save'
             ])
             ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-                $dev  = $event->getForm()->getViewData();
-                if(count($dev->getNotes()) > 0) {
+                $dev = $event->getForm()->getViewData();
+                if (count($dev->getNotes()) > 0) {
                     foreach ($dev->getNotes() as $note) {
                         $note->setUser($this->security->getUser());
                     }

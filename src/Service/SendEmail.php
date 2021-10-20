@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -47,7 +48,7 @@ class SendEmail
         try {
             $this->mailer->send($email);
         } catch (TransportExceptionInterface $exception) {
-            throw $exception;
+            throw new TransportException($exception->getMessage());
         }
     }
 

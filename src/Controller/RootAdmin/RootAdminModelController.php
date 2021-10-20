@@ -5,6 +5,7 @@ namespace App\Controller\RootAdmin;
 use App\Entity\Modelism\Model;
 use App\Form\Modelism\ModelAddType;
 use App\Repository\Modelism\ModelRepository;
+use App\Service\ManageUploadFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class RootAdminModelController extends AbstractController
         ]);
     }
 
-    #[Route('/root/admin/model/add', name: 'root_admin_model_add')]
+    #[Route('/root/admin/model/add', name: 'root_admin_model_add', methods: ['GET', 'POST'])]
     public function modelAdd(Request $request, EntityManagerInterface $em): Response
     {
         $model = new Model();
@@ -47,12 +48,16 @@ class RootAdminModelController extends AbstractController
         $form = $this->createForm(ModelAddType::class, $model);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
+            foreach ($form->getData()->getImages() as $image) {
+                $em->persist($image);
+                $model->addImage($image);
+            }
+            $em->flush();
             return $this->redirectToRoute('root_admin_model_list');
         }
-        return $this->render('root-admin/model/model_add.html.twig', [
-            'model'  => $model,
-            'form' => $form->createView()
+        return $this->render('root-admin/model/model_edit.html.twig', [
+            'model' => $model,
+            'form'  => $form->createView()
         ]);
     }
 

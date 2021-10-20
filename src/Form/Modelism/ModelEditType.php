@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ModelAddType extends AbstractType
+class ModelEditType extends AbstractType
 {
     private CategoryRepository $categoryRepository;
     private OptionRepository $optionRepository;
@@ -37,12 +37,10 @@ class ModelAddType extends AbstractType
     {
         $builder
             ->add('imageFile', FileType::class, [
-                'label'    => 'Thumb',
-                'required' => false
+                'label' => 'Thumb'
             ])
             ->add('originalFile', FileType::class, [
-                'label'    => 'Original',
-                'required' => false
+                'label' => 'Originale'
             ])
             ->add('name', TextType::class, [
                 'required'   => true,

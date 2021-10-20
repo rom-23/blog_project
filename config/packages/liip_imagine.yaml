@@ -1,0 +1,18 @@
+liip_imagine:
+  driver: gd
+  # resolvers :
+  #     default :
+  #         web_path : ~
+
+  filter_sets:
+    #use the default cache configuration
+    #cache : ~
+    my_thumb:
+      quality: 75
+      filters:
+        thumbnail: { size: [ 260, 130 ], mode: outbound }
+    #        thumbnail: { size: [ 260, 130 ], position: center, color: '#157347' , mode: outbound, allow_upscale: true }
+    medium:
+      quality: 75
+      filters:
+        thumbnail: { size: [ 800, 530 ], mode: outbound, allow_upscale: true }

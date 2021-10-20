@@ -3,19 +3,39 @@
 namespace App\Controller\RootAdmin;
 
 use App\Entity\Development\Development;
-use App\Entity\User;
+use App\Entity\Development\DevelopmentFile;
+use App\Service\ManageUploadFile;
 use App\Form\Development\DevelopmentAddType;
 use App\Form\Development\DevelopmentEditType;
 use App\Repository\Development\DevelopmentRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RootAdminDevController extends AbstractController
 {
-    #[Route('/root/admin/dev/list', name: 'root_admin_dev_list')]
+    /**
+     * @var ManageUploadFile
+     */
+    private ManageUploadFile $manageUploadFile;
+
+    /**
+     * @param ManageUploadFile $manageUploadFile
+     */
+    public function __construct(ManageUploadFile $manageUploadFile)
+    {
+        $this->manageUploadFile = $manageUploadFile;
+    }
+
+    /**
+     * @param DevelopmentRepository $devRepository
+     * @return Response
+     */
+    #[Route('/root/admin/dev/list', name: 'root_admin_dev_list', methods: ['GET'])]
     public function index(DevelopmentRepository $devRepository): Response
     {
         return $this->render('root-admin/development/development_list.html.twig', [
@@ -23,37 +43,60 @@ class RootAdminDevController extends AbstractController
         ]);
     }
 
-    #[Route('/root/admin/dev/{id<\d+>}', name: 'root_admin_dev_edit')]
-    public function edit(Development $dev, Request $request, EntityManagerInterface $em): Response
+    /**
+     * @param Development $development
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    #[Route('/root/admin/dev/{id<\d+>}', name: 'root_admin_dev_edit', methods: ['GET', 'POST'])]
+    public function edit(Development $development, Request $request, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(DevelopmentEditType::class, $dev);
+//        foreach ($development->getFiles() as $file) {
+////            $devFile->setName(new File($this->getParameter('app.path.dev_pdf') . '/' . $file->getName()));
+////            $devFile->setPath($this->getParameter('app.path.dev_pdf'));
+////           array_push($pp,
+////                new File($this->getParameter('app.path.dev_pdf') . '/' . $file->getName())
+////            );
+//        }
+        $form = $this->createForm(DevelopmentEditType::class, $development);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $file = $request->files->get('development_edit')['file'];
-            $dev->setFile($file);
-            $dev->setUpdatedAt(new \DateTime());
+            if(count($form->get('files')->getData()) > 0){
+                $files = $request->files->get('development_edit')['files'];
+                $this->manageUploadFile->uploadPdf($files, $development);
+            }
+            $development->setUpdatedAt(new DateTime('now'));
             $em->flush();
             return $this->redirectToRoute('root_admin_dev_list');
         }
         return $this->render('root-admin/development/development_edit.html.twig', [
-            'dev'  => $dev,
+            'dev'  => $development,
             'form' => $form->createView()
         ]);
     }
 
-    #[Route('/root/admin/dev/add', name: 'root_admin_dev_add')]
-    public function devAdd(Request $request, EntityManagerInterface $em): Response
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    #[Route('/root/admin/dev/add', name: 'root_admin_dev_add', methods: ['GET', 'POST'])]
+    public function add(Request $request, EntityManagerInterface $em): Response
     {
         $development = new Development();
         $form        = $this->createForm(DevelopmentAddType::class, $development);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $file = $request->files->get('development_add')['file'];
-            $development->setFile($file);
-
-            $development->setUpdatedAt(new \DateTime());
+//            dd(count($form->get('files')->getData()) > 0);
+//            dd($request->files->get('development_add')['files'][0]['name']);
+            if($form->get('files')->getData()) {
+                $files = $request->files->get('development_add')['files'];
+                $this->manageUploadFile->uploadPdf($files, $development);
+            }
             $em->persist($development);
             $em->flush();
+
             return $this->redirectToRoute('root_admin_dev_list');
         }
 
@@ -62,5 +105,28 @@ class RootAdminDevController extends AbstractController
         ]);
     }
 
+    /**
+     * @param DevelopmentFile $file
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     */
+    #[Route('/root/admin/dev/delete/file/{id}', name: 'root_admin_dev_delete_file', methods: ['DELETE'])]
+    public function deleteFile(DevelopmentFile $file, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        if ($this->isCsrfTokenValid('delete' . $file->getId(), $data['_token'])) {
+            $fileName = $file->getName();
+            // On supprime le fichier
+            unlink($this->getParameter('app.path.dev_pdf') . '/' . $fileName);
+            $em->remove($file);
+            $file->getDevelopments()->setUpdatedAt(new DateTime('now'));
+            $em->flush();
+            return new JsonResponse(['success' => 1]);
+        } else {
+
+            return new JsonResponse(['error' => 'Invalid Token'], 400);
+        }
+    }
 
 }

@@ -4,6 +4,7 @@ namespace App\Form\Development;
 
 use App\Entity\Development\Development;
 use App\Entity\Development\Tag;
+use App\Extensions\FormExtension\SearchableEntityType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -39,10 +40,16 @@ class DevelopmentEditType extends AbstractType
                 'label'    => false,
                 'required' => true
             ])
-            ->add('file', FileType::class, [
-                'label'    => false,
-                'required' => false,
-                'attr'     => ['placeholder' => $options['data']->getFileName()]
+            ->add('files', CollectionType::class, [
+                'mapped' => false,
+                'label'          => false,
+                'entry_type'     => DevelopmentFileType::class,
+                'prototype'      => true,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'by_reference'   => false,
+                'required'       => false,
+                'error_bubbling' => false
             ])
             ->add('section')
             ->add('tags', SearchableEntityType::class, [

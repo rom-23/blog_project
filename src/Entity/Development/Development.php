@@ -5,17 +5,15 @@ namespace App\Entity\Development;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ApiPlatform\DevSectionController;
 use App\Controller\ApiPlatform\DevUploadController;
-use App\Entity\Development\Post;
 use App\Repository\Development\DevelopmentRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @ORM\Entity(repositoryClass=DevelopmentRepository::class)
@@ -132,26 +130,15 @@ class Development
     private ?DateTime $createdAt = null;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable="true")
      */
-    private DateTime $updatedAt;
+    private ?DateTime $updatedAt = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
     #[Assert\Length(min: 4)]
     private ?string $slug;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $filename;
-
-    /**
-     * @Vich\UploadableField(mapping="dev_documentation", fileNameProperty="filename")
-     * @var File|null
-     */
-    private $file;
 
     /**
      * @var string|null
@@ -187,13 +174,20 @@ class Development
     #[Groups(['development:read', 'development:write'])]
     private $posts;
 
+    /**
+     *
+     * @ORM\OneToMany(targetEntity=DevelopmentFile::class, mappedBy="developments", orphanRemoval=true, cascade={"persist","remove"})
+     */
+    #[Groups(['development:read', 'development:write'])]
+    private $files;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
         $this->tags      = new ArrayCollection();
         $this->notes     = new ArrayCollection();
         $this->posts     = new ArrayCollection();
+        $this->files     = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -239,7 +233,7 @@ class Development
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -256,24 +250,6 @@ class Development
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getFilename(): ?string
-    {
-        return $this->filename;
-    }
-
-    /**
-     * @param null|string $filename
-     * @return Development
-     */
-    public function setFilename(?string $filename): Development
-    {
-        $this->filename = $filename;
-        return $this;
-    }
-
     public function getSection(): ?Section
     {
         return $this->section;
@@ -283,27 +259,6 @@ class Development
     {
         $this->section = $section;
 
-        return $this;
-    }
-
-    /**
-     * @return File|null
-     */
-    public function getFile(): ?File
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param null|File $file
-     * @return Development
-     */
-    public function setFile(?File $file): Development
-    {
-        $this->file = $file;
-        if ($this->file instanceof UploadedFile) {
-            $this->updatedAt = new \DateTime('now');
-        }
         return $this;
     }
 
@@ -375,11 +330,6 @@ class Development
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->getTitle();
-    }
-
     /**
      * @return Collection
      */
@@ -410,4 +360,42 @@ class Development
         return $this;
     }
 
+    /**
+     * @return Collection
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function setFiles($files): ArrayCollection
+    {
+        $this->files = $files;
+        return $this->files;
+    }
+
+    public function addFile(DevelopmentFile $file): self
+    {
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setDevelopments($this);
+        }
+        return $this;
+    }
+
+    public function removeFile(DevelopmentFile $file): self
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getDevelopments() === $this) {
+                $file->setDevelopments(null);
+            }
+        }
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
 }

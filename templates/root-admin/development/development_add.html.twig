@@ -5,8 +5,8 @@
     {{ form_widget(form._token) }}
     <div class="main-container">
         <div class="row">
-{#            {% if app.user %}{{ app.user.email }}{% endif %}#}
-            <div class="container form-model mb-5 mt-5">
+            {# {% if app.user %}{{ app.user.email }}{% endif %} #}
+            <div class="container mb-5 mt-3">
                 <div class="jumbotron jumbotron mb-3">
                     <div class="container">
                         <span class="lead"><strong>Add new Development documentation</strong></span>
@@ -21,6 +21,7 @@
                 {{ include('root-admin/development/form/_form.html.twig', {form: form}) }}
             </div>
         </div>
+    </div>
     </div>
     {{ form_end(form,{ render_rest: false }) }}
 {% endblock %}

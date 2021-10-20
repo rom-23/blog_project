@@ -46,7 +46,7 @@ class Model
     /**
      * @var File|null
      * @Assert\Image(mimeTypes="image/jpeg")
-     * @Vich\UploadableField(mapping="model_original", fileNameProperty="original")
+     * @Vich\UploadableField(mapping="model_image_original", fileNameProperty="original")
      */
     private $originalFile;
 
