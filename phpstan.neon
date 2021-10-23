@@ -1,0 +1,26 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    excludes_analyse:
+        - src/Migrations/*
+        - src/DataFixtures/*
+        - src/Service/Functions.php
+        - src/Utils/*
+    ignoreErrors:
+        - '#PHPDoc tag .#'
+#        - '#. typehint specified#'
+#        - '#. return statement is missing#'
+#        - '#Return typehint of method .#'
+        - '#Call to an undefined method Psr\\Container\\ContainerInterface::getParameter\(\)#'
+#        - '#Property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9]* has no typehint specified.#'
+#        - '#Call to an undefined method [a-zA-Z0-9\\_<>]+::findOneBy[A-Z][a-zA-Z]*\(\)#'
+#        - '#Call to an undefined method [a-zA-Z0-9\\_<>]+::find[A-Z][a-zA-Z]*\(\)#'
+    reportUnmatchedIgnoredErrors: false
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    doctrine:
+        objectManagerLoader: tests/phpstan/manager.php
+    symfony:
+        container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'
+

@@ -11,7 +11,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NoteType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<int|string, mixed> $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options):void
     {
         $builder
             ->add('title', TextType::class, [
@@ -29,7 +33,10 @@ class NoteType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Note::class,

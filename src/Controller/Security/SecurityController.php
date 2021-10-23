@@ -10,7 +10,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-
     #[Route(path: '/apiplatform/login', name: 'api_platform_login', methods: ['POST'])]
     public function apiPlatformLogin(): JsonResponse
     {
@@ -31,7 +30,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/logout', name: 'logout', methods: ['POST'])]
-    public function apiPlatformLogout()
+    public function apiPlatformLogout(): void
     {
 
     }
@@ -51,7 +50,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/logout", name="app_logout")
      */
-    public function logout()
+    public function logout(): void
     {
 
     }

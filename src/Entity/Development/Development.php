@@ -4,24 +4,19 @@ namespace App\Entity\Development;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ApiPlatform\DevSectionController;
-use App\Controller\ApiPlatform\DevUploadController;
 use App\Repository\Development\DevelopmentRepository;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=DevelopmentRepository::class)
- * @ORM\Table(name="development",
- *              indexes={@ORM\Index(columns={"title","content"},
- *                       flags={"fulltext"}
- *                       )}
- *            )
+ * @ORM\Table(name="development", indexes={@ORM\Index(columns={"title","content"}, flags={"fulltext"})})
  * @Vich\Uploadable
  */
 #[
@@ -66,30 +61,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'get',
             'patch',
             'delete',
-            'put',
-            'document' => [
-                'method'          => 'POST',
-                'path'            => '/developments/{id}/document',
-                'deserialize'     => false,
-                'controller'      => DevUploadController::class,
-                'openapi_context' => [
-                    'requestBody' => [
-                        'content' => [
-                            'multipart/form-data' => [
-                                'schema' => [
-                                    'type'       => 'object',
-                                    'properties' => [
-                                        'file' => [
-                                            'type'   => 'string',
-                                            'format' => 'binary'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+            'put'
         ],
         attributes: [
             'order' => ['createdAt' => 'DESC']
@@ -114,50 +86,45 @@ class Development
     #[Groups(['development:read', 'development:write', 'note:read', 'post:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 4)]
-    private ?string $title;
+    private string $title;
 
     /**
-     * @ORM\Column(type="text", nullable="false")
+     * @ORM\Column(type="text", nullable=false)
      */
     #[Groups(['development:read', 'development:write']), Assert\Length(min: 3)]
     #[Assert\NotBlank]
     private string $content;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable", nullable=false)
      */
     #[Groups(['development:read', 'development:write'])]
-    private ?DateTime $createdAt = null;
+    private DateTimeImmutable $createdAt;
 
     /**
-     * @ORM\Column(type="datetime", nullable="true")
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private ?DateTime $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
     #[Assert\Length(min: 4)]
-    private ?string $slug;
+    private string $slug;
 
     /**
-     * @var string|null
-     */
-    #[Groups(['development:read'])] // sert a obtenir l'url de l'image ( et non le chemin) pour l'API
-    private $fileUrl;
-
-    /**
-     * @var Collection<int, Section>
      * @ORM\ManyToOne(targetEntity=Section::class, inversedBy="developments",cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
      */
     #[Groups(['development:read', 'development:write'])]
-    private $section;
+    private Section $section;
 
     /**
+     * @var Collection<int, Tag>
      * @ORM\ManyToMany(targetEntity=Tag::class)
      */
     #[Groups(['development:read', 'development:write'])]
-    private $tags;
+    private Collection $tags;
 
     /**
      * @var Collection<int, Note>
@@ -165,25 +132,25 @@ class Development
      */
     #[Groups(['development:read', 'development:write'])]
     #[Assert\Valid]
-    private $notes;
+    private Collection $notes;
 
     /**
      * @var Collection<int, Post>
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="development", orphanRemoval=true, cascade={"persist","remove"})
      */
     #[Groups(['development:read', 'development:write'])]
-    private $posts;
+    private Collection $posts;
 
     /**
-     *
+     * @var Collection<int, DevelopmentFile>
      * @ORM\OneToMany(targetEntity=DevelopmentFile::class, mappedBy="developments", orphanRemoval=true, cascade={"persist","remove"})
      */
     #[Groups(['development:read', 'development:write'])]
-    private $files;
+    private Collection $files;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTimeImmutable('now');
         $this->tags      = new ArrayCollection();
         $this->notes     = new ArrayCollection();
         $this->posts     = new ArrayCollection();
@@ -195,7 +162,7 @@ class Development
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -206,7 +173,7 @@ class Development
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -217,23 +184,23 @@ class Development
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTime
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -250,33 +217,15 @@ class Development
         return $this;
     }
 
-    public function getSection(): ?Section
+    public function getSection(): Section
     {
         return $this->section;
     }
 
-    public function setSection(?Section $section): self
+    public function setSection(Section $section): self
     {
         $this->section = $section;
 
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFileUrl(): ?string
-    {
-        return $this->fileUrl;
-    }
-
-    /**
-     * @param string|null $fileUrl
-     * @return Development
-     */
-    public function setFileUrl(?string $fileUrl): Development
-    {
-        $this->fileUrl = $fileUrl;
         return $this;
     }
 
@@ -321,12 +270,7 @@ class Development
 
     public function removeNote(Note $note): self
     {
-        if ($this->notes->removeElement($note)) {
-            // set the owning side to null (unless already changed)
-            if ($note->getDevelopment() === $this) {
-                $note->setDevelopment(null);
-            }
-        }
+        $this->notes->removeElement($note);
         return $this;
     }
 
@@ -338,27 +282,21 @@ class Development
         return $this->posts;
     }
 
-    public function addPost(Post $post): self
-    {
-        if (!$this->posts->contains($post)) {
-            $this->posts[] = $post;
-            $post->setDevelopment($this);
-        }
-
-        return $this;
-    }
-
-    public function removePost(Post $post): self
-    {
-        if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
-            if ($post->getDevelopment() === $this) {
-                $post->setDevelopment(null);
-            }
-        }
-
-        return $this;
-    }
+//    public function addPost(Post $post): self
+//    {
+//        if (!$this->posts->contains($post)) {
+//            $this->posts[] = $post;
+//            $post->setDevelopment($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removePost(Post $post): self
+//    {
+//        $this->posts->removeElement($post);
+//        return $this;
+//    }
 
     /**
      * @return Collection
@@ -368,7 +306,7 @@ class Development
         return $this->files;
     }
 
-    public function setFiles($files): ArrayCollection
+    public function setFiles(ArrayCollection $files): ArrayCollection
     {
         $this->files = $files;
         return $this->files;
@@ -385,17 +323,13 @@ class Development
 
     public function removeFile(DevelopmentFile $file): self
     {
-        if ($this->files->removeElement($file)) {
-            // set the owning side to null (unless already changed)
-            if ($file->getDevelopments() === $this) {
-                $file->setDevelopments(null);
-            }
-        }
+        $this->files->removeElement($file);
         return $this;
     }
 
-    public function __toString()
+    #[Pure]
+    public function __toString(): string
     {
-        return $this->getTitle();
+        return $this->getTitle() ?: '';
     }
 }

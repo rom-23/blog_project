@@ -2,7 +2,6 @@
 
 namespace App\Controller\SymfonyApp;
 
-use App\Entity\Development\Development;
 use App\Form\Development\SearchDevelopmentType;
 use App\Repository\Development\DevelopmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +31,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/symfony/development/{id<\d+>}', name: 'development_view')]
-    public function view(Development $development, Request $request, EntityManagerInterface $em): Response
+    public function view(Request $request): Response
     {
         $dev_json = json_decode(file_get_contents(self::BASE_PATH . 'developments/' . $request->attributes->get('id')));
         $html     = $this->renderView('symfony-app/development-view.html.twig', [

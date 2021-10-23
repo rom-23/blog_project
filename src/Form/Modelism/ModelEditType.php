@@ -29,18 +29,18 @@ class ModelEditType extends AbstractType
         $this->optionRepository   = $optionRepository;
     }
 
-    /** buildForm
+    /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array<int|string, mixed> $options
      */
-    function buildForm(FormBuilderInterface $builder, array $options)
+    function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('imageFile', FileType::class, [
                 'label' => 'Thumb'
             ])
             ->add('originalFile', FileType::class, [
-                'label' => 'Originale'
+                'label' => 'Original'
             ])
             ->add('name', TextType::class, [
                 'required'   => true,
@@ -81,7 +81,10 @@ class ModelEditType extends AbstractType
             ->add('submit', SubmitType::class);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Model::class,

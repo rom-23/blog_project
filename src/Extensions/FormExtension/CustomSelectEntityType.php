@@ -20,7 +20,10 @@ class CustomSelectEntityType extends AbstractType
 
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('class');
         $resolver->setDefaults([
@@ -30,7 +33,12 @@ class CustomSelectEntityType extends AbstractType
         ]);
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array<mixed> $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['expanded']                  = false;
         $view->vars['label']                     = false;
@@ -49,6 +57,11 @@ class CustomSelectEntityType extends AbstractType
         return 'choice';
     }
 
+    /**
+     * @param Collection $value
+     * @param mixed $options
+     * @return array
+     */
     private function choices(Collection $value, $options): array
     {
         $choices = new ArrayCollection();
@@ -60,7 +73,11 @@ class CustomSelectEntityType extends AbstractType
             ->toArray();
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer(new CallbackTransformer(
             function (Collection $value): array {

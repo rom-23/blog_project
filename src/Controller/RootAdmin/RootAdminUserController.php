@@ -2,7 +2,9 @@
 
 namespace App\Controller\RootAdmin;
 
-use App\Repository\Development\DevelopmentRepository;
+use App\Entity\User;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,9 +17,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class RootAdminUserController extends AbstractController
 {
     #[Route('/root/admin/users', name: 'root_admin_users')]
-    public function index(): Response
+    public function index(UserRepository $userRepository): Response
     {
-        return $this->render('root-admin/user/user_list.html.twig');
+        return $this->render('root-admin/user/user_list.html.twig', [
+            'users' => $userRepository->findAll()
+        ]);
+    }
+
+    #[Route('/root/admin/user/{id<\d+>}', name: 'root_admin_user_edit', methods: ['GET', 'POST'])]
+    public function edit(User $user, EntityManagerInterface $em): Response
+    {
+        $user = $em->getRepository(User::class)->find($user);
+        if (!$user) {
+            $this->redirectToRoute('root_admin_user_edit');
+        }
+        return $this->render('root-admin/user/user_view.html.twig', [
+            'user' => $user
+        ]);
     }
 
     /**

@@ -33,7 +33,7 @@ class DeleteInactiveAccountCommand extends Command
         $this->setDescription('Delete inactive accounts in database');
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
@@ -50,7 +50,7 @@ class DeleteInactiveAccountCommand extends Command
     /**
      * @throws Exception
      */
-    private function deleteInactiveAccounts()
+    private function deleteInactiveAccounts(): void
     {
         $this->io->section('Deleting inactive accounts in database');
         $sql            = "DELETE FROM user WHERE account_must_be_verified_before < NOW() AND is_verified = false";

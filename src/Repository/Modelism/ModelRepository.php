@@ -20,9 +20,10 @@ class ModelRepository extends ServiceEntityRepository
         parent::__construct($registry, Model::class);
     }
 
-    /** findModelPng
+    /**
+     * @return array<array|null>
      */
-    public function findModelPng()
+    public function findModelPng(): array
     {
         $sql = "
             SELECT
@@ -37,12 +38,12 @@ class ModelRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createQuery($sql)->getResult();
     }
 
-    /** findDioramaPng
+    /**
      * @return Query
      */
     public function findDioramaPng(): Query
     {
-        $sql = "
+        $sql        = "
             SELECT
                 partial e.{id, name, description, price, filename},
                 partial ljim.{id, path},
@@ -57,12 +58,12 @@ class ModelRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
     }
 
-    /** find3dPng
+    /**
      * @return Query
      */
     public function find3dPng(): Query
     {
-        $sql = "
+        $sql        = "
             SELECT
                 partial e.{id, name, description, price, filename},
                 partial ljim.{id, path},
@@ -77,12 +78,13 @@ class ModelRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
     }
 
-    /** findCreationPng
+    /**
      * @return Query
      */
     public function findCreationPng(): Query
     {
-        $sql = "
+        $aParameter = [];
+        $sql        = "
             SELECT
                 partial e.{id, name, description, price, filename},
                 partial ljim.{id, path},
@@ -97,12 +99,14 @@ class ModelRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
     }
 
-    /** findModelkitPng for nav menu
+    /**
+     * @param string $name
      * @return Query
      */
-    public function findModelkitPng($name): Query
+    public function findModelkitPng(string $name): Query
     {
-        $sql = "
+        $aParameter = [];
+        $sql        = "
             SELECT
                 partial e.{id, name, description, price, filename, original},
                 partial ljim.{id, path},
@@ -118,10 +122,10 @@ class ModelRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Model[] Returns an array of Last Model objects
+     * @return array
      */
     public function findAllModelkit(): array
     {
-        return $this -> createQueryBuilder( 'p' )-> getQuery()-> getResult();
+        return $this->createQueryBuilder('p')->getQuery()->getResult();
     }
 }

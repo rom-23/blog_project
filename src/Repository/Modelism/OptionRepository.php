@@ -19,7 +19,10 @@ class OptionRepository extends ServiceEntityRepository
         parent::__construct($registry, Option::class);
     }
 
-    public function findAllOptions()
+    /**
+     * @return array<array|null>
+     */
+    public function findAllOptions(): array
     {
         $sql = "
             SELECT

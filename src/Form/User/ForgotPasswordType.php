@@ -10,7 +10,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ForgotPasswordType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<int|string, mixed> $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', RepeatedType::class, [
@@ -36,7 +40,10 @@ class ForgotPasswordType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
 

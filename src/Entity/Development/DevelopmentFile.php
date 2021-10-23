@@ -4,9 +4,9 @@ namespace App\Entity\Development;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Development\DevelopmentFileRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=DevelopmentFileRepository::class)
@@ -22,37 +22,41 @@ class DevelopmentFile
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['file:read','file:write','development:read'])]
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['file:read','file:write','development:read'])]
     private string $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=Development::class, inversedBy="files")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
-    private ?Development $developments = null;
+    #[Groups(['file:read'])]
+    private Development $developments;
 
     /**
      * @ORM\Column(type="datetime_immutable")
      */
-    private \DateTimeImmutable $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable="false")
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
+    #[Groups(['file:read','file:write','development:read'])]
     private string $path;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -72,35 +76,35 @@ class DevelopmentFile
         return $this;
     }
 
-    public function getDevelopments(): ?Development
+    public function getDevelopments(): Development
     {
         return $this->developments;
     }
 
-    public function setDevelopments(?Development $developments): self
+    public function setDevelopments(Development $developments): self
     {
         $this->developments = $developments;
 
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
         return $this;

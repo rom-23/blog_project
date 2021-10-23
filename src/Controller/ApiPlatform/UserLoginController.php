@@ -3,15 +3,17 @@
 namespace App\Controller\ApiPlatform;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserLoginController extends AbstractController
 {
-    public function __invoke()
+    /**
+     * @return UserInterface|null
+     */
+    public function __invoke(): ?UserInterface
     {
-        $user = $this->security->getUser();
-        return $user;
+        return $this->security->getUser();
     }
 
     public function __construct(private Security $security)

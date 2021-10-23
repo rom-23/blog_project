@@ -12,11 +12,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=SectionRepository::class)
- * @ORM\Table(name="section",
- *              indexes={@ORM\Index(columns={"title"},
- *                       flags={"fulltext"}
- *                       )}
- *            )
+ * @ORM\Table(name="section",indexes={
+ *     @ORM\Index(
+ *     columns={"title"},
+ *     flags={"fulltext"}
+ *     )})
  */
 #[ApiResource(
     denormalizationContext: ['groups' => ['section:write']],
@@ -29,19 +29,20 @@ class Section
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['section:read','development:read'])]
+    #[Groups(['section:read', 'development:read'])]
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['section:read','section:write', 'development:read'])]
+    #[Groups(['section:read', 'section:write', 'development:read'])]
     private string $title;
 
     /**
+     * @var Collection<int, Development>
      * @ORM\OneToMany(targetEntity=Development::class, mappedBy="section")
      */
-    private $developments;
+    private Collection $developments;
 
     #[Pure] public function __construct()
     {
@@ -66,34 +67,28 @@ class Section
     }
 
     /**
-     * @return Collection
+     * @return <Collection<int, Development>
      */
     public function getDevelopments(): Collection
     {
         return $this->developments;
     }
 
-    public function addDevelopment(Development $development): self
-    {
-        if (!$this->developments->contains($development)) {
-            $this->developments[] = $development;
-            $development->setSection($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDevelopment(Development $development): self
-    {
-        if ($this->developments->removeElement($development)) {
-            // set the owning side to null (unless already changed)
-            if ($development->getSection() === $this) {
-                $development->setSection(null);
-            }
-        }
-
-        return $this;
-    }
+//    public function addDevelopment(Development $development): self
+//    {
+//        if (!$this->developments->contains($development)) {
+//            $this->developments[] = $development;
+//            $development->setSection($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeDevelopment(Development $development): self
+//    {
+//        $this->developments->removeElement($development);
+//        return $this;
+//    }
 
     public function __toString()
     {

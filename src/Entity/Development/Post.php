@@ -3,9 +3,9 @@
 namespace App\Entity\Development;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Entity\Development\Development;
 use App\Entity\User;
 use App\Repository\Development\PostRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,54 +33,53 @@ class Post
      * @ORM\Column(type="string", length=255)
      */
     #[Groups(['post:read','post:write','user:read','development:read'])]
-    private ?string $title = null;
+    private string $title;
 
     /**
      * @ORM\Column(type="text")
      */
     #[Groups(['post:read','post:write','user:read','development:read'])]
-    private ?string $content = null;
+    private string $content;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable", nullable=false)
      */
-    private \DateTime $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTime $updatedAt;
+    private ?DateTimeImmutable $updatedAt = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Development::class, inversedBy="posts", cascade={"persist"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
     #[Groups(['post:read'])]
-    private ?Development $development = null;
+    private Development $development;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts", cascade={"persist"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
     #[Groups(['development:read','post:read','post:write'])]
-    private ?User $user = null;
+    private User $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="replies")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $parent;
+    private ?Post $parent;
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="parent")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $replies;
+    private ?Collection $replies;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+        $this->createdAt = new DateTimeImmutable();
         $this->replies = new ArrayCollection();
     }
 
@@ -89,7 +88,7 @@ class Post
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -101,7 +100,7 @@ class Post
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -113,75 +112,65 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updatedAt): self
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getDevelopment(): ?Development
+    public function getDevelopment(): Development
     {
         return $this->development;
     }
 
-    public function setDevelopment(?Development $development): self
+    public function setDevelopment(Development $development): self
     {
         $this->development = $development;
 
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
-
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->title;
-    }
-
-    public function getParent(): ?self
+    public function getParent(): ?Post
     {
         return $this->parent;
     }
 
-    public function setParent(?self $parent): self
+    public function setParent(?Post $parent): self
     {
         $this->parent = $parent;
-
         return $this;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getReplies(): Collection
+    public function getReplies(): ?Collection
     {
         return $this->replies;
     }
@@ -192,19 +181,17 @@ class Post
             $this->replies[] = $reply;
             $reply->setParent($this);
         }
-
         return $this;
     }
 
     public function removeReply(self $reply): self
     {
-        if ($this->replies->removeElement($reply)) {
-            // set the owning side to null (unless already changed)
-            if ($reply->getParent() === $this) {
-                $reply->setParent(null);
-            }
-        }
-
+        $this->replies->removeElement($reply);
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->title;
     }
 }

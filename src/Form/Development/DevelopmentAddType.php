@@ -21,8 +21,8 @@ use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class DevelopmentAddType extends AbstractType
 {
-    private $router;
-    private $security;
+    private UrlGeneratorInterface $router;
+    private Security $security;
 
     public function __construct(Security $security, UrlGeneratorInterface $router)
     {
@@ -30,7 +30,11 @@ class DevelopmentAddType extends AbstractType
         $this->security = $security;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<int|string, mixed> $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title', TextType::class, [
@@ -90,7 +94,10 @@ class DevelopmentAddType extends AbstractType
             });
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Development::class,

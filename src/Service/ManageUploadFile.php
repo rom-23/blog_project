@@ -14,7 +14,7 @@ class ManageUploadFile
      */
     private mixed $targetPdfDirectory;
 
-    public function __construct($targetPdfDirectory)
+    public function __construct(mixed $targetPdfDirectory)
     {
         $this->targetPdfDirectory = $targetPdfDirectory;
     }
@@ -23,7 +23,7 @@ class ManageUploadFile
      * @param array $files
      * @param Development $development
      */
-    public function uploadPdf(array $files, Development $development)
+    public function uploadPdf(array $files, Development $development): void
     {
         foreach ($files as $file) {
             $originalFilename = pathinfo($file['name']->getClientOriginalName(), PATHINFO_FILENAME);

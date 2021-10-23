@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modelism;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,78 +28,81 @@ class Model
      * @ORM\Column(type="integer")
      * @Groups({"get"})
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true))
      * @Groups({"get"})
      */
-    private $filename;
+    private ?string $filename = null;
 
     /**
      * @var File|null
      * @Assert\Image(mimeTypes="image/jpeg")
      * @Vich\UploadableField(mapping="model_images", fileNameProperty="filename")
      */
-    private $imageFile;
+    private ?File $imageFile = null;
 
     /**
      * @var File|null
      * @Assert\Image(mimeTypes="image/jpeg")
      * @Vich\UploadableField(mapping="model_image_original", fileNameProperty="original")
      */
-    private $originalFile;
+    private ?File $originalFile = null;
 
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $original;
+    private ?string $original = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"get"})
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"get"})
      */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $price;
+    private ?float $price;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable", nullable=false)
      */
-    private $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
+     * @var Collection<int, Option>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Option", inversedBy="models", cascade={"persist"})
      */
-    private $options;
+    private Collection $options;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private $updated_at;
+    private ?DateTimeImmutable $updated_at = null;
 
     /**
+     * @var Collection<int, Image>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Image", mappedBy="models", cascade={"persist", "remove"})
      * @Groups({"get"})
      */
-    private $images;
+    private Collection $images;
 
     /**
+     * @var Collection<int, Category>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Category", inversedBy="models", cascade={"persist"})
      * @Groups({"get"})
      */
-    private $categories;
+    private Collection $categories;
 
     /**
      * Model constructor.
@@ -106,10 +110,9 @@ class Model
      */
     public function __construct()
     {
-        $this->createdAt  = new \DateTime();
-        $this->updated_at = new \DateTime();
+        $this->createdAt  = new DateTimeImmutable('now');
         $this->options    = new ArrayCollection();
-        $this->images = new ArrayCollection();
+        $this->images     = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
 
@@ -198,29 +201,29 @@ class Model
     {
         $this->originalFile = $originalFile;
         if ($this->originalFile instanceof UploadedFile) {
-            $this->updated_at = new \DateTime('now');
+            $this->updated_at = new DateTimeImmutable('now');
         }
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?DateTimeImmutable $updated_at): self
     {
         $this->updated_at = $updated_at;
 
@@ -228,7 +231,7 @@ class Model
     }
 
     /**
-     * @return Collection|Option
+     * @return Collection<int, Option>
      */
     public function getOptions(): Collection
     {
@@ -288,13 +291,13 @@ class Model
     {
         $this->imageFile = $imageFile;
         if ($this->imageFile instanceof UploadedFile) {
-            $this->updated_at = new \DateTime('now');
+            $this->updated_at = new DateTimeImmutable('now');
         }
         return $this;
     }
 
     /**
-     * @return Collection
+     * @return Collection<int, Image>
      */
     public function getImages(): Collection
     {
@@ -322,7 +325,7 @@ class Model
     }
 
     /**
-     * @return Collection
+     * @return Collection<int, Category>
      */
     public function getCategories(): Collection
     {

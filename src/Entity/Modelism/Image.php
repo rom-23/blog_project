@@ -2,7 +2,7 @@
 
 namespace App\Entity\Modelism;
 
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,40 +25,40 @@ class Image
      * @ORM\Column(type="integer")
      * @Groups({"get"})
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      * @Groups({"get"})
      */
-    private $path;
+    private string $path;
 
     /**
+     * @var Collection<int, Model>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Model", inversedBy="images")
      */
-    private $models;
+    private Collection $models;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime_immutable", nullable=false)
      */
-    private $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private $updated_at;
+    private ?DateTimeImmutable $updated_at = null;
 
     /**
      * @var File|null
      * @Assert\Image(mimeTypes="image/jpeg")
      * @Vich\UploadableField(mapping="attachments", fileNameProperty="path")
      */
-    private $imageFile;
+    private ?File $imageFile = null;
 
     public function __construct()
     {
-        $this->createdAt  = new DateTime();
-        $this->updated_at = new DateTime();
+        $this->createdAt  = new DateTimeImmutable();
         $this->models = new ArrayCollection();
     }
 
@@ -67,12 +67,12 @@ class Image
         return $this->id;
     }
 
-    public function getPath(): ?string
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    public function setPath(?string $path): self
+    public function setPath(string $path): self
     {
         $this->path = $path;
 
@@ -105,12 +105,12 @@ class Image
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -133,17 +133,17 @@ class Image
     {
         $this->imageFile = $imageFile;
         if ($this->imageFile instanceof UploadedFile) {
-            $this->updated_at = new DateTime('now');
+            $this->updated_at = new DateTimeImmutable('now');
         }
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setUpdatedAt(?DateTimeImmutable $updated_at): self
     {
         $this->updated_at = $updated_at;
 

@@ -4,6 +4,7 @@ namespace App\Repository\Development;
 
 use App\Entity\Development\Development;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,8 +20,43 @@ class DevelopmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Development::class);
     }
 
-    public function findDocBySection($title)
+    /**
+     * @param int $page
+     * @param int $limit
+     * @return Paginator
+     */
+    public function findPaginatedDevelopment(int $page, int $limit): Paginator
     {
+        $sql = "
+                SELECT
+                  partial e.{id,title,content, createdAt, updatedAt},
+                  partial sect.{id, title},
+                  partial fil.{id},
+                  partial pos.{id, title},
+                  partial not.{id, title},
+                  partial ta.{id, name}
+            FROM App\Entity\Development\Development e
+            LEFT JOIN e.section sect
+            LEFT JOIN e.files fil
+            LEFT JOIN e.posts pos
+            LEFT JOIN e.notes not
+            LEFT JOIN e.tags ta
+        ";
+
+        return new Paginator(
+            $this->getEntityManager()->createQuery($sql)
+                 ->setMaxResults($limit)
+                 ->setFirstResult(($page - 1) * $limit));
+    }
+
+    /**
+     * @param mixed $title
+     * @return array
+     */
+    public
+    function findDocBySection(mixed $title): array
+    {
+        $aParameter = [];
         $sql        = "
                 SELECT
                   partial e.{id,title,content},
@@ -35,9 +71,15 @@ class DevelopmentRepository extends ServiceEntityRepository
         return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter)->getResult();
     }
 
-    public function searchDevelopment($words)
+    /**
+     * @param mixed $words
+     * @return mixed
+     */
+    public
+    function searchDevelopment(mixed $words): array
     {
-        $sql = "
+        $aParameter = [];
+        $sql        = "
                 SELECT
                   partial e.{id,title,content},
                   partial ljco.{id, title}
@@ -45,7 +87,7 @@ class DevelopmentRepository extends ServiceEntityRepository
             INNER JOIN e.section ljco
         ";
         if ($words != null) {
-            $sql .= "
+            $sql        .= "
                     WHERE MATCH_AGAINST(e.title, e.content) AGAINST(:words boolean) > 0
                     OR MATCH_AGAINST(ljco.title) AGAINST(:words boolean) > 0
             ";

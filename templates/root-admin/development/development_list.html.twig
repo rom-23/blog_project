@@ -1,7 +1,6 @@
 {%- set navbar = '/navbars/admin_navbar.html.twig' -%}
 {% extends navbar %}
 {% block body %}
-
     <div class="container">
         <div class="jumbotron jumbotron mb-3">
             <div class="container">
@@ -29,7 +28,7 @@
                 <tr>
                     <td>{{ dev.id }}</td>
                     <td>{{ dev.title }}</td>
-                    <td>{{ dev.slug }}</td>
+                    <td>{{ 'slug' }}</td>
                     <td>{{ dev.files|length }}</td>
                     <td>{{ dev.section }}</td>
                     <td>{{ dev.tags.count }}</td>
@@ -43,6 +42,31 @@
                     </td>
                 </tr>
             {% endfor %}
+            <ul>
+                {% if page > 1 %}
+                <li>
+                    <a href="{{ path('root_admin_dev_list', { page : 1 }) }}">First</a>
+                </li>
+                {% endif %}
+                {% if page > 1 %}
+                    <li>
+                        <a href="{{ path('root_admin_dev_list', { page : page - 1 }) }}">< Previous</a>
+                    </li>
+                {% endif %}
+                {% for p in range %}
+                    <li><a href="{{ path('root_admin_dev_list', { page : p }) }}">{{ p }}</a></li>
+                {% endfor %}
+                {% if page < pages %}
+                    <li>
+                        <a href="{{ path('root_admin_dev_list', { page : page + 1 }) }}">Next ></a>
+                    </li>
+                {% endif %}
+                {% if page < pages %}
+                    <li>
+                        <a href="{{ path('root_admin_dev_list', { page : pages }) }}">Last ></a>
+                    </li>
+                {% endif %}
+            </ul>
             </tbody>
         </table>
     </div>

@@ -4,7 +4,6 @@ namespace App\Repository\Development;
 
 use App\Entity\Development\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,7 +19,11 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
-    public function search(string $tagName): array
+    /**
+     * @param string|null $tagName
+     * @return array
+     */
+    public function search(?string $tagName): array
     {
         return $this->createQueryBuilder('u')
                     ->where('u.name LIKE :tag_name')
@@ -30,6 +33,9 @@ class TagRepository extends ServiceEntityRepository
                     ->getResult();
     }
 
+    /**
+     * @return array
+     */
     public function findAllTags() :array
     {
         return $this->createQueryBuilder('u')

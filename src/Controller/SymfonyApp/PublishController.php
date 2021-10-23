@@ -5,7 +5,6 @@ namespace App\Controller\SymfonyApp;
 use App\Entity\Development\Development;
 use App\Entity\Development\Post;
 use App\Form\Development\PostType;
-use App\Form\Development\SearchDevelopmentType;
 use App\Repository\Development\DevelopmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PublishController extends AbstractController
 {
     #[Route('/symfony/development/publication', name: 'development_publication')]
-    public function list(Request $request, DevelopmentRepository $developmentRepository): Response
+    public function list(DevelopmentRepository $developmentRepository): Response
     {
         $developments = $developmentRepository->findAll();
         return $this->render('symfony-app/publication-list.html.twig', [

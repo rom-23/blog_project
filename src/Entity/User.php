@@ -7,6 +7,8 @@ use App\Controller\ApiPlatform\UserLoginController;
 use App\Entity\Development\Note;
 use App\Entity\Development\Post;
 use App\Repository\UserRepository;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -79,14 +81,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Email()
      */
     #[Groups(['user:read', 'user:write', 'post:read', 'development:read'])]
-    private ?string $email = null;
+    private string $email;
 
     /**
+     * @var array<int|string, mixed>
      * @ORM\Column(type="json")
      * @Groups({"user:get"})
      */
     #[Groups(['user:read', 'user:write'])]
-    private array $roles = [];
+    private array $roles;
 
     /**
      * @var string The hashed password
@@ -96,23 +99,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[Groups(['user:read', 'user:write'])]
     private string $password = '';
-
-    /**
-     * @var Collection<int, Post>
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
-     * @Groups({"user:get"})
-     */
-    #[Groups(['user:read'])]
-    private $posts;
-
-    /**
-     * @var Collection<int, Note>
-     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
-     * @Groups({"user:get"})
-     */
-    #[Groups(['user:read'])]
-    private $notes;
-
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -127,17 +113,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="datetime_immutable")
      */
-    private \DateTimeImmutable $accountMustBeVerifiedBefore;
+    private DateTimeImmutable $accountMustBeVerifiedBefore;
 
     /**
      * @ORM\Column(type="datetime_immutable",nullable=true)
      */
-    private ?\DateTimeImmutable $accountVerifiedAt = null;
+    private ?DateTimeImmutable $accountVerifiedAt = null;
 
     /**
      * @ORM\Column(type="datetime_immutable")
      */
-    private \DateTimeImmutable $registeredAt;
+    private DateTimeImmutable $registeredAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -147,26 +133,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeImmutable $forgotPasswordTokenRequestedAt;
+    private ?DateTimeImmutable $forgotPasswordTokenRequestedAt;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore;
+    private ?DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeImmutable $forgotPasswordTokenVerifiedAt;
+    private ?DateTimeImmutable $forgotPasswordTokenVerifiedAt;
+
+    /**
+     * @var Collection<int, Post>
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
+     * @Groups({"user:get"})
+     */
+    #[Groups(['user:read'])]
+    private Collection $posts;
+
+    /**
+     * @var Collection<int, Note>
+     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
+     * @Groups({"user:get"})
+     */
+    #[Groups(['user:read'])]
+    private Collection $notes;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->notes = new ArrayCollection();
         $this->isVerified = false;
-        $this->registeredAt = new \DateTimeImmutable('now');
+        $this->registeredAt = new DateTimeImmutable('now');
         $this->roles = ['ROLE_USER'];
-        $this->accountMustBeVerifiedBefore = (new \DateTimeImmutable('now'))->add(new \DateInterval('P1D'));
+        $this->accountMustBeVerifiedBefore = (new DateTimeImmutable('now'))->add(new DateInterval('P1D'));
     }
 
     public function getId(): ?int
@@ -192,7 +194,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string)$this->email;
+        return $this->email;
     }
 
     /**
@@ -200,7 +202,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string)$this->email;
+        return $this->email;
     }
 
     public function getRoles(): array
@@ -209,6 +211,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     }
 
+    /**
+     * @param array<int|string, mixed> $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -241,7 +246,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -251,7 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection
+     * @return Collection<int, Post>
      */
     public function getPosts(): Collection
     {
@@ -269,16 +274,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removePost(Post $post): self
     {
-        if ($this->posts->removeElement($post)) {
-            if ($post->getUser() === $this) {
-                $post->setUser(null);
-            }
-        }
+        $this->posts->removeElement($post);
         return $this;
     }
 
     /**
-     * @return Collection
+     * @return Collection<int, Note>
      */
     public function getNotes(): Collection
     {
@@ -296,11 +297,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeNote(Note $note): self
     {
-        if ($this->notes->removeElement($note)) {
-            if ($note->getUser() === $this) {
-                $note->setUser(null);
-            }
-        }
+        $this->notes->removeElement($note);
         return $this;
     }
 
@@ -328,36 +325,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAccountMustBeVerifiedBefore(): \DateTimeImmutable
+    public function getAccountMustBeVerifiedBefore(): DateTimeImmutable
     {
         return $this->accountMustBeVerifiedBefore;
     }
 
-    public function setAccountMustBeVerifiedBefore(\DateTimeImmutable $accountMustBeVerifiedBefore): self
+    public function setAccountMustBeVerifiedBefore(DateTimeImmutable $accountMustBeVerifiedBefore): self
     {
         $this->accountMustBeVerifiedBefore = $accountMustBeVerifiedBefore;
 
         return $this;
     }
 
-    public function getAccountVerifiedAt(): ?\DateTimeImmutable
+    public function getAccountVerifiedAt(): ?DateTimeImmutable
     {
         return $this->accountVerifiedAt;
     }
 
-    public function setAccountVerifiedAt(?\DateTimeImmutable $accountVerifiedAt): self
+    public function setAccountVerifiedAt(?DateTimeImmutable $accountVerifiedAt): self
     {
         $this->accountVerifiedAt = $accountVerifiedAt;
 
         return $this;
     }
 
-    public function getRegisteredAt(): \DateTimeImmutable
+    public function getRegisteredAt(): DateTimeImmutable
     {
         return $this->registeredAt;
     }
 
-    public function setRegisteredAt(\DateTimeImmutable $registeredAt): self
+    public function setRegisteredAt(DateTimeImmutable $registeredAt): self
     {
         $this->registeredAt = $registeredAt;
         return $this;
@@ -375,36 +372,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getForgotPasswordTokenRequestedAt(): ?\DateTimeImmutable
+    public function getForgotPasswordTokenRequestedAt(): ?DateTimeImmutable
     {
         return $this->forgotPasswordTokenRequestedAt;
     }
 
-    public function setForgotPasswordTokenRequestedAt(?\DateTimeImmutable $forgotPasswordTokenRequestedAt): self
+    public function setForgotPasswordTokenRequestedAt(?DateTimeImmutable $forgotPasswordTokenRequestedAt): self
     {
         $this->forgotPasswordTokenRequestedAt = $forgotPasswordTokenRequestedAt;
 
         return $this;
     }
 
-    public function getForgotPasswordTokenMustBeVerifiedBefore(): ?\DateTimeImmutable
+    public function getForgotPasswordTokenMustBeVerifiedBefore(): ?DateTimeImmutable
     {
         return $this->forgotPasswordTokenMustBeVerifiedBefore;
     }
 
-    public function setForgotPasswordTokenMustBeVerifiedBefore(?\DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore): self
+    public function setForgotPasswordTokenMustBeVerifiedBefore(?DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore): self
     {
         $this->forgotPasswordTokenMustBeVerifiedBefore = $forgotPasswordTokenMustBeVerifiedBefore;
 
         return $this;
     }
 
-    public function getForgotPasswordTokenVerifiedAt(): ?\DateTimeImmutable
+    public function getForgotPasswordTokenVerifiedAt(): ?DateTimeImmutable
     {
         return $this->forgotPasswordTokenVerifiedAt;
     }
 
-    public function setForgotPasswordTokenVerifiedAt(?\DateTimeImmutable $forgotPasswordTokenVerifiedAt): self
+    public function setForgotPasswordTokenVerifiedAt(?DateTimeImmutable $forgotPasswordTokenVerifiedAt): self
     {
         $this->forgotPasswordTokenVerifiedAt = $forgotPasswordTokenVerifiedAt;
 

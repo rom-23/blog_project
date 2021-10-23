@@ -20,20 +20,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ModelAddType extends AbstractType
 {
+
     private CategoryRepository $categoryRepository;
     private OptionRepository $optionRepository;
 
+    /**
+     * @param CategoryRepository $categoryRepository
+     * @param OptionRepository $optionRepository
+     */
     public function __construct(CategoryRepository $categoryRepository, OptionRepository $optionRepository)
     {
         $this->categoryRepository = $categoryRepository;
         $this->optionRepository   = $optionRepository;
     }
 
-    /** buildForm
+    /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array<int|string, mixed> $options
      */
-    function buildForm(FormBuilderInterface $builder, array $options)
+    function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('imageFile', FileType::class, [
@@ -83,7 +88,10 @@ class ModelAddType extends AbstractType
             ->add('submit', SubmitType::class);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Model::class,

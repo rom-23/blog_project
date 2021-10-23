@@ -18,23 +18,20 @@ class Option
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
+     * @var Collection<int, Model>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Model", mappedBy="options")
      */
-    private $models;
+    private Collection $models;
 
-    /**
-     * Option constructor.
-     */
-    #[Pure]
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this -> models = new ArrayCollection();
     }
@@ -66,6 +63,6 @@ class Option
 
     #[Pure] public function __toString()
     {
-        return $this->getName();
+        return $this->getName() ?: '';
     }
 }

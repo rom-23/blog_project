@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modelism;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,27 +20,28 @@ class Category
      * @ORM\Column(type="integer")
      * @Groups({"get"})
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"get"})
      */
-    private $name;
+    private ?string $name;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime_immutable", nullable=false)
      */
-    private $createdAt;
+    private DateTimeImmutable $createdAt;
 
     /**
+     * @var Collection<int, Model>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Model", mappedBy="categories")
      */
-    private $models;
+    private Collection $models;
 
     public function __construct()
     {
-        $this->createdAt  = new \DateTime();
+        $this->createdAt  = new DateTimeImmutable();
         $this->models = new ArrayCollection();
     }
 
@@ -60,12 +62,12 @@ class Category
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -101,6 +103,6 @@ class Category
     #[Pure]
     public function __toString()
     {
-        return $this->getName();
+        return $this->getName() ?: '';
     }
 }

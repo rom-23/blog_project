@@ -20,7 +20,10 @@ class SearchableEntityType extends AbstractType
 
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('class');
         $resolver->setDefaults([
@@ -33,7 +36,12 @@ class SearchableEntityType extends AbstractType
         ]);
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array<mixed> $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['expanded']                  = false;
         $view->vars['label']                     = 'Tags';
@@ -62,7 +70,11 @@ class SearchableEntityType extends AbstractType
             ->toArray();
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer(new CallbackTransformer(
             function (Collection $value): array {

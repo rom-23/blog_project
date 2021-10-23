@@ -8,8 +8,9 @@ use App\Service\ManageUploadFile;
 use App\Form\Development\DevelopmentAddType;
 use App\Form\Development\DevelopmentEditType;
 use App\Repository\Development\DevelopmentRepository;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,10 +37,25 @@ class RootAdminDevController extends AbstractController
      * @return Response
      */
     #[Route('/root/admin/dev/list', name: 'root_admin_dev_list', methods: ['GET'])]
-    public function index(DevelopmentRepository $devRepository): Response
+    public function index(DevelopmentRepository $devRepository, Request $request): Response
     {
+        $limit = $request->get('limit', 10);
+        $page  = $request->get('page', 1);
+
+        /** @var Paginator $developments */
+        $developments = $devRepository->findPaginatedDevelopment($page, $limit);
+        $pages        = ceil($developments->count() / $limit);
+        $range        = range(
+            max($page - 3, 1),
+            min($page + 3, $pages)
+        );
+
         return $this->render('root-admin/development/development_list.html.twig', [
-            'developments' => $devRepository->findAll()
+            'developments' => $developments,
+            'pages'        => $pages,
+            'page'         => $page,
+            'limit'        => $limit,
+            'range'        => $range
         ]);
     }
 
@@ -62,11 +78,11 @@ class RootAdminDevController extends AbstractController
         $form = $this->createForm(DevelopmentEditType::class, $development);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if(count($form->get('files')->getData()) > 0){
+            if (count($form->get('files')->getData()) > 0) {
                 $files = $request->files->get('development_edit')['files'];
                 $this->manageUploadFile->uploadPdf($files, $development);
             }
-            $development->setUpdatedAt(new DateTime('now'));
+            $development->setUpdatedAt(new DateTimeImmutable('now'));
             $em->flush();
             return $this->redirectToRoute('root_admin_dev_list');
         }
@@ -90,7 +106,7 @@ class RootAdminDevController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 //            dd(count($form->get('files')->getData()) > 0);
 //            dd($request->files->get('development_add')['files'][0]['name']);
-            if($form->get('files')->getData()) {
+            if ($form->get('files')->getData()) {
                 $files = $request->files->get('development_add')['files'];
                 $this->manageUploadFile->uploadPdf($files, $development);
             }
@@ -120,7 +136,7 @@ class RootAdminDevController extends AbstractController
             // On supprime le fichier
             unlink($this->getParameter('app.path.dev_pdf') . '/' . $fileName);
             $em->remove($file);
-            $file->getDevelopments()->setUpdatedAt(new DateTime('now'));
+            $file->getDevelopments()->setUpdatedAt(new DateTimeImmutable('now'));
             $em->flush();
             return new JsonResponse(['success' => 1]);
         } else {

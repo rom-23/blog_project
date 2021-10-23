@@ -16,6 +16,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
     }
 
+    /**
+     * @param array $context
+     * @return OpenApi
+     */
     public function __invoke(array $context = []): OpenApi
     {
         $openApi = $this->decorated->__invoke($context);
@@ -47,7 +51,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 ]
             ]
         ]);
-// retire le parametre ID de OpenApi pour /apiplatform/me
+// retire le parameter ID de OpenApi pour /apiplatform/me
         $meOperation = $openApi->getPaths()->getPath('/apiplatform/me')->getGet()->withParameters([]);
         $mePathItem  = $openApi->getPaths()->getPath('/apiplatform/me')->withGet($meOperation);
         $openApi->getPaths()->addPath('/apiplatform/me', $mePathItem);
@@ -58,7 +62,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 tags: ['Auth'],
                 responses: [
                     '200' => [
-                        'description' => 'Utilisateur connecté',
+                        'description' => 'Connected User',
                         'content'     => [
                             'application/json' => [
                                 'schema' => [
@@ -94,8 +98,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
 //        $openApi               = $openApi->withSecurity(['cookieAuth' => []]);
         $openApi = $openApi->withInfo((new Model\Info('New Title', 'v2', 'Description of my custom API'))->withExtensionProperty('info-key', 'Info value'));
         $openApi = $openApi->withExtensionProperty('key', 'Custom x-key value');
-        $openApi = $openApi->withExtensionProperty('x-value', 'Custom x-value value');
-
-        return $openApi;
+        return $openApi->withExtensionProperty('x-value', 'Custom x-value value');
     }
 }

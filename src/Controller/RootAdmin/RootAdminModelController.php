@@ -5,7 +5,6 @@ namespace App\Controller\RootAdmin;
 use App\Entity\Modelism\Model;
 use App\Form\Modelism\ModelAddType;
 use App\Repository\Modelism\ModelRepository;
-use App\Service\ManageUploadFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

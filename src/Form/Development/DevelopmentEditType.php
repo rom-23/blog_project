@@ -20,8 +20,8 @@ use Symfony\Component\Security\Core\Security;
 
 class DevelopmentEditType extends AbstractType
 {
-    private $security;
-    private $router;
+    private Security $security;
+    private UrlGeneratorInterface $router;
 
     public function __construct(Security $security,UrlGeneratorInterface $router)
     {
@@ -29,7 +29,11 @@ class DevelopmentEditType extends AbstractType
         $this->router   = $router;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array<int|string, mixed> $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title', TextType::class)
@@ -82,7 +86,10 @@ class DevelopmentEditType extends AbstractType
             });
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Development::class,
