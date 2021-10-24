@@ -4,8 +4,10 @@ namespace App\Repository\Development;
 
 use App\Entity\Development\Development;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use http\QueryString;
 
 /**
  * @method Development|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,6 +20,29 @@ class DevelopmentRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Development::class);
+    }
+
+    /**
+     * @return Query
+     */
+    public function paginateDevelopments(): Query
+    {
+        $sql = "
+                SELECT
+                  partial e.{id,title,content, createdAt, updatedAt},
+                  partial sect.{id, title},
+                  partial fil.{id},
+                  partial pos.{id, title},
+                  partial not.{id, title},
+                  partial ta.{id, name}
+            FROM App\Entity\Development\Development e
+            LEFT JOIN e.section sect
+            LEFT JOIN e.files fil
+            LEFT JOIN e.posts pos
+            LEFT JOIN e.notes not
+            LEFT JOIN e.tags ta
+        ";
+        return $this->getEntityManager()->createQuery($sql);
     }
 
     /**

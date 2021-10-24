@@ -45,7 +45,8 @@
                                 <h5 class="text-success pt-1">{{ dev.section.title }}</h5>
                             </div>
                             <div class="card-body">
-                                <div class="float-end text-muted"><em>Created on {{ dev.createdAt|date('d/m/y') }}</em></div>
+                                <div class="float-end text-muted"><em>Created on {{ dev.createdAt|date('d/m/y') }}</em>
+                                </div>
                                 <p class="card-text">{{ dev.content|raw }}</p>
                             </div>
                         </div>
@@ -60,12 +61,19 @@
                                             {% if post.parent == null %}
                                                 <div class="container post">
                                                     <span class="card-text">{{ post.title }}</span>
-                                                    <span class="text-muted float-end"><small><em>{{ post.user.email }} on {{ post.createdAt|date('d/m/Y, H:i') }}</em></small></span>
+                                                    {% if is_granted('edit', post) %}
+                                                        <span class="text-danger float-end"><small><em>Posted by You  on {{ post.createdAt|date('d/m/Y, H:i') }}</em></small></span>
+                                                    {% else %}
+                                                        <span class="text-muted float-end"><small><em>{{ post.user.email }} on {{ post.createdAt|date('d/m/Y, H:i') }}</em></small></span>
+                                                    {% endif %}
                                                     <p class="card-title text-muted">
                                                         <span><small><em>( {{ post.replies|length }} replies )</em></small></span>
                                                     </p>
                                                     <span class="card-text"><small>{{ post.content|raw }}</small></span>
                                                     <a href="#add-post" data-reply data-id="{{ post.id }}" class="btn btn-info btn-sm text-white">Reply</a>
+                                                    {% if is_granted('edit', post) %}
+                                                        <a href="{{ path('development_publication_edit', { id : post.id }) }}" class="btn btn-sm btn-info text-white">Update</a>
+                                                    {% endif %}
                                                 </div>
                                                 {# affichage des reponses #}
                                                 {% for reply in post.replies %}
@@ -76,6 +84,7 @@
                                                     </div>
                                                 {% endfor %}
                                             {% endif %}
+
                                         {% endfor %}
                                     </div>
                                 </div>

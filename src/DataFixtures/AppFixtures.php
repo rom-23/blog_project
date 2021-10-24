@@ -38,7 +38,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateDevelopments(20);
+        $this->generateDevelopments(30);
         $this->manager->flush();
     }
 
@@ -54,7 +54,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                 'dateString' => $dateString
             ] = $this->generateRandomDateBetweenRange('01/01/2020', '09/12/2020');
 
-            $title = $this->faker->words(mt_rand(1, 3), true);
+            $title = $this->faker->words(mt_rand(3, 4), true);
             $slug  = $this->slugger->slug(strtolower($title));
             $tags  = $this->getReference('tag' . mt_rand(1, 6));
 
@@ -78,10 +78,10 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             }
             $this->manager->persist($dev);
 
-            for ($j = 1; $j <= 3; $j++) {
+            for ($j = 1; $j <= 2; $j++) {
                 $note = (new Note())
                     ->setTitle($this->faker->realText(mt_rand(10, 30)))
-                    ->setContent($this->faker->realText(mt_rand(10, 450)))
+                    ->setContent($this->faker->realText(mt_rand(10, 250)))
                     ->setCreatedAt($dateObject);
                 $user = $this->getReference('user' . mt_rand(1, 6));
                 $this->manager->persist($note);
@@ -90,11 +90,11 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                 $note->setUser($user);
                 $dev->addNote($note);
 
-                for ($k = 1; $k <= 3; $k++) {
+                for ($k = 1; $k <= 2; $k++) {
                     $user = $this->getReference('user' . mt_rand(1, 6));
                     $post = (new Post())
                         ->setTitle($this->faker->realText(mt_rand(10, 30)))
-                        ->setContent($this->faker->realText(mt_rand(10, 450)))
+                        ->setContent($this->faker->realText(mt_rand(10, 350)))
                         ->setCreatedAt($dateObject)
                         ->setParent(null);
                     $this->manager->persist($post);

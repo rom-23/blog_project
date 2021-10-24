@@ -4,13 +4,13 @@ namespace App\Controller\RootAdmin;
 
 use App\Entity\Development\Development;
 use App\Entity\Development\DevelopmentFile;
+use App\Handler\DevelopmentHandler;
+use App\Security\Voter\DevelopmentVoter;
+use App\Service\ManagePaginator;
 use App\Service\ManageUploadFile;
-use App\Form\Development\DevelopmentAddType;
-use App\Form\Development\DevelopmentEditType;
 use App\Repository\Development\DevelopmentRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,90 +34,61 @@ class RootAdminDevController extends AbstractController
 
     /**
      * @param DevelopmentRepository $devRepository
+     * @param Request $request
+     * @param ManagePaginator $managePaginator
      * @return Response
      */
     #[Route('/root/admin/dev/list', name: 'root_admin_dev_list', methods: ['GET'])]
-    public function index(DevelopmentRepository $devRepository, Request $request): Response
+    public function index(DevelopmentRepository $devRepository, Request $request, ManagePaginator $managePaginator): Response
     {
-        $limit = $request->get('limit', 10);
+        $limit = $request->get('limit', 5);
         $page  = $request->get('page', 1);
 
-        /** @var Paginator $developments */
-        $developments = $devRepository->findPaginatedDevelopment($page, $limit);
-        $pages        = ceil($developments->count() / $limit);
-        $range        = range(
-            max($page - 3, 1),
-            min($page + 3, $pages)
-        );
+        $developments = $managePaginator->paginate($devRepository->paginateDevelopments(),$page,$limit);
 
         return $this->render('root-admin/development/development_list.html.twig', [
             'developments' => $developments,
-            'pages'        => $pages,
+            'pages'        => $managePaginator->lastPage($developments),
             'page'         => $page,
             'limit'        => $limit,
-            'range'        => $range
+            'range'        => $managePaginator->rangePaginator($page, $developments)
         ]);
     }
 
     /**
      * @param Development $development
+     * @param DevelopmentHandler $developmentHandler
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
      */
     #[Route('/root/admin/dev/{id<\d+>}', name: 'root_admin_dev_edit', methods: ['GET', 'POST'])]
-    public function edit(Development $development, Request $request, EntityManagerInterface $em): Response
+    public function edit(Development $development, DevelopmentHandler $developmentHandler, Request $request, EntityManagerInterface $em): Response
     {
-//        foreach ($development->getFiles() as $file) {
-////            $devFile->setName(new File($this->getParameter('app.path.dev_pdf') . '/' . $file->getName()));
-////            $devFile->setPath($this->getParameter('app.path.dev_pdf'));
-////           array_push($pp,
-////                new File($this->getParameter('app.path.dev_pdf') . '/' . $file->getName())
-////            );
-//        }
-        $form = $this->createForm(DevelopmentEditType::class, $development);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (count($form->get('files')->getData()) > 0) {
-                $files = $request->files->get('development_edit')['files'];
-                $this->manageUploadFile->uploadPdf($files, $development);
-            }
-            $development->setUpdatedAt(new DateTimeImmutable('now'));
-            $em->flush();
+        if ($developmentHandler->handle($request, $development)) {
             return $this->redirectToRoute('root_admin_dev_list');
         }
         return $this->render('root-admin/development/development_edit.html.twig', [
             'dev'  => $development,
-            'form' => $form->createView()
+            'form' => $developmentHandler->createView()
         ]);
     }
 
     /**
+     * @param DevelopmentHandler $developmentHandler
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
      */
     #[Route('/root/admin/dev/add', name: 'root_admin_dev_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, EntityManagerInterface $em): Response
+    public function add(DevelopmentHandler $developmentHandler, Request $request, EntityManagerInterface $em): Response
     {
         $development = new Development();
-        $form        = $this->createForm(DevelopmentAddType::class, $development);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-//            dd(count($form->get('files')->getData()) > 0);
-//            dd($request->files->get('development_add')['files'][0]['name']);
-            if ($form->get('files')->getData()) {
-                $files = $request->files->get('development_add')['files'];
-                $this->manageUploadFile->uploadPdf($files, $development);
-            }
-            $em->persist($development);
-            $em->flush();
-
+        if ($developmentHandler->handle($request, $development)) {
             return $this->redirectToRoute('root_admin_dev_list');
         }
-
         return $this->render('root-admin/development/development_add.html.twig', [
-            'form' => $form->createView()
+            'form' => $developmentHandler->createView()
         ]);
     }
 

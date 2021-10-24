@@ -28,7 +28,7 @@ security:
       #        target: home
   access_control:
 #    - { path: ^/login$, roles: IS_ANONYMOUS }
-    - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/root/admin/dev, roles: ROLE_ADMIN }
-    - { path: ^/root/admin/users, roles: ROLE_ADMIN }
+#    - { path: ^/admin, roles: ROLE_ADMIN }
+#    - { path: ^/root/admin/dev, roles: ROLE_ADMIN }
+#    - { path: ^/root/admin/users, roles: ROLE_ADMIN }
 

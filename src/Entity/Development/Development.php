@@ -84,7 +84,6 @@ class Development
      * @ORM\Column(type="string", length=255)
      */
     #[Groups(['development:read', 'development:write', 'note:read', 'post:read'])]
-    #[Assert\NotBlank]
     #[Assert\Length(min: 4)]
     private string $title;
 

@@ -42,33 +42,45 @@
                     </td>
                 </tr>
             {% endfor %}
-            <ul>
-                {% if page > 1 %}
-                <li>
-                    <a href="{{ path('root_admin_dev_list', { page : 1 }) }}">First</a>
-                </li>
-                {% endif %}
-                {% if page > 1 %}
-                    <li>
-                        <a href="{{ path('root_admin_dev_list', { page : page - 1 }) }}">< Previous</a>
-                    </li>
-                {% endif %}
-                {% for p in range %}
-                    <li><a href="{{ path('root_admin_dev_list', { page : p }) }}">{{ p }}</a></li>
-                {% endfor %}
-                {% if page < pages %}
-                    <li>
-                        <a href="{{ path('root_admin_dev_list', { page : page + 1 }) }}">Next ></a>
-                    </li>
-                {% endif %}
-                {% if page < pages %}
-                    <li>
-                        <a href="{{ path('root_admin_dev_list', { page : pages }) }}">Last ></a>
-                    </li>
-                {% endif %}
-            </ul>
             </tbody>
         </table>
+        <div class="row">
+            <div class="col-12">
+                <nav>
+                    <ul class="pagination">
+                        {% if page > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('root_admin_dev_list', { page : 1 }) }}">First</a>
+                            </li>
+                        {% endif %}
+                        {% if page > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('root_admin_dev_list', { page : page - 1 }) }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for p in range %}
+                            <li class="page-item {{ page == p ? "active" : "" }}">
+                                <a class="page-link" href="{{ path('root_admin_dev_list', { page : p }) }}">{{ p }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if page < pages %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('root_admin_dev_list', { page : page + 1 }) }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if page < pages %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('root_admin_dev_list', { page : pages }) }}">Last</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
