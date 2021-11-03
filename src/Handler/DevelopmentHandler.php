@@ -3,10 +3,11 @@
 namespace App\Handler;
 
 use App\Form\Development\DevelopmentAddType;
-use App\Service\ManageUploadFile;
+use App\Service\UploadInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\UnitOfWork;
+use Symfony\Component\HttpFoundation\Request;
 
 class DevelopmentHandler extends AbstractHandler
 {
@@ -17,18 +18,18 @@ class DevelopmentHandler extends AbstractHandler
     private EntityManagerInterface $em;
 
     /**
-     * @var ManageUploadFile
+     * @var UploadInterface
      */
-    private ManageUploadFile $manageUploadFile;
+    private UploadInterface $upload;
 
     /**
      * @param EntityManagerInterface $em
-     * @param ManageUploadFile $manageUploadFile
+     * @param UploadInterface $upload
      */
-    public function __construct(EntityManagerInterface $em, ManageUploadFile $manageUploadFile)
+    public function __construct(EntityManagerInterface $em, UploadInterface $upload)
     {
-        $this->em               = $em;
-        $this->manageUploadFile = $manageUploadFile;
+        $this->em     = $em;
+        $this->upload = $upload;
     }
 
     /**
@@ -40,26 +41,27 @@ class DevelopmentHandler extends AbstractHandler
     }
 
     /**
-     * @param $data
-     * @param $request
+     * @param object $data
+     * @param Request $request
      */
-    protected function process($data, $request): void
+    protected function process(object $data, Request $request): void
     {
         if ($this->em->getUnitOfWork()->getEntityState($data) === UnitOfWork::STATE_NEW) {
             $files = $this->form->get('files')->getData();
-            if ($files !== null) {
+            if ($files) {
                 $files = $request->files->get('development_add')['files'];
-                $this->manageUploadFile->uploadPdf($files, $data);
+                $this->upload->uploadDevFile($files, $data);
             }
             $this->em->persist($data);
         } elseif (count($this->form->get('files')->getData()) > 0) {
             $files = $request->files->get('development_add')['files'];
             if ($files !== null) {
-                $this->manageUploadFile->uploadPdf($files, $data);
+                $this->upload->uploadDevFile($files, $data);
                 $data->setUpdatedAt(new DateTimeImmutable('now'));
             }
             $this->em->persist($data);
         }
         $this->em->flush();
     }
+
 }

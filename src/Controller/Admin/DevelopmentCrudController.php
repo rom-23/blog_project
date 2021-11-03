@@ -25,30 +25,31 @@ class DevelopmentCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $doc     = ImageField::new('filename')->setBasePath('/uploads/devFiles')->setLabel('Document');
-        $docFile = TextareaField::new('file')->setFormType(VichImageType::class)->setLabel('Document');
+//        $doc     = ImageField::new('filename')->setBasePath('/uploads/devFiles')->setLabel('Document');
+//        $docFile = TextareaField::new('file')->setFormType(VichImageType::class)->setLabel('Document');
         $fields = [
             IdField::new('id', 'ID')->onlyOnIndex(),
             TextField::new('title'),
             TextEditorField::new('content')->setFormType(CKEditorType::class),
             TextField::new('slug'),
+            ImageField::new('filename')->setUploadDir('/public/uploads/dev-files')->setLabel('Document'),
             AssociationField::new('section'),
             AssociationField::new('tags'),
             AssociationField::new('notes'),
             AssociationField::new('posts'),
             DateField::new('createdAt')
         ];
-        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
-            $fields[]= $doc;
-        } else {
-            $fields[]= $docFile;
-        }
+//        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
+//            $fields[]= $doc;
+//        } else {
+//            $fields[]= $docFile;
+//        }
         return $fields;
     }
-    public function configureActions(Actions $actions): Actions
-    {
-        return $actions->add(CRUD::PAGE_INDEX, 'detail');
-    }
+//    public function configureActions(Actions $actions): Actions
+//    {
+//        return $actions->add(CRUD::PAGE_INDEX, 'detail');
+//    }
 
     public function configureCrud(Crud $crud): Crud
     {

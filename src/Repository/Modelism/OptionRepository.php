@@ -20,6 +20,20 @@ class OptionRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string|null $optionName
+     * @return array
+     */
+    public function search(?string $optionName): array
+    {
+        return $this->createQueryBuilder('u')
+                    ->where('u.name LIKE :option_name')
+                    ->setParameter('option_name', "%$optionName%")
+                    ->setMaxResults(15)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    /**
      * @return array<array|null>
      */
     public function findAllOptions(): array

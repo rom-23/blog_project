@@ -1,0 +1,1 @@
+maildev --hide-extensions STARTTLS

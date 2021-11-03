@@ -1,0 +1,59 @@
+{%- set navbar = '/navbars/admin_navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="container">
+        <div class="jumbotron jumbotron mb-3">
+            <div class="container">
+                <span class="lead"><strong>User Admin</strong></span><br>
+                    <div class="col-4">
+                    <a href="{{ path('remove_inactive_account') }}" class="btn btn-outline-warning float-end">Remove inactives accounts from database</a>
+                    <a href="{{ path('root_admin_user_add') }}" class="btn btn-outline-primary float-end">Add User</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include'_partials/_flashbag.html.twig' %}
+    <div class="container">
+        <table class="table table-striped table-hover table-sm">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Verified</th>
+                <th>Role</th>
+                <th>Registered At</th>
+                <th>Verified At</th>
+                <th>Posts</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.isVerified }}</td>
+                    <td>
+                        {% for role in user.roles %}
+                            | {{ role }} |
+                        {% endfor %}
+                     </td>
+                    <td>{{ user.registeredAt|date('d/m/y') }}</td>
+                    <td>{{ user.accountVerifiedAt|date('d/m/Y') }}</td>
+                    <td>{{ user.posts|length }}</td>
+                    <td>{{ user.notes|length }}</td>
+                    <td>
+                        <a href="{{ path('root_admin_user_edit', { 'id': user.id }) }}" class="btn btn-outline-primary btn-sm">Edit</a>
+                        <a href="{{ path('root_admin_user_delete', { 'id': user.id }) }}" class="btn btn-outline-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="row">
+            {{ include('_partials/_pagination.html.twig', {path: 'root_admin_users'}) }}
+        </div>
+    </div>
+{% endblock %}
+

@@ -7,6 +7,9 @@ import './plugins/tom-select';
 import './plugins/fetch';
 import './plugins/prototype-form';
 import './plugins/development-post';
+import './controllers/modal-form_controller';
+import swal from 'sweetalert';
+
 // import Api from './Api';
 
 import './react-components/Users';

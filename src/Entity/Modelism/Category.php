@@ -23,10 +23,10 @@ class Category
     private ?int $id = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      * @Groups({"get"})
      */
-    private ?string $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=false)
@@ -50,12 +50,12 @@ class Category
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 

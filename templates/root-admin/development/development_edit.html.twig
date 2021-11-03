@@ -10,16 +10,14 @@
                     <div class="container">
                         <span class="lead"><strong>Edit Development documentation</strong></span>
                         <p>
-                            <small>- Use Tom-select with for multi-select fields(No JQuery)</small><br>
-                            <small>- Use Symfony CollectionType and custom Searchable EntityType</small><br>
-                            <small>- Use VichUploader Bundle for uploading</small>
+                            <small>- Use Tom-select for multi-select fields & CKEditor</small><br>
+                            <small>- Use Symfony CollectionType and Custom EntityType for relations</small><br>
                         </p>
+                        <h1>{{ dev.title }}</h1>
                     </div>
                 </div>
                 <hr>
-
-                    {{ include('root-admin/development/form/_form.html.twig', {form: form}) }}
-                {% endif %}
+                {{ include('root-admin/development/form/_form.html.twig', {form: form}) }}
             </div>
         </div>
     </div>

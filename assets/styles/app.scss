@@ -6,6 +6,7 @@
 @import '~vue-select/src/scss/vue-select.scss';
 @import '~@mdi/font/css/materialdesignicons.css';
 @import 'form.scss';
+@import 'paginator.scss';
 
 html{
     scroll-behavior: smooth;
@@ -17,6 +18,17 @@ a{
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+
+.table-user td{
+    border: none;
+padding: 0.7em;
+}
+#user_add_roles{
+    border: 0;
+}
+#user_add_isVerified{
+
 }
 #add-images{
     margin-left: 20px;

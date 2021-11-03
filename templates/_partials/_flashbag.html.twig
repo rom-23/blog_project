@@ -2,7 +2,7 @@
     <div class="container">
         <div class="alert alert-{{ label }} fade show alert-message text-center" role="alert">
             {% for message in messages %}
-            <p class="text-center font-weight-bold">{{ message|raw }} {% if label is same as('success') %}&#x1F44D;{% elseif label is same as('danger') %}&#x1F6A7;{% endif %}</p>
+            <p class="text-center font-weight-bold">{{ message|raw }}</p>
         </div>
         {% endfor %}
     </div>

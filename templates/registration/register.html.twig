@@ -11,11 +11,12 @@
             </div>
             <div class="container">
                 {{ form_start(registrationForm) }}
-                {{ form_row(registrationForm.email) }}<br>
-                {{ form_row(registrationForm.password) }}
-                {{ form_row(registrationForm.agreeTerms) }}
+                {{ form_widget(registrationForm.email) }}<br>
+                {{ form_widget(registrationForm.password) }}
+                {{ form_widget(registrationForm.imageFile) }}
+                {{ form_widget(registrationForm.agreeTerms) }}
                 <button type="submit" id="_register-button" class="mt-3">Register</button><br>
-                <a href="{{ path('symfony_app') }}" class="btn btn-outline-info btn-sm mb-2"><< Back</a>
+                <a href="{{ path('symfony_dev_app') }}" class="btn btn-outline-info btn-sm mb-2"><< Back</a>
                 {{ form_end(registrationForm) }}
             </div>
     </div>

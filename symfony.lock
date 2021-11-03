@@ -22,6 +22,18 @@
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
     },
+    "dama/doctrine-test-bundle": {
+        "version": "6.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
+        },
+        "files": [
+            "config/packages/test/dama_doctrine_test_bundle.yaml"
+        ]
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -161,9 +173,6 @@
     },
     "jetbrains/phpstorm-attributes": {
         "version": "1.0"
-    },
-    "jms/metadata": {
-        "version": "2.5.1"
     },
     "laminas/laminas-code": {
         "version": "4.4.3"
@@ -739,18 +748,6 @@
     },
     "twig/twig": {
         "version": "v3.3.3"
-    },
-    "vich/uploader-bundle": {
-        "version": "1.7",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.7",
-            "ref": "c4f5755b37fb65b9c6a3cbdae91205c15a137ed4"
-        },
-        "files": [
-            "config/packages/vich_uploader.yaml"
-        ]
     },
     "webmozart/assert": {
         "version": "1.10.0"

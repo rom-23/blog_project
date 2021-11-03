@@ -41,9 +41,9 @@ class ManagePaginator
 
     /**
      * @param Paginator $paginator
-     * @return int
+     * @return float
      */
-    public function lastPage(Paginator $paginator): int
+    public function lastPage(Paginator $paginator): float
     {
         return ceil($paginator->count() / $paginator->getQuery()->getMaxResults());
     }

@@ -17,11 +17,19 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/symfony", name="symfony_app")
+     * @Route("/symfony/dev/app", name="symfony_dev_app")
      */
     public function symfonyApp(): Response
     {
-        return $this->render('symfony-app/home.html.twig');
+        return $this->render('symfony-app/development/home.html.twig');
+    }
+
+    /**
+     * @Route("/symfony/model/app", name="symfony_model_app")
+     */
+    public function symfonyModelApp(): Response
+    {
+        return $this->render('symfony-app/model/home.html.twig');
     }
 
     /**
@@ -29,7 +37,7 @@ class HomeController extends AbstractController
      */
     public function frontApp(): Response
     {
-        return $this->render('symfony-app/model/home.html.twig');
+        return $this->render('front-end-app/home.html.twig');
     }
 
 

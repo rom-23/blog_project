@@ -44,7 +44,7 @@ class SearchableEntityType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['expanded']                  = false;
-        $view->vars['label']                     = 'Tags';
+        $view->vars['label']                     = '';
         $view->vars['attr']['class']             = 'advanced-select';
         $view->vars['placeholder']               = null;
         $view->vars['placeholder_in_choices']    = false;

@@ -20,6 +20,20 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string|null $categoryName
+     * @return array
+     */
+    public function search(?string $categoryName): array
+    {
+        return $this->createQueryBuilder('u')
+                    ->where('u.name LIKE :category_name')
+                    ->setParameter('category_name', "%$categoryName%")
+                    ->setMaxResults(15)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    /**
      * @return array
      */
     public function findAllCategories() : array

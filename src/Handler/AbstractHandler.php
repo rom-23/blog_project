@@ -21,7 +21,7 @@ abstract class AbstractHandler implements HandlerInterface
 
     abstract protected function getFormType(): string;
 
-    abstract protected function process($data, $request): void;
+    abstract protected function process(object $data, Request $request): void;
 
     /**
      * @required
@@ -32,9 +32,15 @@ abstract class AbstractHandler implements HandlerInterface
         $this->formFactory = $formFactory;
     }
 
-    public function handle(Request $request, $data): bool
+    /**
+     * @param Request $request
+     * @param object $data
+     * @param array $options
+     * @return bool
+     */
+    public function handle(Request $request, object $data, array $options = []): bool
     {
-        $this->form = $this->formFactory->create($this->getFormType(), $data)->handleRequest($request);
+        $this->form = $this->formFactory->create($this->getFormType(), $data, $options)->handleRequest($request);
         if ($this->form->isSubmitted() && $this->form->isValid()) {
             $this->process($data, $request);
             return true;
@@ -44,7 +50,7 @@ abstract class AbstractHandler implements HandlerInterface
 
     public function createView(): FormView
     {
-       return $this->form->createView();
+        return $this->form->createView();
     }
 
 

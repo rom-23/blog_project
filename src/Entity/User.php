@@ -18,10 +18,13 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\User\{
+    UniqueEmail
+};
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"email"}, message="There is already a account with this email")
  */
 #[ApiResource(
     collectionOperations: [
@@ -77,10 +80,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"user:get"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Please enter an email")
      * @Assert\Email()
+     * @UniqueEmail(groups={"create"})
      */
-    #[Groups(['user:read', 'user:write', 'post:read', 'development:read'])]
+     #[Groups(['user:read', 'user:write', 'post:read', 'development:read'])]
     private string $email;
 
     /**
@@ -95,10 +99,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Groups({"user:get"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Choose a password!")
+     * @Assert\Length(min=4, minMessage="Your password is too short !")
      */
     #[Groups(['user:read', 'user:write'])]
     private string $password = '';
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\NotBlank(message="Please select an image")
+     */
+    private string $image;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -163,11 +175,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->posts = new ArrayCollection();
-        $this->notes = new ArrayCollection();
-        $this->isVerified = false;
-        $this->registeredAt = new DateTimeImmutable('now');
-        $this->roles = ['ROLE_USER'];
+        $this->posts                       = new ArrayCollection();
+        $this->notes                       = new ArrayCollection();
+        $this->isVerified                  = false;
+        $this->registeredAt                = new DateTimeImmutable('now');
+        $this->roles                       = ['ROLE_USER'];
         $this->accountMustBeVerifiedBefore = (new DateTimeImmutable('now'))->add(new DateInterval('P1D'));
     }
 
@@ -221,6 +233,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return string
+     */
+    public function getImage(): string
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     * @return User
+     */
+    public function setImage(string $image): User
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+    /**
      * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
@@ -250,7 +280,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
     }
 
-    #[Pure] public function __toString()
+    public function __toString()
     {
         return $this->getUserIdentifier();
     }

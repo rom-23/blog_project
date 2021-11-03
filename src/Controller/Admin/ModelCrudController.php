@@ -48,6 +48,7 @@ class ModelCrudController extends AbstractCrudController
                 }
                 return $str;
             }),
+            AssociationField::new('options'),
             AssociationField::new('images')->onlyOnIndex(),
             CollectionField::new('images')
                            ->setEntryType(ImageType::class)

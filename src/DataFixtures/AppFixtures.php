@@ -13,7 +13,6 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
-use HttpException;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -31,20 +30,14 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         $this->slugger = $slugger;
     }
 
-    /**
-     * @throws HttpException
-     */
     public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateDevelopments(30);
+        $this->generateDevelopments(10);
         $this->manager->flush();
     }
 
-    /**
-     * @throws HttpException
-     */
     public function generateDevelopments(int $number): void
     {
         for ($i = 1; $i <= $number; $i++) {

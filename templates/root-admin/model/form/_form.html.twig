@@ -1,0 +1,62 @@
+<div class="row">
+    <div class="col-5">
+        <div class="container mt-0 pt-0">
+            {{- form_label(form.name) -}}{{- form_widget(form.name) -}}
+        </div>
+        <div class="container mt-0 pt-0">
+            {{- form_widget(form.categories) -}}
+        </div>
+        <div class="container mt-0 pt-0">
+            {{- form_widget(form.options) -}}
+        </div>
+        <div class="container mt-0 pt-0">
+            {{- form_widget(form.price) -}}
+        </div>
+        <div class="container mt-2 pt-2">
+            {{- form_errors(form.thumbnail) -}}
+            <p>{{- form_label(form.thumbnail) -}}{{- form_widget(form.thumbnail) -}}</p>
+            {% if app.request.attributes.get('_route') == 'root_admin_model_edit' %}
+                <img src="{{ asset('/uploads/models/thumbnails/'~model.thumbnail)| imagine_filter('my_thumb') }}"/>
+            {% endif %}
+        </div>
+
+    </div>
+    <div class="col-7">
+        <div class="container mt-0 pt-0">
+            {{- form_widget(form.description) -}}
+        </div>
+        <p class="card-header mt-2 text-center">Images</p>
+        <div class="container bg-white pt-0">
+            <button class="btn btn-outline-primary btn-new-image mt-3 btn-sm mb-3" type="button" data-collection="#images">Add image</button>
+            {% if app.request.attributes.get('_route') == 'root_admin_model_edit' %}
+                {% for image in model.images %}
+                    <div class="col-12">
+                        <em class="text-muted" style="font-size: 12px">Path : {{ image.name }}</em>
+                        <p><a href="#">{{ image.name }}</a></p>
+                        <a href="{{ path('root_admin_model_delete_image', {'id':image.id}) }}" class="btn btn-outline-danger btn-sm"
+                           data-delete
+                           data-token="{{ csrf_token('delete' ~ image.id) }}">Delete image</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="container" id="images"
+                 data-prototype="{{ include('root-admin/model/prototype/_image.html.twig', {form:form.images.vars.prototype})|e('html_attr') }}"
+                 data-index="{{ form.images|length > 0 ? form.images|last.vars.name + 1 : 0 }}">
+                {% for image in form.images %}
+                    <div class="container">
+                        {{ include('root-admin/model/prototype/_image.html.twig', {form:image}) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row justify-center">
+        <div class="container">
+            {{- form_widget(form.submit, {'attr':{'class':'btn btn-warning'}}) -}}
+        </div>
+    </div>
+</div>
+
+
+
+

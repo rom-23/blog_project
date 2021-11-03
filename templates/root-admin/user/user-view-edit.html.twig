@@ -1,0 +1,109 @@
+{%- set navbar = '/navbars/admin_navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    {{ form_start(form) }}
+<div class="d-flex justify-content-center">
+    <div class="col-5">
+        <div class="container p-5">
+            <img src="{{ asset('/uploads/user-image/'~user.image)| imagine_filter('my_thumb') }}" alt="" class="mt-2 mb-5">
+            <h3>{{ user.email }}</h3>
+            <p>
+                {% for role in user.roles %}
+                    | {{ role }} |
+                {% endfor %}
+            </p>
+            <p>{{ user.accountVerifiedAt|date('d/m/Y') }}</p>
+            <span class="product-single-price">{{ user.registeredAt|date('d/m/Y') }}</span>
+            <p>Verified : {{ user.isVerified }}</p>
+        </div>
+        <div class="row">
+            {% for post in user.posts %}
+                <div class="col-6">
+                    {{ post.title }}
+                    {{ post.content|raw }}
+                    {{ post.title }}
+                    <p class="text-muted"><em>Posted on {{ post.createdAt|date('d/m/Y') }}</em></p>
+                </div>
+            {% endfor %}
+            {% for note in user.notes %}
+                <div class="col-md-6">
+                    <p class="text-primary">{{ note.title }}</p>
+                    {{ note.content|raw }}
+                    {{ note.createdAt|date('d/m/Y') }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="container mt-5 p-5">
+            <table class="table table-user">
+                <tr>
+                    <td>{{- form_widget(form.email) -}}</td>
+                </tr>
+                <tr>
+                    <td>{{- form_errors(form.imageFile) -}}{{- form_widget(form.imageFile) -}}</td>
+                </tr>
+                <tr>
+                    <td class="text-muted">{{- form_label(form.password) -}}{{- form_widget(form.password) -}}</td>
+                </tr>
+                <tr>
+                    <td>{{- form_widget(form.roles) -}}</td>
+                </tr>
+                <tr>
+                    <td class="text-muted">{{- form_widget(form.isVerified) -}}</td>
+                </tr>
+            </table>
+            <div class="row">
+                <div class="container text-center mt-2">
+                    <span><a href="{{ path('root_admin_users') }}" class="btn btn-primary btn-sm"><< Back</a></span>
+                    <span>{{- form_widget(form.submit) -}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# <div class="row"> #}
+    {# <div class="col-4"> #}
+    {# {% for post in user.posts %} #}
+    {# <div class="col-3"> #}
+    {# {{ post.title }} #}
+    {# {{ post.content|raw }} #}
+    {# {{ post.title }} #}
+    {# {{ post.createdAt|date('d/m/Y') }} #}
+    {# </div> #}
+    {# {% endfor %} #}
+    {# </div> #}
+    {# <div class="col-4"> #}
+    {# {% for note in user.notes %} #}
+    {# <div class="col-md-3"> #}
+    {# {{ note.title }} #}
+    {# {{ note.content|raw }} #}
+    {# {{ note.createdAt|date('d/m/Y') }} #}
+    {# </div> #}
+    {# {% endfor %} #}
+    {# </div> #}
+    {# </div> #}
+
+    {# <div class="row"> #}
+    {# <hr class="mt-3 mb-3"/> #}
+    {# <div class="container"> #}
+    {# {% for post in user.posts %} #}
+    {# <div class="col-3"> #}
+    {# {{ post.title }} #}
+    {# {{ post.content|raw }} #}
+    {# {{ post.title }} #}
+    {# {{ post.createdAt|date('d/m/Y') }} #}
+    {# </div> #}
+    {# {% endfor %} #}
+    {# </div> #}
+    {# <div class="container"> #}
+    {# {% for note in user.notes %} #}
+    {# <div class="col-md-3"> #}
+    {# {{ note.title }} #}
+    {# {{ note.content|raw }} #}
+    {# {{ note.createdAt|date('d/m/Y') }} #}
+    {# </div> #}
+    {# {% endfor %} #}
+    {# </div> #}
+    {# </div> #}
+    {{ form_end(form) }}
+    {% endblock %}

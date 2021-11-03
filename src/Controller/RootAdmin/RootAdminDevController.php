@@ -5,9 +5,7 @@ namespace App\Controller\RootAdmin;
 use App\Entity\Development\Development;
 use App\Entity\Development\DevelopmentFile;
 use App\Handler\DevelopmentHandler;
-use App\Security\Voter\DevelopmentVoter;
 use App\Service\ManagePaginator;
-use App\Service\ManageUploadFile;
 use App\Repository\Development\DevelopmentRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,31 +18,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class RootAdminDevController extends AbstractController
 {
     /**
-     * @var ManageUploadFile
-     */
-    private ManageUploadFile $manageUploadFile;
-
-    /**
-     * @param ManageUploadFile $manageUploadFile
-     */
-    public function __construct(ManageUploadFile $manageUploadFile)
-    {
-        $this->manageUploadFile = $manageUploadFile;
-    }
-
-    /**
      * @param DevelopmentRepository $devRepository
      * @param Request $request
      * @param ManagePaginator $managePaginator
      * @return Response
      */
     #[Route('/root/admin/dev/list', name: 'root_admin_dev_list', methods: ['GET'])]
-    public function index(DevelopmentRepository $devRepository, Request $request, ManagePaginator $managePaginator): Response
+    public function listDevelopment(DevelopmentRepository $devRepository, Request $request, ManagePaginator $managePaginator): Response
     {
-        $limit = $request->get('limit', 5);
-        $page  = $request->get('page', 1);
-
-        $developments = $managePaginator->paginate($devRepository->paginateDevelopments(),$page,$limit);
+        $limit        = $request->get('limit', 7);
+        $page         = $request->get('page', 1);
+        $developments = $managePaginator->paginate($devRepository->paginateDevelopments(), $page, $limit);
 
         return $this->render('root-admin/development/development_list.html.twig', [
             'developments' => $developments,
@@ -63,11 +47,14 @@ class RootAdminDevController extends AbstractController
      * @return Response
      */
     #[Route('/root/admin/dev/{id<\d+>}', name: 'root_admin_dev_edit', methods: ['GET', 'POST'])]
-    public function edit(Development $development, DevelopmentHandler $developmentHandler, Request $request, EntityManagerInterface $em): Response
+    public function editDevelopment(Development $development, DevelopmentHandler $developmentHandler, Request $request): Response
     {
-        if ($developmentHandler->handle($request, $development)) {
+        $options = ['validation_groups' => ['Default']];
+        if ($developmentHandler->handle($request, $development, $options)) {
+            $this->addFlash('success', 'This development documentation has been updated.');
             return $this->redirectToRoute('root_admin_dev_list');
         }
+
         return $this->render('root-admin/development/development_edit.html.twig', [
             'dev'  => $development,
             'form' => $developmentHandler->createView()
@@ -80,16 +67,28 @@ class RootAdminDevController extends AbstractController
      * @param EntityManagerInterface $em
      * @return Response
      */
+
     #[Route('/root/admin/dev/add', name: 'root_admin_dev_add', methods: ['GET', 'POST'])]
-    public function add(DevelopmentHandler $developmentHandler, Request $request, EntityManagerInterface $em): Response
+    public function addDevelopment(DevelopmentHandler $developmentHandler, Request $request, EntityManagerInterface $em): Response
     {
         $development = new Development();
-        if ($developmentHandler->handle($request, $development)) {
+        $options     = ['validation_groups' => ['create']];
+        if ($developmentHandler->handle($request, $development, $options)) {
+            $this->addFlash('success', 'A new development documentation has been created.');
             return $this->redirectToRoute('root_admin_dev_list');
         }
         return $this->render('root-admin/development/development_add.html.twig', [
             'form' => $developmentHandler->createView()
         ]);
+    }
+
+    #[Route('/root/admin/dev/delete/{id<\d+>}', name: 'root_admin_dev_delete')]
+    public function deleteDevelopment(EntityManagerInterface $em, Development $development): Response
+    {
+        $em->remove($development);
+        $em->flush();
+        $this->addFlash('success', 'This development documentation has been deleted.');
+        return $this->redirectToRoute('root_admin_dev_list');
     }
 
     /**
@@ -104,7 +103,6 @@ class RootAdminDevController extends AbstractController
         $data = json_decode($request->getContent(), true);
         if ($this->isCsrfTokenValid('delete' . $file->getId(), $data['_token'])) {
             $fileName = $file->getName();
-            // On supprime le fichier
             unlink($this->getParameter('app.path.dev_pdf') . '/' . $fileName);
             $em->remove($file);
             $file->getDevelopments()->setUpdatedAt(new DateTimeImmutable('now'));

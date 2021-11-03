@@ -17,7 +17,7 @@ class UserFixtures extends Fixture
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateUsers(20);
+        $this->generateUsers(10);
         $this->manager->flush();
     }
 
@@ -28,6 +28,7 @@ class UserFixtures extends Fixture
                 ->setEmail($this->faker->email)
                 ->setRoles(['ROLE_USER'])
                 ->setPassword('1234')
+                ->setImage($this->faker->image('public/uploads/user-image'))
                 ->setIsVerified($this->faker->numberBetween(0, 1))
                 ->setAccountVerifiedAt(new \DateTimeImmutable('+ 55 minutes'))
                 ->setRegisteredAt(new \DateTimeImmutable('now'))

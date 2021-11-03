@@ -1,15 +1,15 @@
 <div class="row">
     <div class="col-5">
-        <div class="container mt-0 pt-0">
+        <div class="container mt-0 pt-0"><h1></h1>
             {{- form_label(form.title) -}}{{- form_widget(form.title) -}}
         </div>
         <div class="container mt-0 pt-0">
             {{- form_label(form.section) -}}{{- form_widget(form.section) -}}
         </div>
         <div class="container mt-0 pt-0">
-            {{- form_label(form.tags) -}}{{- form_widget(form.tags) -}}
+            {{- form_widget(form.tags) -}}
         </div>
-        <hr>
+        <p class="card-header mt-2 text-center">FILES</p>
         <div class="container bg-white pt-0">
             <button class="btn btn-outline-primary btn-new-file mt-3 btn-sm mb-3" type="button" data-collection="#files">Add file</button>
             {% if app.request.attributes.get('_route') == 'root_admin_dev_edit' %}
@@ -33,20 +33,42 @@
                 {% endfor %}
             </div>
         </div>
-        <hr>
     </div>
     <div class="col-7">
-        <div class="container">
+        <div class="container bg-white">
             {{- form_label(form.content) -}}{{- form_widget(form.content) -}}
         </div>
-        <div class="container">
+        <p class="card-header text-center">NOTES</p>
+        <div class="container bg-white">
             <button class="btn btn-outline-primary btn-new-note mt-3 btn-sm" type="button" data-collection="#notes">Add Note</button>
-            <div class="row mt-3" id="notes"
+            <div class="row mt-1 bg-white" id="notes"
                  data-prototype="{{ include('root-admin/development/prototype/_note.html.twig', {form:form.notes.vars.prototype})|e('html_attr') }}"
                  data-index="{{ form.notes|length > 0 ? form.notes|last.vars.name + 1 : 0 }}">
                 {% for note in form.notes %}
                     <div class="col-6">
+                        <div class="container text-end p-0">
+                            <em class="text-primary"><small>Posted by {{ note.vars['value'].user.email }}</small></em>
+                        </div>
                         {{ include('root-admin/development/prototype/_note.html.twig', {form:note}) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if form.author is defined %}
+            <p class="card-header mt-3 text-center">POSTS</p>
+        {% endif %}
+        <div class="container bg-white">
+            <div class="row mt-3"
+                 data-prototype="{{ include('root-admin/development/prototype/_post.html.twig', {form:form.posts.vars.prototype})|e('html_attr') }}"
+                 data-index="{{ form.posts|length > 0 ? form.posts|last.vars.name + 1 : 0 }}">
+                {% for post in form.posts %}
+                    <div class="col-6">
+                        {% if form.author is defined %}
+                            <div class="container text-end p-0">
+                                <em class="text-primary"><small>Posted by {{ post.vars['value'].user.email }}</small></em>
+                            </div>
+                        {% endif %}
+                        {{ include('root-admin/development/prototype/_post.html.twig', {form:post}) }}
                     </div>
                 {% endfor %}
             </div>

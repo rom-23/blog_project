@@ -23,12 +23,12 @@ class DevSectionController extends AbstractController
     #[Route('/developments/section/{id}', name: 'doc_by_section', methods: ['GET'])]
     public function __invoke(string $id): array
     {
-        $documentation = $this->developmentRepository->findDocBySection($id);
-        if (!$documentation) {
+        $development = $this->developmentRepository->findDocBySection($id);
+        if (!$development) {
             throw $this->createNotFoundException(
                 'No Documentation found for this section'
             );
         }
-        return $documentation;
+        return $development;
     }
 }

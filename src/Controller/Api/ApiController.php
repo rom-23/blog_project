@@ -4,7 +4,9 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Repository\Development\TagRepository;
+use App\Repository\Modelism\CategoryRepository;
 use App\Repository\Modelism\ModelRepository;
+use App\Repository\Modelism\OptionRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +28,7 @@ class ApiController extends AbstractController
     #[Route('/api/all-users', name: 'api_all_users', methods: 'GET')]
     public function getAllUsers(UserRepository $userRepository): JsonResponse
     {
-        $users = $userRepository->findAll(['id' => 'DESC']);
+        $users = $userRepository->findAll();
         return $this->json($users, 200, [], ['groups' => 'user:get']);
     }
 
@@ -84,7 +86,7 @@ class ApiController extends AbstractController
     #[Route('/api/users/remove/{id}', name: 'api_add_user_remove', methods: 'DELETE')]
     public function removeUser(User $user, EntityManagerInterface $em): JsonResponse
     {
-        $user = $em->getRepository(User::class)->find($user);
+//        $user = $em->getRepository(User::class)->find($user);
         $em->remove($user);
         $em->flush();
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
@@ -103,9 +105,21 @@ class ApiController extends AbstractController
     }
 
     #[Route('/api/development/tags', name: 'api_tag_development')]
-    public function index(Request $request, TagRepository $tagRepository): JsonResponse
+    public function searchDevelopmentTags(Request $request, TagRepository $tagRepository): JsonResponse
     {
         return $this->json($tagRepository->search($request->query->get('q')));
+    }
+
+    #[Route('/api/model/options', name: 'api_option_model')]
+    public function searchModelOptions(Request $request, OptionRepository $optionRepository): JsonResponse
+    {
+        return $this->json($optionRepository->search($request->query->get('q')), 200, [], ['groups' => 'get']);
+    }
+
+    #[Route('/api/model/categories', name: 'api_category_model')]
+    public function searchModelCategories(Request $request, CategoryRepository $categoryRepository): JsonResponse
+    {
+        return $this->json($categoryRepository->search($request->query->get('q')), 200, [], ['groups' => 'get']);
     }
 
     /**

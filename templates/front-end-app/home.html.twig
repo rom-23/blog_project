@@ -1,0 +1,17 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="main-container">
+    <div class="row">
+        <div class="container symfony-app text-center text-white mt-5">
+            <h5>Front-end App</h5>
+            {% include 'navbars/front-app-navbar.html.twig' %}
+        </div>
+        <div class="container">
+            <div id="user-list"></div>
+        </div>
+        <div class="container" id="app">
+            <user-crud></user-crud>
+        </div>
+    </div>
+{% endblock %}

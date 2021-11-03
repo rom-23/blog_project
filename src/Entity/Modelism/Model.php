@@ -6,19 +6,12 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Cocur\Slugify\Slugify;
 use Exception;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modelism\ModelRepository")
- * @UniqueEntity("name")
- * @Vich\Uploadable
  */
 class Model
 {
@@ -35,44 +28,29 @@ class Model
      * @ORM\Column(type="string", length=255, nullable=true))
      * @Groups({"get"})
      */
-    private ?string $filename = null;
+    private ?string $thumbnail;
 
     /**
-     * @var File|null
-     * @Assert\Image(mimeTypes="image/jpeg")
-     * @Vich\UploadableField(mapping="model_images", fileNameProperty="filename")
-     */
-    private ?File $imageFile = null;
-
-    /**
-     * @var File|null
-     * @Assert\Image(mimeTypes="image/jpeg")
-     * @Vich\UploadableField(mapping="model_image_original", fileNameProperty="original")
-     */
-    private ?File $originalFile = null;
-
-    /**
-     * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $original = null;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Please enter a name")
+     * @Assert\Length(min=5, minMessage="Your name is too short !")
      * @Groups({"get"})
      */
-    private ?string $name = null;
+    private string $name;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=false)
+     * @Assert\NotBlank(message="Please enter a description")
+     * @Assert\Length(min=5, minMessage="Your description is too short !")
      * @Groups({"get"})
      */
-    private ?string $description = null;
+    private string $description;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float", nullable=false)
+     * @Assert\NotBlank(message="Please enter a price")
      */
-    private ?float $price;
+    private float $price;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=false)
@@ -82,6 +60,7 @@ class Model
     /**
      * @var Collection<int, Option>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Option", inversedBy="models", cascade={"persist"})
+     * @Groups({"get"})
      */
     private Collection $options;
 
@@ -91,18 +70,17 @@ class Model
     private ?DateTimeImmutable $updated_at = null;
 
     /**
-     * @var Collection<int, Image>
-     * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Image", mappedBy="models", cascade={"persist", "remove"})
-     * @Groups({"get"})
-     */
-    private Collection $images;
-
-    /**
      * @var Collection<int, Category>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Category", inversedBy="models", cascade={"persist"})
      * @Groups({"get"})
      */
     private Collection $categories;
+
+    /**
+     * @var Collection<int, Image>
+     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="models", orphanRemoval=true, cascade={"persist","remove"})
+     */
+    private Collection $images;
 
     /**
      * Model constructor.
@@ -112,8 +90,8 @@ class Model
     {
         $this->createdAt  = new DateTimeImmutable('now');
         $this->options    = new ArrayCollection();
-        $this->images     = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -121,89 +99,44 @@ class Model
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getSlug(): string
-    {
-        return (new Slugify())->slugify($this->name);
-    }
-
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    public function setPrice(?float $price): self
+    public function setPrice(float $price): self
     {
         $this->price = $price;
-
         return $this;
     }
 
     public function getFormattedPrice(): string
     {
         return number_format($this->price, 0, '', ' ');
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getOriginal(): ?string
-    {
-        return $this->original;
-    }
-
-    /**
-     * @param null|string $originalFile
-     * @return Model
-     */
-    public function setOriginal(?string $originalFile): Model
-    {
-        $this->original = $originalFile;
-        return $this;
-    }
-
-    /**
-     * @return File|null
-     */
-    public function getOriginalFile(): ?File
-    {
-        return $this->originalFile;
-    }
-
-    /**
-     * @param null|File $originalFile
-     * @return Model
-     */
-    public function setOriginalFile(?File $originalFile): Model
-    {
-        $this->originalFile = $originalFile;
-        if ($this->originalFile instanceof UploadedFile) {
-            $this->updated_at = new DateTimeImmutable('now');
-        }
-        return $this;
     }
 
     public function getCreatedAt(): DateTimeImmutable
@@ -227,6 +160,24 @@ class Model
     {
         $this->updated_at = $updated_at;
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * @param null|string $thumbnail
+     * @return Model
+     */
+    public function setThumbnail(?string $thumbnail): self
+    {
+        $this->thumbnail = $thumbnail;
         return $this;
     }
 
@@ -258,73 +209,6 @@ class Model
     }
 
     /**
-     * @return string|null
-     */
-    public function getFilename(): ?string
-    {
-        return $this->filename;
-    }
-
-    /**
-     * @param null|string $filename
-     * @return Model
-     */
-    public function setFilename(?string $filename): Model
-    {
-        $this->filename = $filename;
-        return $this;
-    }
-
-    /**
-     * @return File|null
-     */
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    /**
-     * @param null|File $imageFile
-     * @return Model
-     */
-    public function setImageFile(?File $imageFile): Model
-    {
-        $this->imageFile = $imageFile;
-        if ($this->imageFile instanceof UploadedFile) {
-            $this->updated_at = new DateTimeImmutable('now');
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Image>
-     */
-    public function getImages(): Collection
-    {
-        return $this->images;
-    }
-
-    public function addImage(Image $image): self
-    {
-        if (!$this->images->contains($image)) {
-            $this->images[] = $image;
-            $image->addModel($this);
-        }
-
-        return $this;
-    }
-
-    public function removeImage(Image $image): self
-    {
-        if ($this->images->contains($image)) {
-            $this->images->removeElement($image);
-            $image->removeModel($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Category>
      */
     public function getCategories(): Collection
@@ -336,7 +220,7 @@ class Model
     {
         if (!$this->categories->contains($category)) {
             $this->categories[] = $category;
-            $category->addModel($this);
+//            $category->addModel($this);
         }
 
         return $this;
@@ -346,14 +230,43 @@ class Model
     {
         if ($this->categories->contains($category)) {
             $this->categories->removeElement($category);
-            $category->removeModel($this);
+//            $category->removeModel($this);
         }
 
         return $this;
     }
 
-//    public function __toString(): ?string
-//    {
-//        return $this->getName();
-//    }
+    /**
+     * @return Collection
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function setImages(ArrayCollection $image): ArrayCollection
+    {
+        $this->images = $image;
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+            $image->setModels($this);
+        }
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        $this->images->removeElement($image);
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName() ?: '';
+    }
 }

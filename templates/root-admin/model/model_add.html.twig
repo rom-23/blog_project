@@ -2,52 +2,26 @@
 {% extends navbar %}
 {% block body %}
     {{ form_start(form) }}
+    {{ form_widget(form._token) }}
     <div class="main-container">
         <div class="row">
-            <div class="container form-model mb-2 mt-5">
-                <div class="row">
-                    <div class="col-md-12 offset-md-5 mb-5 mt-0">
-                        <h4 class="text-white">Add new model</h4>
-                        <small class="text-white">Use JQuery Select2.js for multiple select fields</small>
+            <div class="container form-model mb-5 mt-3">
+                <div class="jumbotron jumbotron mb-3">
+                    <div class="container">
+                        <span class="lead"><strong>Add new model</strong></span>
+                        <p>
+                            <small>- Use Tom-select for multi-select fields(No JQuery)</small><br>
+                            <small>- Use Symfony CollectionType and custom Searchable EntityType</small><br>
+                        </p>
                     </div>
                 </div>
-                <table id="new-model" class="table-expend table-sm">
-                    <tr>
-                        <td class="text-white">{{- form_label(form.name) -}}</td>
-                        <td>{{- form_widget(form.name) -}}</td>
-                        <td class="text-white">{{- form_label(form.categories) -}}</td>
-                        <td>{{- form_widget(form.categories) -}}</td>
-
-                    </tr>
-                    <tr>
-                        <td class="text-white">{{- form_label(form.description) -}}</td>
-                        <td>{{- form_widget(form.description) -}}</td>
-                        <td class="text-white">{{- form_label(form.price) -}}</td>
-                        <td>{{- form_widget(form.price) -}}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-white">{{- form_label(form.originalFile) -}}</td>
-                        <td>{{- form_widget(form.originalFile,{ 'attr': {'class': 'form-control'}}) -}}</td>
-                        <td class="text-white">{{- form_label(form.imageFile) -}}</td>
-                        <td>{{- form_widget(form.imageFile,{ 'attr': {'class': 'form-control'}} ) -}}</td>
-                    </tr>
-                </table>
-                <div class="row">
-                    <div class="container flex-auto w-25">
-                        <ul id="images-fields-list" data-prototype="{{ form_widget(form.images.vars.prototype,{ 'attr': {'class': 'form-control'}})|e }}" data-widget-tags="{{ '<li></li>'|e }}"
-                            data-widget-counter="{{ form.images|length }}">
-                            {% for key,imageField in form.images %}
-                                {{ form_widget(imageField) }}
-                            {% endfor %}
-                        </ul>
-                        <button id="add-images" type="button" class="form-control add-another-collection-widget btn btn-warning" data-list-selector="#images-fields-list">Add Image</button>
-                        <ul class="mt-3">{{- form_widget(form.options) -}}</ul>
-                        <ul>{{- form_widget(form.submit, {'attr':{'class':'btn btn-success w-100'}}) -}}</ul>
-                    </div>
-                </div>
+                <hr>
+                {{ include('root-admin/model/form/_form.html.twig', {form: form}) }}
             </div>
         </div>
     </div>
-    {{ form_end(form) }}
+    {{ form_end(form,{ render_rest: false }) }}
 {% endblock %}
+
+
 

@@ -20,14 +20,13 @@ class SearchDevelopmentType extends AbstractType
     {
         $builder
             ->add('words', SearchType::class, [
+                'required' => false,
                 'label'    => false,
                 'attr'     => [
                     'class'       => 'w-25 d-inline-block form-control',
                     'placeholder' => 'Search ...'
-                ],
-                'required' => true
-            ])
-        ;
+                ]
+            ]);
     }
 
     /**

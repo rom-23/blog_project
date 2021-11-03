@@ -1,5 +1,8 @@
 parameters:
   app.path.dev_pdf: '%kernel.project_dir%/public/uploads/dev-files'
+  app.path.user_image: '%kernel.project_dir%/public/uploads/user-image'
+  app.path.model_image: '%kernel.project_dir%/public/uploads/models/modelsAttachments'
+  app.path.model_thumbnail: '%kernel.project_dir%/public/uploads/models/thumbnails'
   app.sender_email: '%env(MAILER_SENDER_EMAIL)%'
   app.sender_name: '%env(MAILER_SENDER_NAME)%'
 
@@ -18,21 +21,33 @@ services:
       - '../src/Kernel.php'
       - '../src/Tests/'
 
-  App\EventListener\UserPasswordEncoderEntityListener:
+  App\EventListener\ModelEntityListener:
+    tags:
+      - { name: doctrine.orm.entity_listener, event: preRemove, entity: 'App\Entity\Modelism\Model' }
+
+  App\EventListener\DevelopmentEntityListener:
+    tags:
+      - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\Development\Development' }
+      - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\Development\Development' }
+      - { name: doctrine.orm.entity_listener, event: preRemove, entity: 'App\Entity\Development\Development' }
+
+  App\EventListener\UserEntityListener:
     tags:
       - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\User' }
       - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\User' }
+      - { name: doctrine.orm.entity_listener, event: preRemove, entity: 'App\Entity\User' }
 
-  App\EventListener\DevelopmentListener:
-    arguments: [ '@security.token_storage' ]
-    tags:
-      - { name: doctrine.event_listener, event: prePersist }
-      - { name: doctrine.event_listener, event: preUpdate }
-      - { name: doctrine.event_listener, event: postPersist }
+#  App\EventListener\DevelopmentSlugListener:
+#    tags:
+#      - { name: doctrine.event_listener, event: prePersist}
+#      - { name: doctrine.event_listener, event: preUpdate}
 
-  App\Service\ManageUploadFile:
+  App\Service\Uploader:
     arguments:
       $targetPdfDirectory: '%app.path.dev_pdf%'
+      $targetUserImageDirectory: '%app.path.user_image%'
+      $targetModelImageDirectory: '%app.path.model_image%'
+      $targetModelThumbnailDirectory: '%app.path.model_thumbnail%'
 
   App\Service\SendEmail:
     arguments:
@@ -43,3 +58,4 @@ services:
     decorates: 'api_platform.openapi.factory'
     arguments: [ '@App\OpenApi\OpenApiFactory.inner' ]
     autoconfigure: false
+

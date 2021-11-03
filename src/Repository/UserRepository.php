@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -38,11 +39,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * @param array|null $orderBy
      * @return array
      */
-    public function findAll(array $orderBy = null ): array
+    public function findAllUsers(): Query
     {
-        return $this->findBy([], $orderBy);
+        $sql = "
+                SELECT
+                  partial e.{id,email,roles,image,password,isVerified,accountMustBeVerifiedBefore,registeredAt},
+                  partial pos.{id, title},
+                  partial not.{id, title}
+            FROM App\Entity\User e
+            LEFT JOIN e.posts pos
+            LEFT JOIN e.notes not
+        ";
+        return $this->getEntityManager()->createQuery($sql);
     }
 }

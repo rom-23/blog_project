@@ -4,10 +4,8 @@
     <div class="wrapper">
         <div id="user_account">
             <div class="container">
+                {% include'_partials/_flashbag.html.twig' %}
                 <div class="row justify-content-center mb-2">Welcome to your account {{ app.user.email }}</div>
-                <div class="container">
-                    <a href="{{ path('home') }}" class="btn btn-outline-info btn-sm mb-2"><< Back</a>
-                </div>
                 <hr>
                 <table class="table mt-4 mb-5">
                     <thead>
@@ -32,11 +30,16 @@
                     </tbody>
                 </table>
             </div>
+            <div class="message-text"></div>
             <div class="container">
-                <a href="#" class="btn btn-info btn-sm mb-2">Change password</a>
+                <div class="d-flex flex-row">
+                    <div {{ stimulus_controller('modal-form', { formUrl: path('change_account_password') }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+                        <button class="btn btn-outline-primary btn-sm" data-action="modal-form#openModal">Change password</button>
+                        {{ include('_modal/_modal.html.twig', { modalTitle: 'Change your password' }) }}
+                    </div>
+                </div>
                 <a href="{{ path('user_data') }}" class="btn btn-info btn-sm mb-2">Create pdf</a>
             </div>
-
         </div>
     </div>
 {% endblock %}

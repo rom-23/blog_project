@@ -63,16 +63,16 @@ class Post
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
     #[Groups(['development:read','post:read','post:write'])]
-    private User $user;
+    private ?User $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="replies")
+     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="replies", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Post $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="parent")
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="parent", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Collection $replies;
@@ -148,12 +148,12 @@ class Post
         return $this;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
         return $this;

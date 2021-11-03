@@ -27,9 +27,9 @@ class ModelRepository extends ServiceEntityRepository
     {
         $sql = "
             SELECT
-                partial e.{id, name, description, price, filename, original},
+                partial e.{id, name, description, price, thumbnail, createdAt},
                 partial ljca.{id, name},
-                partial ljim.{id, path}
+                partial ljim.{id, name}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim
             LEFT JOIN e.categories ljca
@@ -45,8 +45,8 @@ class ModelRepository extends ServiceEntityRepository
     {
         $sql        = "
             SELECT
-                partial e.{id, name, description, price, filename},
-                partial ljim.{id, path},
+                partial e.{id, name, description, price, thumbnail},
+                partial ljim.{id, name},
                 partial ljca.{id, name}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim
@@ -65,8 +65,8 @@ class ModelRepository extends ServiceEntityRepository
     {
         $sql        = "
             SELECT
-                partial e.{id, name, description, price, filename},
-                partial ljim.{id, path},
+                partial e.{id, name, description, price, thumbnail},
+                partial ljim.{id, name},
                 partial ljca.{id, name}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim
@@ -86,8 +86,8 @@ class ModelRepository extends ServiceEntityRepository
         $aParameter = [];
         $sql        = "
             SELECT
-                partial e.{id, name, description, price, filename},
-                partial ljim.{id, path},
+                partial e.{id, name, description, price, thumbnail},
+                partial ljim.{id, name},
                 partial ljca.{id, name}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim
@@ -108,8 +108,8 @@ class ModelRepository extends ServiceEntityRepository
         $aParameter = [];
         $sql        = "
             SELECT
-                partial e.{id, name, description, price, filename, original},
-                partial ljim.{id, path},
+                partial e.{id, name, description, price, thumbnail},
+                partial ljim.{id, name},
                 partial ljca.{id, name}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim

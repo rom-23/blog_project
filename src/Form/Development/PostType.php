@@ -9,10 +9,24 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
+
 
 class PostType extends AbstractType
 {
+    private Security $user;
+
+    /**
+     * @param Security $user
+     */
+    public function __construct(Security $user)
+    {
+        $this->user = $user;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array<int|string, mixed> $options
@@ -23,8 +37,8 @@ class PostType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'Title',
                 'attr'  => [
-                    'class' => 'form-control',
-                    'placeholder'=>'Title'
+                    'class'       => 'form-control',
+                    'placeholder' => 'Title'
                 ]
             ])
             ->add('content', CKEditorType::class, [
@@ -33,10 +47,6 @@ class PostType extends AbstractType
                     'class' => 'form-control'
                 ]
             ])
-//            ->add('createdAt')
-//            ->add('updatedAt')
-//            ->add('development')
-//            ->add('user')
             ->add('parentid', HiddenType::class, [
                 'mapped' => false
             ])
@@ -46,6 +56,17 @@ class PostType extends AbstractType
                     'class' => 'btn btn-info mt-2 text-white pt-1 pb-1'
                 ]
             ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+//            if ($event->getData()->getUser() !== null) {
+//                return;
+//            }
+            $event->getForm()->add('author', TextType::class, [
+                'label'    => 'Pseudo',
+                'required' => false,
+                'mapped'   => false
+            ]);
+        });
     }
 
     /**

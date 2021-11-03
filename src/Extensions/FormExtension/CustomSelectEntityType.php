@@ -43,7 +43,7 @@ class CustomSelectEntityType extends AbstractType
         $view->vars['expanded']                  = false;
         $view->vars['label']                     = false;
         $view->vars['attr']['class']             = 'advanced-select';
-        $view->vars['placeholder']               = 'Select tag(s)';
+        $view->vars['placeholder']               = '';
         $view->vars['placeholder_in_choices']    = false;
         $view->vars['multiple']                  = true;
         $view->vars['preferred_choices']         = [];

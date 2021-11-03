@@ -10,14 +10,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Validator\Development\{
+    UniqueTitle
+};
 
 /**
  * @ORM\Entity(repositoryClass=DevelopmentRepository::class)
  * @ORM\Table(name="development", indexes={@ORM\Index(columns={"title","content"}, flags={"fulltext"})})
- * @Vich\Uploadable
+ * @UniqueEntity(fields={"title"}, message="There is already a documentation with this title")
  */
 #[
     ApiResource(
@@ -82,16 +85,18 @@ class Development
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Please enter a title")
+     * @Assert\Length(min=5, minMessage="Your title is too short !")
+     * @UniqueTitle(groups={"create"})
      */
     #[Groups(['development:read', 'development:write', 'note:read', 'post:read'])]
-    #[Assert\Length(min: 4)]
     private string $title;
 
     /**
      * @ORM\Column(type="text", nullable=false)
      */
-    #[Groups(['development:read', 'development:write']), Assert\Length(min: 3)]
-    #[Assert\NotBlank]
+    #[Groups(['development:read', 'development:write'])]
+    #[Assert\Length(min: 3)]
     private string $content;
 
     /**
@@ -281,21 +286,21 @@ class Development
         return $this->posts;
     }
 
-//    public function addPost(Post $post): self
-//    {
-//        if (!$this->posts->contains($post)) {
-//            $this->posts[] = $post;
-//            $post->setDevelopment($this);
-//        }
-//
-//        return $this;
-//    }
-//
-//    public function removePost(Post $post): self
-//    {
-//        $this->posts->removeElement($post);
-//        return $this;
-//    }
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setDevelopment($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        $this->posts->removeElement($post);
+        return $this;
+    }
 
     /**
      * @return Collection

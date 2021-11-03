@@ -51,6 +51,5 @@ class SendEmail
             throw new TransportException($exception->getMessage());
         }
     }
-
 }
 
