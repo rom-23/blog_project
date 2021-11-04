@@ -2,43 +2,61 @@
 {% extends navbar %}
 {% block body %}
     <div class="wrapper">
+        {% include'_partials/_flashbag.html.twig' %}
         <div id="user_account">
+            <p><a href="{{ path('home') }}" class="btn btn-outline-info btn-sm"><< Back</a></p>
             <div class="container">
-                {% include'_partials/_flashbag.html.twig' %}
-                <div class="row justify-content-center mb-2">Welcome to your account {{ app.user.email }}</div>
-                <hr>
-                <table class="table mt-4 mb-5">
+                <div class="row justify-content-center mb-3 mt-3">Welcome to your account {{ app.user.email }}</div>
+                <img src="{{ asset('/uploads/user-image/'~app.user.image)| imagine_filter('small') }}" alt="" class="mt-2 mb-3"><br>
+                <table class="table mt-5 mb-5">
                     <thead>
                     <tr>
                         <th scope="col">Email</th>
                         <th scope="col">Roles</th>
-                        <th scope="col">Is verified</th>
+                        <th scope="col">Verified</th>
                         <th scope="col">Verified at</th>
                         <th scope="col">Registered at</th>
                         <th scope="col">Posts</th>
+                        <th scope="col">Notes</th>
+                        <th scope="col">Addresses</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td>{{ app.user.userIdentifier }}</td>
-                        <td>{{ app.user.roles[0] }}</td>
-                        <td>{{ app.user.isVerified }}</td>
+                        <td>  {% for role in app.user.roles %}
+                                | {{ role }} |
+                            {% endfor %}</td>
+                        <td>{% if app.user.isVerified == 1 %}Yes{% else %}No{% endif %}</td>
                         <td>{{ app.user.accountVerifiedAt|date('d/m/y at H:i') }}</td>
                         <td>{{ app.user.registeredAt|date('d/m/y at H:i') }}</td>
                         <td>{{ app.user.posts|length }}</td>
+                        <td>{{ app.user.notes|length }}</td>
+                        <td>{{ app.user.addresses|length }}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="message-text"></div>
-            <div class="container">
-                <div class="d-flex flex-row">
-                    <div {{ stimulus_controller('modal-form', { formUrl: path('change_account_password') }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
-                        <button class="btn btn-outline-primary btn-sm" data-action="modal-form#openModal">Change password</button>
-                        {{ include('_modal/_modal.html.twig', { modalTitle: 'Change your password' }) }}
-                    </div>
+            <div class="d-flex justify-content-around mt-4">
+                <div>
+                    <a href="{{ path('user_account_edit', {id:app.user.id }) }}" class="btn btn-outline-info btn-sm mb-2">Edit profile</a>
                 </div>
-                <a href="{{ path('user_data') }}" class="btn btn-info btn-sm mb-2">Create pdf</a>
+                <div>
+                    <a href="{{ path('user_account_delete', {id:app.user.id }) }}" class="btn btn-outline-info btn-sm mb-2">Delete account</a>
+                </div>
+                <div {{ stimulus_controller('modal-form', { formUrl: path('change_account_password') }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+                    <button class="btn btn-outline-info btn-sm" data-action="modal-form#openModal">Change password</button>
+                    {{ include('_modal/_modal.html.twig', { modalTitle: 'Change your password' }) }}
+                </div>
+                <div>
+                    <a class="btn btn-outline-info btn-sm mb-2" href="{{ path('account_address') }}">Manage addresses</a>
+                </div>
+                <div>
+                    <a href="{{ path('user_data') }}" class="btn btn-outline-info btn-sm mb-2">Create pdf</a>
+                </div>
+                <div>
+                    <a href="{{ path('contact') }}" class="btn btn-outline-info btn-sm mb-2">Contact admin</a>
+                </div>
             </div>
         </div>
     </div>

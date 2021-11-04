@@ -4,6 +4,7 @@ namespace App\Controller\SymfonyApp\Development;
 
 use App\Entity\Development\Development;
 use App\Entity\Development\DevelopmentFile;
+use App\Entity\Development\Note;
 use App\Entity\Development\Post;
 use App\Form\Development\PostType;
 use App\Repository\Development\DevelopmentRepository;
@@ -26,7 +27,7 @@ class PublishController extends AbstractController
      * @return Response
      */
     #[Route('/symfony/development/publication', name: 'development_publication')]
-    public function list(DevelopmentRepository $devRepository,Request $request, ManagePaginator $managePaginator): Response
+    public function listPublication(DevelopmentRepository $devRepository,Request $request, ManagePaginator $managePaginator): Response
     {
         $limit        = $request->get('limit', 10);
         $page         = $request->get('page', 1);
@@ -41,7 +42,7 @@ class PublishController extends AbstractController
     }
 
     #[Route('/symfony/development/publication/{id<\d+>}', name: 'development_publication_view')]
-    public function view(Development $development, Request $request, EntityManagerInterface $em): Response
+    public function viewPublication(Development $development, Request $request, EntityManagerInterface $em): Response
     {
         $post     = new Post();
         $postForm = $this->createForm(PostType::class, $post);
@@ -67,7 +68,7 @@ class PublishController extends AbstractController
         ]);
     }
 
-    #[Route('/symfony/development/publication/edit/{id<\d+>}', name: 'development_publication_edit')]
+    #[Route('/symfony/development/post/edit/{id<\d+>}', name: 'development_post_edit')]
     public function editPost(Post $post, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
@@ -88,13 +89,13 @@ class PublishController extends AbstractController
     }
 
     /**
-     * @param DevelopmentFile $file
+     * @param Post $post
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    #[Route('/symfony/development/publication/delete/{id<\d+>}', name: 'development_publication_delete', methods: ['DELETE'])]
-    public function deleteFile(Post $post, Request $request, EntityManagerInterface $em): JsonResponse
+    #[Route('/symfony/development/post/delete/{id<\d+>}', name: 'development_post_delete', methods: ['DELETE'])]
+    public function deletePost(Post $post, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         if ($this->isCsrfTokenValid('delete' . $post->getId(), $data['_token'])) {
@@ -105,6 +106,28 @@ class PublishController extends AbstractController
             }
             $em->remove($post);
             $post->getDevelopment()->setUpdatedAt(new DateTimeImmutable('now'));
+            $em->flush();
+
+            return new JsonResponse(['success' => 1]);
+        } else {
+
+            return new JsonResponse(['error' => 'Invalid Token'], 400);
+        }
+    }
+
+    /**
+     * @param Note $note
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     */
+    #[Route('/symfony/development/note/delete/{id<\d+>}', name: 'development_note_delete', methods: ['DELETE'])]
+    public function deleteNote(Note $note, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        if ($this->isCsrfTokenValid('delete' . $note->getId(), $data['_token'])) {
+            $em->remove($note);
+            $note->getDevelopment()->setUpdatedAt(new DateTimeImmutable('now'));
             $em->flush();
 
             return new JsonResponse(['success' => 1]);

@@ -19,14 +19,18 @@ class ChangePasswordType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'label'    => false,
-                'disabled' => true
+                'disabled' => true,
+                'attr'=>[
+                    'class'=>'mb-3'
+                ]
             ])
             ->add('old_password', PasswordType::class, [
                 'required' => true,
                 'label'    => false,
                 'mapped'   => false,
                 'attr'     => [
-                    'placeholder' => 'Actual password'
+                    'placeholder' => 'Actual password',
+                    'class'=>'mb-5'
                 ]
             ])
             ->add('new_password', RepeatedType::class, [
@@ -38,13 +42,14 @@ class ChangePasswordType extends AbstractType
                 'first_options'   => [
                     'label' => false,
                     'attr'  => [
-                        'placeholder' => 'Type your new password'
+                        'placeholder' => 'Type your new password',
+                        'class'=>'mb-2'
                     ]
                 ],
                 'second_options'  => [
                     'label' => false,
                     'attr'  => [
-                        'placeholder' => 'Confirm your password'
+                        'placeholder' => 'Confirm your new password'
                     ]
                 ],
             ]);

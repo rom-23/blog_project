@@ -8,7 +8,7 @@ import './plugins/fetch';
 import './plugins/prototype-form';
 import './plugins/development-post';
 import './controllers/modal-form_controller';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2';
 
 // import Api from './Api';
 

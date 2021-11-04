@@ -80,7 +80,7 @@ class UserAddType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Save',
                 'attr'  => [
-                    'class' => 'btn btn-primary btn-sm text-white'
+                    'class' => 'btn btn-warning btn-sm'
                 ]
             ]);
     }

@@ -16,6 +16,10 @@
                     </div>
                 </div>
                 <hr>
+                <div class="d-flex justify-content-between p-2 mb-2">
+                    <a href="{{ path('root_admin_dev_list') }}" class="btn btn-outline-primary btn-sm"><< Back</a>
+                    {{- form_widget(form.submit, {'attr':{'class':'btn btn-warning btn-sm'}}) -}}
+                </div>
                 {{ include('root-admin/development/form/_form.html.twig', {form: form}) }}
             </div>
         </div>

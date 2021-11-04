@@ -12,7 +12,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -84,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Email()
      * @UniqueEmail(groups={"create"})
      */
-     #[Groups(['user:read', 'user:write', 'post:read', 'development:read'])]
+    #[Groups(['user:read', 'user:write', 'post:read', 'development:read'])]
     private string $email;
 
     /**
@@ -173,10 +172,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private Collection $notes;
 
+    /**
+     * @var Collection<int, Address>
+     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", cascade={"persist"})
+     * @Groups({"user:get"})
+     */
+    private Collection $addresses;
+
     public function __construct()
     {
         $this->posts                       = new ArrayCollection();
         $this->notes                       = new ArrayCollection();
+        $this->addresses                   = new ArrayCollection();
         $this->isVerified                  = false;
         $this->registeredAt                = new DateTimeImmutable('now');
         $this->roles                       = ['ROLE_USER'];
@@ -328,6 +335,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeNote(Note $note): self
     {
         $this->notes->removeElement($note);
+        return $this;
+    }
+
+    /**
+     * @return Collection|Address[]
+     */
+    public function getAddresses(): Collection
+    {
+        return $this->addresses;
+    }
+
+    public function addAddress(Address $address): self
+    {
+        if (!$this->addresses->contains($address)) {
+            $this->addresses[] = $address;
+            $address->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddress(Address $address): self
+    {
+        if ($this->addresses->removeElement($address)) {
+            // set the owning side to null (unless already changed)
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
+            }
+        }
+
         return $this;
     }
 

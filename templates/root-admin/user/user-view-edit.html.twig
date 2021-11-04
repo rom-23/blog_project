@@ -2,108 +2,118 @@
 {% extends navbar %}
 {% block body %}
     {{ form_start(form) }}
-<div class="d-flex justify-content-center">
-    <div class="col-5">
-        <div class="container p-5">
-            <img src="{{ asset('/uploads/user-image/'~user.image)| imagine_filter('my_thumb') }}" alt="" class="mt-2 mb-5">
-            <h3>{{ user.email }}</h3>
-            <p>
-                {% for role in user.roles %}
-                    | {{ role }} |
-                {% endfor %}
-            </p>
-            <p>{{ user.accountVerifiedAt|date('d/m/Y') }}</p>
-            <span class="product-single-price">{{ user.registeredAt|date('d/m/Y') }}</span>
-            <p>Verified : {{ user.isVerified }}</p>
-        </div>
-        <div class="row">
-            {% for post in user.posts %}
-                <div class="col-6">
-                    {{ post.title }}
-                    {{ post.content|raw }}
-                    {{ post.title }}
-                    <p class="text-muted"><em>Posted on {{ post.createdAt|date('d/m/Y') }}</em></p>
+<div class="main-container">
+    <div class="row">
+        <div class="container-fluid form-model m-3">
+            <div class="jumbotron jumbotron mb-3">
+                <div class="container">
+                    <span class="lead"><strong>Edit User</strong></span>
                 </div>
-            {% endfor %}
-            {% for note in user.notes %}
-                <div class="col-md-6">
-                    <p class="text-primary">{{ note.title }}</p>
-                    {{ note.content|raw }}
-                    {{ note.createdAt|date('d/m/Y') }}
+                <div class="container">
+                    <span><a href="{{ path('root_admin_users') }}" class="btn btn-outline-primary btn-sm"><< Back</a></span>
                 </div>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="container mt-5 p-5">
-            <table class="table table-user">
-                <tr>
-                    <td>{{- form_widget(form.email) -}}</td>
-                </tr>
-                <tr>
-                    <td>{{- form_errors(form.imageFile) -}}{{- form_widget(form.imageFile) -}}</td>
-                </tr>
-                <tr>
-                    <td class="text-muted">{{- form_label(form.password) -}}{{- form_widget(form.password) -}}</td>
-                </tr>
-                <tr>
-                    <td>{{- form_widget(form.roles) -}}</td>
-                </tr>
-                <tr>
-                    <td class="text-muted">{{- form_widget(form.isVerified) -}}</td>
-                </tr>
-            </table>
-            <div class="row">
-                <div class="container text-center mt-2">
-                    <span><a href="{{ path('root_admin_users') }}" class="btn btn-primary btn-sm"><< Back</a></span>
-                    <span>{{- form_widget(form.submit) -}}</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <div class="col-8">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <img src="{{ asset('/uploads/user-image/'~user.image)| imagine_filter('medium') }}" alt="" class="mt-2 mb-3">
+                            <h5>{{ user.email }}</h5>
+                            <p>
+                                {% for role in user.roles %}
+                                    | {{ role }} |
+                                {% endfor %}
+                            </p>
+                            <span>Account verified at : {{ user.accountVerifiedAt|date('d/m/Y') }}</span><br>
+                            <span class="product-single-price">Registered at : {{ user.registeredAt|date('d/m/Y') }}</span>
+                            <p>Verified : {% if user.isVerified == 1 %}Yes{% else %}No{% endif %}</p>
+                        </div>
+                        <div class="col-6 bg-white">
+                            <p class="card-header text-center mb-3">{{ user.addresses|length }} Addresses</p>
+                            <div class="row text-center justify-content-center mt-2">
+                                {% for address in user.addresses %}
+                                    <div class="col-5">
+                                        <p class="text-primary">{{ address.name }}</p>
+                                        {{ address.address }}<br>
+                                        {{ address.city }} - {{ address.country }}<br>
+                                        {{ address.createdAt|date('d/m/Y') }}<br>
+                                        <a href="{{ path('account_address_delete', {'id':address.id}) }}" class="btn btn-outline-danger btn-sm p-1 m-3">Delete</a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <p class="card-header text-center mb-3">Edit profile</p>
+                    <div class="container">
+                        <table class="table table-user">
+                            <tr>
+                                <td>{{- form_widget(form.email) -}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{- form_errors(form.imageFile) -}}{{- form_widget(form.imageFile) -}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">{{- form_label(form.password) -}}{{- form_widget(form.password) -}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{- form_widget(form.roles) -}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted float-end">{{- form_widget(form.isVerified) -}}</td>
+                            </tr>
+                        </table>
+                        <div class="row">
+                            <div class="container text-center">
+                                <span>{{- form_widget(form.submit) -}}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    {# <div class="row"> #}
-    {# <div class="col-4"> #}
-    {# {% for post in user.posts %} #}
-    {# <div class="col-3"> #}
-    {# {{ post.title }} #}
-    {# {{ post.content|raw }} #}
-    {# {{ post.title }} #}
-    {# {{ post.createdAt|date('d/m/Y') }} #}
-    {# </div> #}
-    {# {% endfor %} #}
-    {# </div> #}
-    {# <div class="col-4"> #}
-    {# {% for note in user.notes %} #}
-    {# <div class="col-md-3"> #}
-    {# {{ note.title }} #}
-    {# {{ note.content|raw }} #}
-    {# {{ note.createdAt|date('d/m/Y') }} #}
-    {# </div> #}
-    {# {% endfor %} #}
-    {# </div> #}
-    {# </div> #}
+    <hr>
+    <div class="row">
+        <div class="col-6">
+            <p class="card-header text-center mb-3">{{ user.posts|length }} Posts</p>
+            <div class="row justify-content-around">
+                {% for post in user.posts %}
+                    <div class="col-6">
+                        <div class="container bg-white">
+                            <p><strong>{{ post.title }}</strong>
+                                <span class="text-muted float-end"><small><em>Posted on {{ post.createdAt|date('d/m/Y') }}</em></small></span>
+                            </p>
+                            <small>{{ post.content|raw }}</small>
+                            <a href="{{ path('development_post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm p-1"
+                               data-delete
+                               data-token="{{ csrf_token('delete' ~ post.id) }}">Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-6">
+            <p class="card-header text-center mb-3">{{ user.notes|length }} Notes</p>
+            <div class="row justify-content-around">
+                {% for note in user.notes %}
+                    <div class="col-6">
+                        <div class="container bg-white">
+                            <p><strong><em>{{ note.title }}</em></strong>
+                                <span class="text-muted float-end"><small><em>Added on {{ note.createdAt|date('d/m/Y') }}</em></small></span>
+                            </p>
+                            <small><em>{{ note.content }}</em></small><br>
+                            <a href="{{ path('development_note_delete', { id : note.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
+                               data-delete
+                               data-token="{{ csrf_token('delete' ~ note.id) }}">Delete</a>
 
-    {# <div class="row"> #}
-    {# <hr class="mt-3 mb-3"/> #}
-    {# <div class="container"> #}
-    {# {% for post in user.posts %} #}
-    {# <div class="col-3"> #}
-    {# {{ post.title }} #}
-    {# {{ post.content|raw }} #}
-    {# {{ post.title }} #}
-    {# {{ post.createdAt|date('d/m/Y') }} #}
-    {# </div> #}
-    {# {% endfor %} #}
-    {# </div> #}
-    {# <div class="container"> #}
-    {# {% for note in user.notes %} #}
-    {# <div class="col-md-3"> #}
-    {# {{ note.title }} #}
-    {# {{ note.content|raw }} #}
-    {# {{ note.createdAt|date('d/m/Y') }} #}
-    {# </div> #}
-    {# {% endfor %} #}
-    {# </div> #}
-    {# </div> #}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
     {{ form_end(form) }}
     {% endblock %}

@@ -1,3 +1,5 @@
+import Swal from 'sweetalert2';
+
 const view = document.querySelector('#display-view');
 
 function panelView(route) {
@@ -31,28 +33,42 @@ window.onload = () => {
     for (let link of links) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
-            if (confirm('Are you sure to remove this file ?')) {
-                fetch(this.getAttribute('href'), {
-                    method  : 'DELETE',
-                    headers : {
-                        'X-Requested-With' : 'XMLHttpRequest',
-                        'Content-Type'     : 'application/json'
-                    },
-                    body: JSON.stringify({'_token': this.dataset.token})
-                }).then(
-                    response => {
-                        return response.json();
-                    }
-                ).then(data => {
-                    if (data.success) {
-                        this.parentElement.remove();
-                    } else {
-                        alert(data.error);
-                    }
-                }).catch(e => {
-                    return alert(e);
-                });
-            }
+            Swal.fire({
+                text              : 'Do you want to delete this content ?',
+                showDenyButton    : false,
+                showCancelButton  : true,
+                confirmButtonText : 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(this.getAttribute('href'), {
+                        method  : 'DELETE',
+                        headers : {
+                            'X-Requested-With' : 'XMLHttpRequest',
+                            'Content-Type'     : 'application/json'
+                        },
+                        body: JSON.stringify({'_token': this.dataset.token})
+                    }).then(
+                        response => {
+                            return response.json();
+                        }
+                    ).then(data => {
+                        if (data.success) {
+                            this.parentElement.remove();
+                        } else {
+                            alert(data.error);
+                        }
+                    }).catch(e => {
+                        return alert(e);
+                    });
+                    Swal.fire({
+                        showDenyButton    : false,
+                        showCancelButton  : false,
+                        showConfirmButton : false,
+                        timer             : 1500,
+                        icon              : 'success'
+                    });
+                }
+            });
         });
     }
 };

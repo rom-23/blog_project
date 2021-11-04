@@ -72,8 +72,8 @@
                                                     <span class="card-text"><small>{{ post.content|raw }}</small></span>
                                                     <a href="#add-post" data-reply data-id="{{ post.id }}" class="btn btn-info btn-sm text-white">Reply</a>
                                                     {% if is_granted('edit', post) %}
-                                                        <a href="{{ path('development_publication_edit', { id : post.id }) }}" class="btn btn-sm btn-info text-white">Update</a>
-                                                        <a href="{{ path('development_publication_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm"
+                                                        <a href="{{ path('development_post_edit', { id : post.id }) }}" class="btn btn-sm btn-info text-white">Update</a>
+                                                        <a href="{{ path('development_post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm"
                                                            data-delete
                                                            data-token="{{ csrf_token('delete' ~ post.id) }}">Delete</a>
                                                     {% endif %}

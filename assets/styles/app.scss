@@ -22,7 +22,6 @@ a{
 
 .table-user td{
     border: none;
-padding: 0.7em;
 }
 #user_add_roles{
     border: 0;
@@ -36,6 +35,7 @@ padding: 0.7em;
 .main-container{
     background: whitesmoke;
     display: flex;
+    width: 100%;
     flex-direction: column;
     justify-content: space-around;
     padding-left: 2em;

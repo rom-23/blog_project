@@ -2,7 +2,17 @@
 {% extends navbar %}
 {% block body %}
     <div class="container">
+        <div class="jumbotron jumbotron mb-3">
+            <div class="container">
+                <span class="lead"><strong>Models and creation list</strong></span>
+            </div>
+            <div class="container"><a href="{{ path('root_admin_model_add') }}" class="btn btn-outline-primary btn-sm">Add</a>
+            </div>
+        </div>
         {% include'_partials/_flashbag.html.twig' %}
+        <div class="row">
+            <p><em>Total of models : {{ models|length }}</em></p>
+        </div>
         <table class="table table-striped table-hover">
             <thead>
             <tr>
@@ -13,7 +23,6 @@
                 <th>Categories</th>
                 <th>Options</th>
                 <th>Images</th>
-                <th>Original</th>
                 <th>Thumbnail</th>
                 <th>Actions</th>
             </tr>

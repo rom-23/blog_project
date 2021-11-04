@@ -45,11 +45,10 @@ class RootAdminUserController extends AbstractController
      * @param User $user
      * @param Request $request
      * @param UserHandler $userHandler
-     * @param EntityManagerInterface $em
      * @return Response
      */
     #[Route('/root/admin/user/{id<\d+>}', name: 'root_admin_user_edit', methods: ['GET', 'POST'])]
-    public function editUser(User $user, Request $request, UserHandler $userHandler, EntityManagerInterface $em): Response
+    public function editUser(User $user, Request $request, UserHandler $userHandler): Response
     {
         $options = ['validation_groups' => ['Default']];
         if ($userHandler->handle($request, $user, $options)) {
@@ -66,12 +65,11 @@ class RootAdminUserController extends AbstractController
     /**
      * @param Request $request
      * @param UserHandler $userHandler
-     * @param EntityManagerInterface $em
      * @param UploadInterface $upload
      * @return Response
      */
     #[Route('/root/admin/user/add', name: 'root_admin_user_add', methods: ['GET', 'POST'])]
-    public function addUser(Request $request, UserHandler $userHandler, EntityManagerInterface $em): Response
+    public function addUser(Request $request, UserHandler $userHandler): Response
     {
         $user    = new User();
         $options = ['validation_groups' => ['create']];

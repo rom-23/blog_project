@@ -6,8 +6,13 @@
             <div class="container">
                 <span class="lead"><strong>Development Documentation list</strong></span>
             </div>
+            <div class="container"><a href="{{ path('root_admin_dev_add') }}" class="btn btn-outline-primary btn-sm">Add</a>
+            </div>
         </div>
         {% include'_partials/_flashbag.html.twig' %}
+        <div class="row">
+            <p><em>Total of documentations : {{ developments|length }}</em></p>
+        </div>
         <table class="table table-striped table-hover table-sm">
             <thead>
             <tr>

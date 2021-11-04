@@ -1,0 +1,44 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block title %}My adresses{% endblock %}
+{% block body %}
+    <div class="wrapper">
+        <div id="user_account">
+            <div class="container">
+                <div class="row justify-content-center mb-3">Manage your address</div>
+                <hr>
+                {% if 'account/edit' in app.request.server.get('HTTP_REFERER') %}
+                    <a href="{{ path('user_account_edit', {id:app.user.id}) }}" class="btn btn-outline-info btn-sm"><< Back</a>
+                {% else %}
+                    <a href="{{ path('user_account') }}" class="btn btn-outline-info btn-sm"><< Back</a>
+                {% endif %}
+                <a href="{{ path('account_address_add') }}" class="btn btn-outline-info btn-sm float-right">Add address</a>
+                <hr>
+                {% if app.user.addresses|length == 0 %}
+                    <em><p class="text-center text-muted">You have no registered address,
+                            <a href="{{ path('account_address_add') }}">click here</a> to add one.</p></em>
+                {% else %}
+                    <div class="container p-3">
+                        <div class="row">
+                            {% for address in app.user.addresses %}
+                                <div class="col-md-4">
+                                    <div class="card" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <p class="text-muted"><strong>{{ address.name }}</strong></p>
+                                            <p class="card-text"><em>{{ address.address }}</em><br/>
+                                                {{ address.postal }} - {{ address.city }}<br>{{ address.country }}</p>
+                                            <a href="{{ path('account_address_edit', {'id':address.id}) }}" class="btn btn-outline-info btn-sm p-1">Update</a>
+                                            <a href="{{ path('account_address_delete', {'id':address.id}) }}" class="btn btn-outline-danger btn-sm p-1">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

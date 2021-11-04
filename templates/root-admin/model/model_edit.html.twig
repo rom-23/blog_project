@@ -13,10 +13,14 @@
                             <small>- Use Tom-select for multi-select fields(No JQuery)</small><br>
                             <small>- Use Symfony CollectionType and custom Searchable EntityType</small><br>
                         </p>
-                        <h1>{{ model.name }}</h1>
                     </div>
                 </div>
                 <hr>
+                <div class="d-flex justify-content-between p-2 mb-2">
+                    <a href="{{ path('root_admin_model_list') }}" class="btn btn-outline-primary btn-sm"><< Back</a>
+                    <h5>{{ model.name }}</h5>
+                    {{- form_widget(form.submit, {'attr':{'class':'btn btn-warning btn-sm'}}) -}}
+                </div>
                 {{ include('root-admin/model/form/_form.html.twig', {form: form}) }}
             </div>
         </div>

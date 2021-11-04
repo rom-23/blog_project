@@ -1,0 +1,23 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block title %}Nous contactez{% endblock %}
+
+{% block body %}
+    <h2>Nous contactez</h2>
+    <p>N'hésitez pas à prendre contact avec notre équipe, nous vous repondrons dans les meilleurs délais</p>
+    {% for message in app.flashes('notice') %}
+        <div class="alert alert-info">{{ message }}</div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md-8">{{ form(form) }}</div>
+        <div class="col-md-4">
+            <strong>La boutique Française</strong>
+            <hr>
+            06 45 78 95 45<br/>
+            8 Rue des Lylas, 75000 Paris.
+            contact@laboutiquefrancaise.fr<br/>
+        </div>
+
+
+    </div>
+{% endblock %}

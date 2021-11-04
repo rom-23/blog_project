@@ -1,3 +1,4 @@
+<hr>
 <div class="row">
     <div class="col-5">
         <div class="container mt-0 pt-0">
@@ -12,14 +13,18 @@
         <div class="container mt-0 pt-0">
             {{- form_widget(form.price) -}}
         </div>
-        <div class="container mt-2 pt-2">
-            {{- form_errors(form.thumbnail) -}}
-            <p>{{- form_label(form.thumbnail) -}}{{- form_widget(form.thumbnail) -}}</p>
+        <hr>
+        <div class="container mt-2 pt-2 text-center">
             {% if app.request.attributes.get('_route') == 'root_admin_model_edit' %}
-                <img src="{{ asset('/uploads/models/thumbnails/'~model.thumbnail)| imagine_filter('my_thumb') }}"/>
+                <p class="text-dark pt-2"><em>Thumbnail :</em></p>
+                <img class="img-fluid"  src="{{ asset('/uploads/models/thumbnails/'~model.thumbnail)| imagine_filter('medium') }}"/>
+                {{- form_errors(form.thumbnail) -}}
+                <p class="p-3">{{- form_widget(form.thumbnail) -}}</p>
+            {% else %}
+                {{- form_errors(form.thumbnail) -}}
+                <p>{{- form_label(form.thumbnail) -}}{{- form_widget(form.thumbnail) -}}</p>
             {% endif %}
         </div>
-
     </div>
     <div class="col-7">
         <div class="container mt-0 pt-0">
@@ -31,11 +36,11 @@
             {% if app.request.attributes.get('_route') == 'root_admin_model_edit' %}
                 {% for image in model.images %}
                     <div class="col-12">
-                        <em class="text-muted" style="font-size: 12px">Path : {{ image.name }}</em>
-                        <p><a href="#">{{ image.name }}</a></p>
-                        <a href="{{ path('root_admin_model_delete_image', {'id':image.id}) }}" class="btn btn-outline-danger btn-sm"
+                        <img class="img-fluid" src="{{ asset('/uploads/models/modelsAttachments/'~image.name)| imagine_filter('large') }}"/>
+                        <a href="{{ path('root_admin_model_delete_image', {'id':image.id}) }}" class="btn btn-outline-danger btn-sm m-4"
                            data-delete
-                           data-token="{{ csrf_token('delete' ~ image.id) }}">Delete image</a>
+                           data-token="{{ csrf_token('delete' ~ image.id) }}">Delete image</a><br>
+                        <em class="text-muted" style="font-size: 12px">{{ image.name }}</em>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -48,11 +53,6 @@
                     </div>
                 {% endfor %}
             </div>
-        </div>
-    </div>
-    <div class="row justify-center">
-        <div class="container">
-            {{- form_widget(form.submit, {'attr':{'class':'btn btn-warning'}}) -}}
         </div>
     </div>
 </div>

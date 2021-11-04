@@ -15,4 +15,14 @@ liip_imagine:
     medium:
       quality: 75
       filters:
-        thumbnail: { size: [ 800, 530 ], mode: outbound, allow_upscale: true }
+        thumbnail: { size: [ 460, 230 ], mode: outbound, allow_upscale: true }
+
+    large:
+      quality: 75
+      filters:
+        thumbnail: { size: [ 700, 430 ], mode: outbound, allow_upscale: true }
+
+    small:
+      quality: 75
+      filters:
+        thumbnail: { size: [ 230, 130 ], mode: outbound, allow_upscale: true }
