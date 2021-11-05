@@ -1,5 +1,4 @@
 @import '~bootstrap/dist/css/bootstrap.css';
-@import '~bootstrap-vue/dist/bootstrap-vue.css';
 @import '~vuetify/dist/vuetify.min.css';
 @import '~tom-select/dist/css/tom-select.bootstrap5.css';
 @import '~select2/dist/css/select2.css';
@@ -26,9 +25,7 @@ a{
 #user_add_roles{
     border: 0;
 }
-#user_add_isVerified{
 
-}
 #add-images{
     margin-left: 20px;
 }

@@ -34,7 +34,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateDevelopments(20);
+        $this->generateDevelopments(30);
         $this->manager->flush();
     }
 
@@ -49,14 +49,14 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
 
             $title = $this->faker->words(mt_rand(3, 4), true);
             $slug  = $this->slugger->slug(strtolower($title));
-            $tags  = $this->getReference('tag' . mt_rand(1, 6));
+            $tags  = $this->getReference('tag' . mt_rand(1, 15));
 
             $dev->setTitle(ucfirst($title));
             $dev->setContent($this->faker->realText(mt_rand(100, 500)));
             $dev->setCreatedAt($dateObject);
             $dev->setSlug($slug);
             $dev->setFiles(new ArrayCollection([]));
-            $dev->setSection($this->getReference('section' . mt_rand(1, 6)));
+            $dev->setSection($this->getReference('section' . mt_rand(1, 10)));
             $dev->setUpdatedAt(null);
             $dev->addTag($tags);
 
@@ -71,20 +71,20 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             }
             $this->manager->persist($dev);
 
-            for ($j = 1; $j <= 2; $j++) {
+            for ($j = 1; $j <= 5; $j++) {
                 $note = (new Note())
                     ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
                     ->setContent(ucfirst($this->faker->realText(mt_rand(10, 250))))
                     ->setCreatedAt($dateObject);
-                $user = $this->getReference('user' . mt_rand(1, 6));
+                $user = $this->getReference('user' . mt_rand(1, 20));
                 $this->manager->persist($note);
 
                 $note->setDevelopment($dev);
                 $note->setUser($user);
                 $dev->addNote($note);
 
-                for ($k = 1; $k <= 2; $k++) {
-                    $user = $this->getReference('user' . mt_rand(1, 6));
+                for ($k = 1; $k <= 5; $k++) {
+                    $user = $this->getReference('user' . mt_rand(1, 20));
                     $post = (new Post())
                         ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
                         ->setContent(ucfirst($this->faker->realText(mt_rand(10, 350))))

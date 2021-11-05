@@ -21,7 +21,7 @@ class TagFixtures extends Fixture
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateTags(6);
+        $this->generateTags(15);
         $this->manager->flush();
     }
 

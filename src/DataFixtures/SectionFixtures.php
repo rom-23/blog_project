@@ -17,7 +17,7 @@ class SectionFixtures extends Fixture
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateSections(6);
+        $this->generateSections(10);
         $this->manager->flush();
     }
 

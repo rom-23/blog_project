@@ -18,7 +18,7 @@ class CategoryFixtures extends Fixture
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateCategories(6);
+        $this->generateCategories(10);
         $this->manager->flush();
     }
 

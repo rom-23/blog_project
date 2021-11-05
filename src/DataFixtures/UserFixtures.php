@@ -38,7 +38,7 @@ class UserFixtures extends Fixture
             $this->manager->persist($user);
             $this->addReference("user{$i}", $user);
 
-            for ($k = 1; $k <= 2; $k++) {
+            for ($k = 1; $k <= 3; $k++) {
                 $address = (new Address())
                     ->setName(ucfirst($this->faker->words(mt_rand(2, 3), true)))
                     ->setFirstname($this->faker->firstName())

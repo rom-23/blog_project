@@ -75,7 +75,7 @@ class RegisterHandler extends AbstractHandler
         $this->sendEmail->send([
             'recipient_email' => $data->getEmail(),
             'subject'         => 'Verify your email to activate your account',
-            'html_template'   => 'registration/register-confirmation-email.html.twig',
+            'html_template'   => 'user/registration/register-confirmation-email.html.twig',
             'context'         => [
                 'userID'            => $data->getId(),
                 'registrationToken' => $registrationToken,
