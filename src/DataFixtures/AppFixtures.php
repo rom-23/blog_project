@@ -34,7 +34,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateDevelopments(10);
+        $this->generateDevelopments(20);
         $this->manager->flush();
     }
 
@@ -51,7 +51,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $slug  = $this->slugger->slug(strtolower($title));
             $tags  = $this->getReference('tag' . mt_rand(1, 6));
 
-            $dev->setTitle($title);
+            $dev->setTitle(ucfirst($title));
             $dev->setContent($this->faker->realText(mt_rand(100, 500)));
             $dev->setCreatedAt($dateObject);
             $dev->setSlug($slug);
@@ -73,8 +73,8 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
 
             for ($j = 1; $j <= 2; $j++) {
                 $note = (new Note())
-                    ->setTitle($this->faker->realText(mt_rand(10, 30)))
-                    ->setContent($this->faker->realText(mt_rand(10, 250)))
+                    ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
+                    ->setContent(ucfirst($this->faker->realText(mt_rand(10, 250))))
                     ->setCreatedAt($dateObject);
                 $user = $this->getReference('user' . mt_rand(1, 6));
                 $this->manager->persist($note);
@@ -86,8 +86,8 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                 for ($k = 1; $k <= 2; $k++) {
                     $user = $this->getReference('user' . mt_rand(1, 6));
                     $post = (new Post())
-                        ->setTitle($this->faker->realText(mt_rand(10, 30)))
-                        ->setContent($this->faker->realText(mt_rand(10, 350)))
+                        ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
+                        ->setContent(ucfirst($this->faker->realText(mt_rand(10, 350))))
                         ->setCreatedAt($dateObject)
                         ->setParent(null);
                     $this->manager->persist($post);
@@ -123,7 +123,10 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         return [
             SectionFixtures::class,
             UserFixtures::class,
-            TagFixtures::class
+            TagFixtures::class,
+            OptionFixtures::class,
+            CategoryFixtures::class,
+            ModelFixtures::class
         ];
     }
 }

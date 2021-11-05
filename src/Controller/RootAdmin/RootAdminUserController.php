@@ -2,7 +2,9 @@
 
 namespace App\Controller\RootAdmin;
 
+use App\Entity\Address;
 use App\Entity\User;
+use App\Form\User\AddressType;
 use App\Repository\UserRepository;
 use App\Handler\UserHandler;
 use App\Service\ManagePaginator;
@@ -34,10 +36,10 @@ class RootAdminUserController extends AbstractController
         $users = $managePaginator->paginate($userRepository->findAllUsers(), $page, $limit);
         return $this->render('root-admin/user/user-list.html.twig', [
             'users' => $users,
-            'pages'        => $managePaginator->lastPage($users),
-            'page'         => $page,
-            'limit'        => $limit,
-            'range'        => $managePaginator->rangePaginator($page, $users)
+            'pages' => $managePaginator->lastPage($users),
+            'page'  => $page,
+            'limit' => $limit,
+            'range' => $managePaginator->rangePaginator($page, $users)
         ]);
     }
 
@@ -95,6 +97,21 @@ class RootAdminUserController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'The user has been deleted.');
         return $this->redirectToRoute('root_admin_users');
+    }
+
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param Address $address
+     * @return Response
+     */
+    #[Route('/root/admin/user/address/delete/{id<\d+>}', name: 'root_admin_account_address_delete')]
+    public function deleteAddress(Request $request, EntityManagerInterface $em, Address $address): Response
+    {
+        $em->remove($address);
+        $em->flush();
+        $this->addFlash('success', 'The address has been deleted.');
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**

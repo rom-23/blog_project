@@ -24,7 +24,7 @@ class SectionFixtures extends Fixture
     public function generateSections(int $number): void
     {
         for ($i = 1; $i <= $number; $i++) {
-            $section = (new Section())->setTitle($this->faker->word);
+            $section = (new Section())->setTitle(ucfirst($this->faker->word));
             $this->manager->persist($section);
             $this->addReference("section{$i}", $section);
         }

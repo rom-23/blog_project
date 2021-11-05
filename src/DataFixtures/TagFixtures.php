@@ -28,7 +28,7 @@ class TagFixtures extends Fixture
     public function generateTags(int $number): void
     {
         for ($i = 1; $i <= $number; $i++) {
-            $tag = (new Tag())->setName($this->faker->words(mt_rand(1, 1), true));
+            $tag = (new Tag())->setName(ucfirst($this->faker->words(mt_rand(1, 1), true)));
             $this->manager->persist($tag);
             $this->addReference("tag{$i}", $tag);
         }

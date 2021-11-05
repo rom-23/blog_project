@@ -28,7 +28,7 @@ document.querySelectorAll('.dev_item').forEach(function (link) {
 });
 
 window.onload = () => {
-    // Gestion des boutons "Supprimer" dans les collections
+    // Gestion des boutons "Supprimer"
     let links = document.querySelectorAll('[data-delete]');
     for (let link of links) {
         link.addEventListener('click', function (e) {
@@ -37,7 +37,13 @@ window.onload = () => {
                 text              : 'Do you want to delete this content ?',
                 showDenyButton    : false,
                 showCancelButton  : true,
-                confirmButtonText : 'Yes'
+                confirmButtonText : 'Yes',
+                customClass       : {
+                    confirmButton : 'btn btn-outline-info btn-sm m-3',
+                    cancelButton  : 'btn btn-outline-warning btn-sm',
+                    htmlContainer : 'fs-6'
+                },
+                buttonsStyling: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     fetch(this.getAttribute('href'), {

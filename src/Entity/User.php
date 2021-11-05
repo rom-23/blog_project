@@ -174,7 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var Collection<int, Address>
-     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", cascade={"persist","remove"})
      * @Groups({"user:get"})
      */
     private Collection $addresses;

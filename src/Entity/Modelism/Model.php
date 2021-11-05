@@ -209,7 +209,7 @@ class Model
     }
 
     /**
-     * @return Collection<int, Category>
+     * @return Collection
      */
     public function getCategories(): Collection
     {

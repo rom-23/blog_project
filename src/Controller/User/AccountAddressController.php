@@ -6,6 +6,7 @@ use App\Entity\Address;
 use App\Form\User\AddressType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,16 +29,6 @@ class AccountAddressController extends AbstractController
     }
 
     /**
-     * @return Response
-     */
-    #[Route('/account/address', name: 'account_address')]
-    public function index(): Response
-    {
-        return $this->render('account/address.html.twig', [
-        ]);
-    }
-
-    /**
      * @param Request $request
      * @return Response
      */
@@ -51,57 +42,60 @@ class AccountAddressController extends AbstractController
             $address->setUser($this->getUser());
             $this->em->persist($address);
             $this->em->flush();
-            return $this->redirectToRoute('account_address');
+            return $this->redirectToRoute('user_account');
 //            if ($cart->get()) {
 //                return $this->redirectToRoute('order');
 //            } else {
 //                return $this->redirectToRoute('account_address');
 //            }
         }
-        return $this->render('account/address_form.html.twig', [
+        return $this->render('_partials/_address.html.twig', [
             'form' => $form->createView()
         ]);
     }
 
     /**
+     * @param Address $address
      * @param Request $request
-     * @param $id
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    #[Route('/account/edit-address/{id<\d+>}', name: 'account_address_edit')]
-    public function addressEdit(Request $request, $id): Response
+    #[Route('/account/address/edit/{id<\d+>}', name: 'account_address_edit', methods: ['GET', 'POST'])]
+    public function editAddress(Address $address, Request $request, EntityManagerInterface $em): Response
     {
-        $address = $this->em->getRepository(Address::class)->find($id);
-        if (!$address || $address->getUser() != $this->getUser()) {
-            return $this->redirectToRoute('account_address');
-        }
         $form = $this->createForm(AddressType::class, $address);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->em->flush();
-
-            return $this->redirectToRoute('account_address');
+            $em->flush();
+            if ($request->isXmlHttpRequest()) {
+                return new Response(null, 204);
+            }
+            return $this->redirectToRoute('user_account');
         }
 
-        return $this->render('account/address_form.html.twig', [
+        return $this->render('_partials/_address.html.twig', [
             'form' => $form->createView()
         ]);
     }
 
     /**
+     * @param Address $address
      * @param Request $request
-     * @param $id
-     * @return Response
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
      */
-    #[Route('/account/delete-address/{id<\d+>}', name: 'account_address_delete')]
-    public function addressDelete(Request $request, $id): Response
+    #[Route('/account/address/delete/{id<\d+>}', name: 'account_address_delete', methods: ['DELETE'])]
+    public function deleteAddress(Address $address, Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $address = $this->em->getRepository(Address::class)->find($id);
-        if ($address && $address->getUser() == $this->getUser()) {
-            $this->em->remove($address);
-            $this->em->flush();
-        }
+        $data = json_decode($request->getContent(), true);
+        if ($this->isCsrfTokenValid('delete' . $address->getId(), $data['_token'])) {
+            $em->remove($address);
+            $em->flush();
 
-        return $this->redirect($request->headers->get('referer'));
+            return new JsonResponse(['success' => 1]);
+        } else {
+
+            return new JsonResponse(['error' => 'Invalid Token'], 400);
+        }
     }
 }

@@ -61,7 +61,7 @@
                         <div class="row text-center justify-content-center mt-2">
                             {% if user.addresses == null or user.addresses|length == 0 %}
                                 <div class="container">
-                                    <p><em>You have registered address.</em></p>
+                                    <p><em>You have no registered address.</em></p>
                                     <a class="btn btn-outline-info btn-sm mb-2" href="{{ path('account_address_add') }}">Add address</a>
                                 </div>
                             {% else %}
@@ -70,13 +70,22 @@
                                 </div>
                             {% endif %}
                             {% for address in user.addresses %}
-                                <div class="col-5">
+                                <div class="col-6">
+                                    <div class="container">
                                     <p class="text-primary">{{ address.name }}</p>
                                     {{ address.address }}<br>
                                     {{ address.city }} - {{ address.country }}<br>
                                     {{ address.createdAt|date('d/m/Y') }}<br>
-                                    <a href="{{ path('account_address_delete', {'id':address.id}) }}" class="btn btn-outline-danger btn-sm p-1 m-3">Delete</a>
-                                    <a href="{{ path('account_address_edit', {'id':address.id}) }}" class="btn btn-outline-info btn-sm p-1 m-3">Update</a>
+{#                                    <a href="{{ path('account_address_delete', {id:address.id}) }}" class="btn btn-outline-danger btn-sm p-1 m-3">Delete</a>#}
+{#                                    <a href="{{ path('account_address_edit', {id:address.id}) }}" class="btn btn-outline-info btn-sm p-1 m-3">Update</a>#}
+                                    <a href="{{ path('account_address_delete', { id : address.id }) }}" class="btn btn-outline-danger btn-sm p-1"
+                                       data-delete
+                                       data-token="{{ csrf_token('delete' ~ address.id) }}">Delete</a>
+                                    <span {{ stimulus_controller('modal-form', { formUrl: path('account_address_edit', {id:address.id})  }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+                                    <button type="button" class="btn btn-outline-info btn-sm p-1 mt-3" data-action="modal-form#openModal">Update</button>
+                                    {{ include('_modal/_modal.html.twig', { modalTitle: 'Update address' }) }}
+                                </span>
+                                    </div>
                                 </div>
                             {% endfor %}
                         </div>
