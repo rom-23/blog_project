@@ -87,7 +87,7 @@
                                 <span class="text-muted float-end"><small><em>Posted on {{ post.createdAt|date('d/m/Y') }}</em></small></span>
                             </p>
                             <small>{{ post.content|raw }}</small>
-                            <a href="{{ path('development_post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm p-1"
+                            <a href="{{ path('development_publication_post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm p-1"
                                data-delete
                                data-token="{{ csrf_token('delete' ~ post.id) }}">Delete</a>
                         </div>
@@ -105,7 +105,7 @@
                                 <span class="text-muted float-end"><small><em>Added on {{ note.createdAt|date('d/m/Y') }}</em></small></span>
                             </p>
                             <small><em>{{ note.content }}</em></small><br>
-                            <a href="{{ path('development_note_delete', { id : note.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
+                            <a href="{{ path('development_publication_note_delete', { id : note.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
                                data-delete
                                data-token="{{ csrf_token('delete' ~ note.id) }}">Delete</a>
 

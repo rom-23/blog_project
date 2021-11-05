@@ -1,6 +1,7 @@
 import {Controller} from 'stimulus';
 import {Modal} from 'bootstrap';
 import $ from 'jquery';
+
 const Swal = require('sweetalert2');
 
 export default class extends Controller {
@@ -19,6 +20,7 @@ export default class extends Controller {
     async submitForm(event) {
         event.preventDefault();
         const $form = $(this.modalBodyTarget).find('form');
+        let pathArray = this.formUrlValue.split('/');
         await $.ajax({
             url: this.formUrlValue,
             method: $form.prop('method'),
@@ -26,15 +28,15 @@ export default class extends Controller {
             success: function (data) {
                 Swal.fire({
                     icon: 'success',
-                    text: 'Your password has been updated.',
-                    timer: 2000,
+                    text: 'Your '+pathArray[1]+' has been updated.',
+                    timer: 2500,
                     showConfirmButton: false
                 });
             },
             error: function (jqXHR, error, errorThrown) {
                 if (jqXHR.status && jqXHR.status == 400) {
                     Swal.fire({
-                        timer: 2000,
+                        // timer: 2000,
                         position: 'top-center',
                         showConfirmButton: false,
                         showDenyButton: false,
@@ -45,7 +47,12 @@ export default class extends Controller {
                 } else if (jqXHR.status && jqXHR.status == 422) {
                     Swal.fire({
                         icon: 'error',
-                        text: errorThrown+': Both of new passwords must be the same'
+                        text: errorThrown + ': Both of new passwords must be the same'
+                    });
+                } else if (jqXHR.status && jqXHR.status == 500) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'There is an error in your submitted form...'
                     });
                 } else {
                     Swal.fire({
@@ -55,7 +62,8 @@ export default class extends Controller {
                 }
             }
         });
-        this.modal.hide();
+        // this.modal.hide();
+        history.go(0);
     }
 
     modalHidden() {

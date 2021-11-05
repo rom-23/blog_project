@@ -3,7 +3,6 @@
 namespace App\Controller\SymfonyApp\Development;
 
 use App\Entity\Development\Development;
-use App\Entity\Development\DevelopmentFile;
 use App\Entity\Development\Note;
 use App\Entity\Development\Post;
 use App\Form\Development\PostType;
@@ -18,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PublishController extends AbstractController
+class DevelopmentPublishController extends AbstractController
 {
     /**
      * @param DevelopmentRepository $devRepository
@@ -26,8 +25,8 @@ class PublishController extends AbstractController
      * @param ManagePaginator $managePaginator
      * @return Response
      */
-    #[Route('/symfony/development/publication', name: 'development_publication')]
-    public function listPublication(DevelopmentRepository $devRepository,Request $request, ManagePaginator $managePaginator): Response
+    #[Route('/symfony/development/publications', name: 'development_publication')]
+    public function listDevelopmentPublication(DevelopmentRepository $devRepository,Request $request, ManagePaginator $managePaginator): Response
     {
         $limit        = $request->get('limit', 10);
         $page         = $request->get('page', 1);
@@ -42,7 +41,7 @@ class PublishController extends AbstractController
     }
 
     #[Route('/symfony/development/publication/{id<\d+>}', name: 'development_publication_view')]
-    public function viewPublication(Development $development, Request $request, EntityManagerInterface $em): Response
+    public function viewDevelopmentPublication(Development $development, Request $request, EntityManagerInterface $em): Response
     {
         $post     = new Post();
         $postForm = $this->createForm(PostType::class, $post);
@@ -68,8 +67,8 @@ class PublishController extends AbstractController
         ]);
     }
 
-    #[Route('/symfony/development/post/edit/{id<\d+>}', name: 'development_post_edit')]
-    public function editPost(Post $post, Request $request, EntityManagerInterface $em): Response
+    #[Route('/symfony/development/publication/post/edit/{id<\d+>}', name: 'development_publication_post_edit')]
+    public function editDevelopmentPost(Post $post, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
         $postEditForm = $this->createForm(PostType::class, $post);
@@ -94,8 +93,8 @@ class PublishController extends AbstractController
      * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    #[Route('/symfony/development/post/delete/{id<\d+>}', name: 'development_post_delete', methods: ['DELETE'])]
-    public function deletePost(Post $post, Request $request, EntityManagerInterface $em): JsonResponse
+    #[Route('/symfony/development/publication/post/delete/{id<\d+>}', name: 'development_publication_post_delete', methods: ['DELETE'])]
+    public function deleteDevelopmentPost(Post $post, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         if ($this->isCsrfTokenValid('delete' . $post->getId(), $data['_token'])) {
@@ -121,8 +120,8 @@ class PublishController extends AbstractController
      * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    #[Route('/symfony/development/note/delete/{id<\d+>}', name: 'development_note_delete', methods: ['DELETE'])]
-    public function deleteNote(Note $note, Request $request, EntityManagerInterface $em): JsonResponse
+    #[Route('/symfony/development/publication/note/delete/{id<\d+>}', name: 'development_publication_note_delete', methods: ['DELETE'])]
+    public function deleteDevelopmentNote(Note $note, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         if ($this->isCsrfTokenValid('delete' . $note->getId(), $data['_token'])) {

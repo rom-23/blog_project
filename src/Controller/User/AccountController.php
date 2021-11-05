@@ -83,7 +83,7 @@ class AccountController extends AbstractController
             }
         }
 
-        return $this->render('account/password.html.twig', [
+        return $this->render('_partials/_password.html.twig', [
             'form' => $form->createView()
         ], new Response(
             null,
@@ -130,4 +130,6 @@ class AccountController extends AbstractController
 
         return new Response();
     }
+
+
 }

@@ -57,16 +57,16 @@ class PostType extends AbstractType
                 ]
             ]);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+//        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
 //            if ($event->getData()->getUser() !== null) {
 //                return;
 //            }
-            $event->getForm()->add('author', TextType::class, [
-                'label'    => 'Pseudo',
-                'required' => false,
-                'mapped'   => false
-            ]);
-        });
+//            $event->getForm()->add('author', TextType::class, [
+//                'label'    => 'Pseudo',
+//                'required' => false,
+//                'mapped'   => false
+//            ]);
+//        });
     }
 
     /**

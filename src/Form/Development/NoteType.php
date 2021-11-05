@@ -20,12 +20,14 @@ class NoteType extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'label'=>false,
+                'required'=>true,
                 'attr'=>[
                     'placeholder'=>'Title'
                 ]
             ])
             ->add('content', TextareaType::class, [
                 'label'=>false,
+                'required'=>true,
                 'attr'=>[
                     'placeholder'=>'Enter your note ...'
                 ]

@@ -28,7 +28,7 @@ document.querySelectorAll('.dev_item').forEach(function (link) {
 });
 
 window.onload = () => {
-    // Gestion des boutons "Supprimer"
+    // Gestion des boutons "Supprimer" dans les collections
     let links = document.querySelectorAll('[data-delete]');
     for (let link of links) {
         link.addEventListener('click', function (e) {
