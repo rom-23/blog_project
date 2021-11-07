@@ -17,7 +17,9 @@
                         <th scope="col">Verified at</th>
                         <th scope="col">Registered at</th>
                         <th scope="col">Posts</th>
-                        <th scope="col">Notes</th>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <th scope="col">Notes</th>
+                        {% endif %}
                         <th scope="col">Addresses</th>
                     </tr>
                     </thead>
@@ -31,7 +33,9 @@
                         <td>{{ app.user.accountVerifiedAt|date('d/m/y at H:i') }}</td>
                         <td>{{ app.user.registeredAt|date('d/m/y at H:i') }}</td>
                         <td>{{ app.user.posts|length }}</td>
-                        <td>{{ app.user.notes|length }}</td>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <td>{{ app.user.notes|length }}</td>
+                        {% endif %}
                         <td>{{ app.user.addresses|length }}</td>
                     </tr>
                     </tbody>

@@ -72,16 +72,16 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $this->manager->persist($dev);
 
             for ($j = 1; $j <= 5; $j++) {
-                $note = (new Note())
-                    ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
-                    ->setContent(ucfirst($this->faker->realText(mt_rand(10, 250))))
-                    ->setCreatedAt($dateObject);
-                $user = $this->getReference('user' . mt_rand(1, 20));
-                $this->manager->persist($note);
-
-                $note->setDevelopment($dev);
-                $note->setUser($user);
-                $dev->addNote($note);
+//                $note = (new Note())
+//                    ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
+//                    ->setContent(ucfirst($this->faker->realText(mt_rand(10, 250))))
+//                    ->setCreatedAt($dateObject);
+//                $user = $this->getReference('user' . mt_rand(1, 20));
+//                $this->manager->persist($note);
+//
+//                $note->setDevelopment($dev);
+//                $note->setUser($user);
+//                $dev->addNote($note);
 
                 for ($k = 1; $k <= 5; $k++) {
                     $user = $this->getReference('user' . mt_rand(1, 20));

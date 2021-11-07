@@ -32,7 +32,7 @@ class AccountAddressController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/account/add-address', name: 'account_address_add')]
+    #[Route('/account/add-address', name: 'account_address_add', methods: ['GET', 'POST'])]
     public function addressAdd(Request $request): Response
     {
         $address = new Address();
@@ -42,12 +42,10 @@ class AccountAddressController extends AbstractController
             $address->setUser($this->getUser());
             $this->em->persist($address);
             $this->em->flush();
+            if ($request->isXmlHttpRequest()) {
+                return new Response(null, 204);
+            }
             return $this->redirectToRoute('user_account');
-//            if ($cart->get()) {
-//                return $this->redirectToRoute('order');
-//            } else {
-//                return $this->redirectToRoute('account_address');
-//            }
         }
         return $this->render('_partials/_address.html.twig', [
             'form' => $form->createView()
@@ -61,12 +59,12 @@ class AccountAddressController extends AbstractController
      * @return Response
      */
     #[Route('/account/address/edit/{id<\d+>}', name: 'account_address_edit', methods: ['GET', 'POST'])]
-    public function editAddress(Address $address, Request $request, EntityManagerInterface $em): Response
+    public function editAddress(Address $address, Request $request): Response
     {
         $form = $this->createForm(AddressType::class, $address);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->em->flush();
             if ($request->isXmlHttpRequest()) {
                 return new Response(null, 204);
             }
@@ -85,12 +83,12 @@ class AccountAddressController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/account/address/delete/{id<\d+>}', name: 'account_address_delete', methods: ['DELETE'])]
-    public function deleteAddress(Address $address, Request $request, EntityManagerInterface $em): JsonResponse
+    public function deleteAddress(Address $address, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         if ($this->isCsrfTokenValid('delete' . $address->getId(), $data['_token'])) {
-            $em->remove($address);
-            $em->flush();
+            $this->em->remove($address);
+            $this->em->flush();
 
             return new JsonResponse(['success' => 1]);
         } else {

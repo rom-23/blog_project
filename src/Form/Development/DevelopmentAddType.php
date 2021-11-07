@@ -94,22 +94,7 @@ class DevelopmentAddType extends AbstractType
             ->add('submit', SubmitType::class, [
                 'label' => 'Save'
             ])
-            ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-                $dev = $event->getForm()->getViewData();
-                if (count($dev->getNotes()) > 0) {
-                    foreach ($dev->getNotes() as $note) {
-                        $note->setUser($this->security->getUser());
-                    }
-                }
-            })
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-                if (count($event->getData()->getPosts()) > 0) {
-                    $event->getForm()->add('author', TextType::class, [
-                        'label'    => 'user',
-                        'required' => false,
-                        'mapped'   => false
-                    ]);
-                }
                 if (count($event->getData()->getTags()) > 0) {
                     $event->getForm()->add('tags', SearchableEntityType::class, [
                         'class'          => Tag::class,
@@ -120,8 +105,8 @@ class DevelopmentAddType extends AbstractType
                     $event->getForm()->add('tags', CustomSelectEntityType::class, [
                         'class' => Tag::class,
                         'label' => false,
-                        'attr'=>[
-                            'placeholder'=>'Select tag(s)'
+                        'attr'  => [
+                            'placeholder' => 'Select tag(s)'
                         ]
                     ]);
                 }

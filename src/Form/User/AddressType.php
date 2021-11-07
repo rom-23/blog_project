@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AddressType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
@@ -56,13 +56,10 @@ class AddressType extends AbstractType
                 'attr'  => [
                     'placeholder' => 'Entrez votre pays'
                 ]
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Save'
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Address::class,

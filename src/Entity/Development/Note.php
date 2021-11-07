@@ -53,7 +53,7 @@ class Note
     private DateTimeImmutable $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Development::class, inversedBy="notes")
+     * @ORM\ManyToOne(targetEntity=Development::class, inversedBy="notes", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
     #[Groups(['note:read'])]
