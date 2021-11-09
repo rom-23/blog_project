@@ -17,16 +17,6 @@ use Symfony\Component\Security\Core\Security;
 
 class PostType extends AbstractType
 {
-    private Security $user;
-
-    /**
-     * @param Security $user
-     */
-    public function __construct(Security $user)
-    {
-        $this->user = $user;
-    }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array<int|string, mixed> $options

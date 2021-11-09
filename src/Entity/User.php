@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ApiPlatform\UserLoginController;
 use App\Entity\Development\Note;
 use App\Entity\Development\Post;
+use App\Entity\Modelism\Opinion;
 use App\Repository\UserRepository;
 use DateInterval;
 use DateTimeImmutable;
@@ -179,6 +180,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private Collection $addresses;
 
+    /**
+     * @var Collection<int, Opinion>
+     * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
+     * @Groups({"user:get"})
+     */
+    private Collection $opinions;
+
     public function __construct()
     {
         $this->posts                       = new ArrayCollection();
@@ -188,6 +196,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->registeredAt                = new DateTimeImmutable('now');
         $this->roles                       = ['ROLE_USER'];
         $this->accountMustBeVerifiedBefore = (new DateTimeImmutable('now'))->add(new DateInterval('P1D'));
+        $this->opinions                    = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -359,12 +368,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeAddress(Address $address): self
     {
         if ($this->addresses->removeElement($address)) {
-            // set the owning side to null (unless already changed)
             if ($address->getUser() === $this) {
                 $address->setUser(null);
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return Collection|Opinion[]
+     */
+    public function getOpinions(): Collection
+    {
+        return $this->opinions;
+    }
+
+    public function addOpinion(Opinion $opinion): self
+    {
+        if (!$this->opinions->contains($opinion)) {
+            $this->opinions[] = $opinion;
+            $opinion->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeOpinion(Opinion $opinion): self
+    {
+        if ($this->opinions->removeElement($opinion)) {
+            if ($opinion->getUser() === $this) {
+                $opinion->setUser(null);
+            }
+        }
         return $this;
     }
 

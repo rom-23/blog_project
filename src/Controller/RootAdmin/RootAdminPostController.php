@@ -41,8 +41,8 @@ class RootAdminPostController extends AbstractController
                     $post->removeReply($reply);
                 }
             }
-            $em->remove($post);
             $post->getDevelopment()->setUpdatedAt(new DateTimeImmutable('now'));
+            $em->remove($post);
             $em->flush();
 
             return new JsonResponse(['success' => 1]);

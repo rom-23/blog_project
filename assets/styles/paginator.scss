@@ -1,32 +1,35 @@
 ﻿.paginationTable {
-  //max-width: 400px;
-  //min-width: 300px;
-  width: 100%;
-  display: block;
-  //margin: 0 auto;
   position: relative;
-  //padding: 1em;
 }
-
-.paginationTable .tableList {
-  min-height: 250px;
-  text-indent: 20px;
+.paginationTable .tableList th:nth-child(3){
+  text-align: center;
 }
-
-.tableList .objectBlock {
-  position: relative;
-  background-color: #fcfcfc;
-  padding: 10px;
-  margin-bottom: 10px;
+.paginationTable .tableList th:last-child{
+text-align: center;
 }
-
+.paginationTable .tableList thead td a:hover{
+  color: rgba(42, 124, 60, 0.67);
+}
+.paginationTable .tableList thead td a{
+  color: #757373;
+}
 .pageButton {
   border: 1px solid #fafafa;
   padding: 5px;
 }
-
+.paginationTable .tableList th {
+  background: rgb(255, 255, 255);
+}
+.paginationTable .tableList thead tr th {
+  color: rgb(89, 88, 88);
+}
+.paginationTable .tableList tr {
+  &:nth-of-type(odd) {
+    background: rgb(245, 245, 245);
+  }
+}
 .clickPageNumber {
-  background-color: rgba(81, 71, 170, 0.91);
+  background-color: rgba(38, 166, 62, 0.82);
   padding: 5px;
   margin-left: 2px;
   margin-right: 2px;
@@ -34,6 +37,7 @@
 }
 
 .pagination-block {
+  margin-top: 2em;
   text-align: center;
   width: 100%;
 }
@@ -43,7 +47,7 @@
 }
 
 .pagination-block .pageButton {
-  background-color: rgb(141, 172, 253);
+  background-color: rgba(54, 180, 84, 0.67);
   color: white;
 }
 
@@ -56,29 +60,4 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-}
-
-.pagenumbers button {
-  width: 50px;
-  height: 50px;
-  appearance: none;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  background-color: #44AAEE;
-  margin: 5px;
-  transition: 0.4s;
-  color: #FFF;
-  font-size: 18px;
-  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
-}
-
-.pagenumbers button:hover {
-  background-color: #44EEAA;
-}
-
-.pagenumbers button.active {
-  background-color: #44EEAA;
-  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
 }

@@ -38,7 +38,7 @@
         <div class="container bg-white">
             {{- form_label(form.content) -}}{{- form_widget(form.content) -}}
         </div>
-        <p class="card-header text-center">NOTES</p>
+        <p class="card-header text-center">{{ form.notes|length }} ADMIN NOTES</p>
         <div class="container bg-white">
             <button class="btn btn-outline-primary btn-new-note mt-3 btn-sm" type="button" data-collection="#notes">Add Note</button>
             <div class="row mt-1 bg-white" id="notes"
@@ -54,9 +54,7 @@
                 {% endfor %}
             </div>
         </div>
-        {% if form.author is defined %}
-            <p class="card-header mt-3 text-center">POSTS</p>
-        {% endif %}
+        <p class="card-header mt-3 text-center">{{ form.posts|length }} POSTS</p>
         <div class="container bg-white">
             <div class="row mt-3"
                  data-prototype="{{ include('root-admin/development/prototype/_post.html.twig', {form:form.posts.vars.prototype})|e('html_attr') }}"

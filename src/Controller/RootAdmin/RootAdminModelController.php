@@ -83,8 +83,8 @@ class RootAdminModelController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $image->getId(), $data['_token'])) {
             $fileName = $image->getName();
             unlink($this->getParameter('app.path.model_image') . '/' . $fileName);
-            $em->remove($image);
             $image->getModels()->setUpdatedAt(new DateTimeImmutable('now'));
+            $em->remove($image);
             $em->flush();
             return new JsonResponse(['success' => 1]);
         } else {

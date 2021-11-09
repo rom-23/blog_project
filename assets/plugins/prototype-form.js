@@ -1,4 +1,4 @@
-// DEV NOTE PROTOTYPE in JS es6
+// ADMIN NOTE PROTOTYPE in JS es6
 const newNoteItem = (e) => {
     const collectionHolder = document.querySelector(e.currentTarget.dataset.collection);
     const noteItem = document.createElement('div');
@@ -67,8 +67,15 @@ document.querySelectorAll('.btn-new-image').forEach(btn => {
     return btn.addEventListener('click', newImageItem);
 });
 
-// DEV POST PROTOTYPE in JS es6
+// DEV & USER POST PROTOTYPE in JS es6
 document.querySelectorAll('.btn-remove-post').forEach(btn => {
+    return btn.addEventListener('click', (e) => {
+        return e.currentTarget.closest('.col-6').remove();
+    });
+});
+
+// MODEL OPINION PROTOTYPE in JS es6
+document.querySelectorAll('.btn-remove-opinion').forEach(btn => {
     return btn.addEventListener('click', (e) => {
         return e.currentTarget.closest('.col-6').remove();
     });

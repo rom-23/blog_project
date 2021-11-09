@@ -23,7 +23,7 @@ class SearchDevelopmentType extends AbstractType
                 'required' => false,
                 'label'    => false,
                 'attr'     => [
-                    'class'       => 'w-25 d-inline-block form-control',
+                    'class'       => 'w-25 d-inline-block form-control form-control-sm',
                     'placeholder' => 'Search ...'
                 ]
             ]);

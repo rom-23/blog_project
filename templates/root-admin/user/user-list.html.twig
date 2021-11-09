@@ -26,7 +26,8 @@
                 <th>Registered At</th>
                 <th>Verified At</th>
                 <th>Posts</th>
-                <th>Notes</th>
+                <th>Notes <small>(admin)</small></th>
+                <th>Opinions</th>
                 <th>Addresses</th>
                 <th>Actions</th>
             </tr>
@@ -46,6 +47,7 @@
                     <td>{{ user.accountVerifiedAt|date('d/m/Y') }}</td>
                     <td>{{ user.posts|length }}</td>
                     <td>{{ user.notes|length }}</td>
+                    <td>{{ user.opinions|length }}</td>
                     <td>{{ user.addresses|length }}</td>
                     <td>
                         <a href="{{ path('root_admin_user_edit', { 'id': user.id }) }}" class="btn btn-outline-primary btn-sm">Edit</a>

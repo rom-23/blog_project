@@ -52,7 +52,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $tags  = $this->getReference('tag' . mt_rand(1, 15));
 
             $dev->setTitle(ucfirst($title));
-            $dev->setContent($this->faker->realText(mt_rand(100, 500)));
+            $dev->setContent(ucfirst($this->faker->realText(mt_rand(1000, 2000))));
             $dev->setCreatedAt($dateObject);
             $dev->setSlug($slug);
             $dev->setFiles(new ArrayCollection([]));
@@ -71,30 +71,17 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             }
             $this->manager->persist($dev);
 
-            for ($j = 1; $j <= 5; $j++) {
-//                $note = (new Note())
-//                    ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
-//                    ->setContent(ucfirst($this->faker->realText(mt_rand(10, 250))))
-//                    ->setCreatedAt($dateObject);
-//                $user = $this->getReference('user' . mt_rand(1, 20));
-//                $this->manager->persist($note);
-//
-//                $note->setDevelopment($dev);
-//                $note->setUser($user);
-//                $dev->addNote($note);
+            for ($k = 1; $k <= 5; $k++) {
+                $user = $this->getReference('user' . mt_rand(1, 20));
+                $post = (new Post())
+                    ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
+                    ->setContent(ucfirst($this->faker->realText(mt_rand(10, 350))))
+                    ->setCreatedAt($dateObject)
+                    ->setParent(null);
+                $this->manager->persist($post);
 
-                for ($k = 1; $k <= 5; $k++) {
-                    $user = $this->getReference('user' . mt_rand(1, 20));
-                    $post = (new Post())
-                        ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
-                        ->setContent(ucfirst($this->faker->realText(mt_rand(10, 350))))
-                        ->setCreatedAt($dateObject)
-                        ->setParent(null);
-                    $this->manager->persist($post);
-
-                    $post->setDevelopment($dev);
-                    $post->setUser($user);
-                }
+                $post->setDevelopment($dev);
+                $post->setUser($user);
             }
         }
     }

@@ -2,7 +2,9 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Development\Note;
 use App\Entity\User;
+use App\Form\Development\NoteType;
 use App\Form\User\ChangePasswordType;
 use App\Handler\UserHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -89,6 +91,30 @@ class AccountController extends AbstractController
             null,
             $form->isSubmitted() && !$form->isValid() ? 422 : 200,
         ));
+    }
+
+    /**
+     * @param Note $note
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    #[Route('/account/note/edit/{id<\d+>}', name: 'note_update', methods: ['GET', 'POST'])]
+    public function editUserNote(Note $note, Request $request, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(NoteType::class, $note);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            if ($request->isXmlHttpRequest()) {
+                return new Response(null, 204);
+            }
+            return $this->redirectToRoute('user_account');
+        }
+
+        return $this->render('_partials/_note.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**

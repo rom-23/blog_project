@@ -62,7 +62,10 @@ class ModelAddType extends AbstractType
             ->add('thumbnail', FileType::class, [
                 'label'    => 'Thumbnail',
                 'mapped'   => false,
-                'required' => false
+                'required' => false,
+                'attr'=>[
+                    'class'=>'form-control form-control-sm'
+                ]
             ])
             ->add('images', CollectionType::class, [
                 'mapped'         => false,
@@ -73,6 +76,17 @@ class ModelAddType extends AbstractType
                 'allow_delete'   => true,
                 'by_reference'   => false,
                 'required'       => false,
+                'error_bubbling' => false
+            ])
+            ->add('opinions', CollectionType::class, [
+                'label'          => 'Opinions',
+                'entry_type'     => OpinionType::class,
+                'prototype'      => true,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'by_reference'   => false,
+                'required'       => false,
+                'disabled'       => false,
                 'error_bubbling' => false
             ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

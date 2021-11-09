@@ -52,6 +52,10 @@
                                     <span>Account verified at : {{ user.accountVerifiedAt|date('d/m/Y') }}</span><br>
                                     <span class="product-single-price">Registered at : {{ user.registeredAt|date('d/m/Y') }}</span>
                                     <p>Verified : {% if user.isVerified == 1 %}Yes{% else %}No{% endif %}</p>
+                                    <div {{ stimulus_controller('modal-form', { formUrl: path('change_account_password') }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+                                        <button class="btn btn-outline-info btn-sm" data-action="modal-form#openModal">Change password</button>
+                                        {{ include('_modal/_modal.html.twig', { modalTitle: 'Change your password' }) }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -71,15 +75,15 @@
                             {% for address in user.addresses %}
                                 <div class="col-6">
                                     <div class="container">
-                                        <p class="text-primary">{{ address.name }}</p>
+                                        <p class="text-muted"><strong>{{ address.name }}</strong></p>
                                         {{ address.address }}<br>
                                         {{ address.city }} - {{ address.country }}<br>
                                         {{ address.createdAt|date('d/m/Y') }}<br>
-                                        <a href="{{ path('account_address_delete', { id : address.id }) }}" class="btn btn-outline-danger btn-sm p-1"
+                                        <a href="{{ path('account_address_delete', { id : address.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-2"
                                            data-delete
                                            data-token="{{ csrf_token('delete' ~ address.id) }}">Delete</a>
                                         <span {{ stimulus_controller('modal-form', { formUrl: path('account_address_edit', {id:address.id})  }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
-                                            <button type="button" class="btn btn-outline-info btn-sm p-1 mt-3" data-action="modal-form#openModal">Update</button>
+                                            <button type="button" class="btn btn-outline-info btn-sm p-1 mt-2" data-action="modal-form#openModal">Update</button>
                                             {{ include('_modal/_modal.html.twig', { modalTitle: 'Update address' }) }}
                                         </span>
                                     </div>
@@ -93,7 +97,7 @@
         <hr>
         <div class="row">
             <div class="col-6">
-                <p class="card-header text-center mb-3">{{ user.posts|length }} Posts</p>
+                <p class="card-header text-center mb-3">{{ user.posts|length }} Developments Posts</p>
                 <div class="row justify-content-around">
                     {% for post in user.posts %}
                         <div class="col-6">
@@ -103,8 +107,8 @@
                                 </p>
                                 <span class="text-muted"><small><em>About documentation "{{ post.development.title }}"</em></small></span>
                                 <hr>
-                                <span><small>{{ post.content|raw }}</small></span>
-                                <a href="{{ path('development_publication_post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm p-1"
+                                <span><small>{{ post.content|raw }}</small></span><br>
+                                <a href="{{ path('post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
                                    data-delete
                                    data-token="{{ csrf_token('delete' ~ post.id) }}">Delete</a>
                                 <span {{ stimulus_controller('modal-form', { formUrl: path('post_update',{ id:post.id}) }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
@@ -118,27 +122,51 @@
             </div>
             <div class="col-6">
                 {% if is_granted('ROLE_ADMIN') %}
-                <p class="card-header text-center mb-3">{{ user.notes|length }} Notes</p>
-                <div class="row justify-content-around">
-                    {% for note in user.notes %}
-                        <div class="col-6">
-                            <div class="container bg-white">
-                                <span><strong><em>{{ note.title }}</em></strong></span>
-                                <span class="text-muted float-end"><small><em>{{ note.createdAt|date('d/m/Y') }}</em></small></span>
-                                <p class="text-muted"><small><em>About documentation "{{ note.development.title }}"</em></small>
-                                </p>
-                                <span><small><em>{{ note.content }}</em></small></span><br>
-                                <a href="{{ path('development_publication_note_delete', { id : note.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
-                                   data-delete
-                                   data-token="{{ csrf_token('delete' ~ note.id) }}">Delete</a>
-                                <span {{ stimulus_controller('modal-form', { formUrl: path('note_update',{ id:note.id}) }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+                    <p class="card-header text-center mb-3">{{ user.notes|length }} Admin Notes</p>
+                    <div class="row justify-content-around">
+                        {% for note in user.notes %}
+                            <div class="col-6">
+                                <div class="container bg-white">
+                                    <span><strong><em>{{ note.title }}</em></strong></span>
+                                    <span class="text-muted float-end"><small><em>{{ note.createdAt|date('d/m/Y') }}</em></small></span>
+                                    <p class="text-muted">
+                                        <small><em>About documentation "{{ note.development.title }}"</em></small>
+                                    </p>
+                                    <span><small><em>{{ note.content }}</em></small></span><br>
+                                    <a href="{{ path('note_delete', { id : note.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
+                                       data-delete
+                                       data-token="{{ csrf_token('delete' ~ note.id) }}">Delete</a>
+                                    <span {{ stimulus_controller('modal-form', { formUrl: path('note_update',{ id:note.id}) }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
                                     <button type="button" class="btn btn-outline-info btn-sm p-1 mt-3" data-action="modal-form#openModal">Update</button>
                                     {{ include('_modal/_modal.html.twig', { modalTitle: 'Update note' }) }}
                                 </span>
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="card-header text-center mb-3">{{ user.opinions|length }} Models opinions</p>
+                    <div class="row justify-content-around">
+                        {% for opinion in user.opinions %}
+                            <div class="col-6">
+                                <div class="container bg-white">
+                                    <span><strong><em>Note : {{ opinion.vote }} /5</em></strong></span>
+                                    <span class="text-muted float-end"><small><em>{{ opinion.createdAt|date('d/m/Y') }}</em></small></span>
+                                    <p class="text-muted">
+                                        <small><em>About model "{{ opinion.model.name }}"</em></small>
+                                    </p>
+                                    <span><small><em>{{ opinion.comment }}</em></small></span><br>
+                                    <a href="{{ path('opinion_delete', { id : opinion.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
+                                       data-delete
+                                       data-token="{{ csrf_token('delete' ~ opinion.id) }}">Delete</a>
+                                    <span {{ stimulus_controller('modal-form', { formUrl: path('opinion_update',{ id:opinion.id}) }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+                                            <button type="button" class="btn btn-outline-info btn-sm p-1 mt-3" data-action="modal-form#openModal">Update</button>
+                                            {{ include('_modal/_modal.html.twig', { modalTitle: 'Update note' }) }}
+                                        </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% endif %}
             </div>
         </div>

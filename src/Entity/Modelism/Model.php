@@ -83,6 +83,12 @@ class Model
     private Collection $images;
 
     /**
+     * @var Collection<int, Opinion>
+     * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="model", orphanRemoval=true, cascade={"persist","remove"})
+     */
+    private Collection $opinions;
+
+    /**
      * Model constructor.
      * @throws Exception
      */
@@ -91,7 +97,8 @@ class Model
         $this->createdAt  = new DateTimeImmutable('now');
         $this->options    = new ArrayCollection();
         $this->categories = new ArrayCollection();
-        $this->images = new ArrayCollection();
+        $this->images     = new ArrayCollection();
+        $this->opinions   = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -265,8 +272,38 @@ class Model
         return $this;
     }
 
+    /**
+     * @return Collection|Opinion[]
+     */
+    public function getOpinions(): Collection
+    {
+        return $this->opinions;
+    }
+
+    public function addOpinion(Opinion $opinion): self
+    {
+        if (!$this->opinions->contains($opinion)) {
+            $this->opinions[] = $opinion;
+            $opinion->setModel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOpinion(Opinion $opinion): self
+    {
+        if ($this->opinions->removeElement($opinion)) {
+            if ($opinion->getModel() === $this) {
+                $opinion->setModel(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->getName() ?: '';
     }
+
 }

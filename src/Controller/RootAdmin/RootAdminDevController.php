@@ -4,6 +4,7 @@ namespace App\Controller\RootAdmin;
 
 use App\Entity\Development\Development;
 use App\Entity\Development\DevelopmentFile;
+use App\Form\Development\SearchDevelopmentType;
 use App\Handler\DevelopmentHandler;
 use App\Service\ManagePaginator;
 use App\Repository\Development\DevelopmentRepository;
@@ -104,8 +105,8 @@ class RootAdminDevController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $file->getId(), $data['_token'])) {
             $fileName = $file->getName();
             unlink($this->getParameter('app.path.dev_pdf') . '/' . $fileName);
-            $em->remove($file);
             $file->getDevelopments()->setUpdatedAt(new DateTimeImmutable('now'));
+            $em->remove($file);
             $em->flush();
             return new JsonResponse(['success' => 1]);
         } else {

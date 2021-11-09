@@ -17,6 +17,7 @@
                         <th scope="col">Verified at</th>
                         <th scope="col">Registered at</th>
                         <th scope="col">Posts</th>
+                        <th scope="col">Opinions</th>
                         {% if is_granted('ROLE_ADMIN') %}
                             <th scope="col">Notes</th>
                         {% endif %}
@@ -33,6 +34,7 @@
                         <td>{{ app.user.accountVerifiedAt|date('d/m/y at H:i') }}</td>
                         <td>{{ app.user.registeredAt|date('d/m/y at H:i') }}</td>
                         <td>{{ app.user.posts|length }}</td>
+                        <td>{{ app.user.opinions|length }}</td>
                         {% if is_granted('ROLE_ADMIN') %}
                             <td>{{ app.user.notes|length }}</td>
                         {% endif %}
@@ -47,10 +49,6 @@
                 </div>
                 <div>
                     <a href="{{ path('user_account_delete', {id:app.user.id }) }}" class="btn btn-outline-info btn-sm mb-2">Delete account</a>
-                </div>
-                <div {{ stimulus_controller('modal-form', { formUrl: path('change_account_password') }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
-                    <button class="btn btn-outline-info btn-sm" data-action="modal-form#openModal">Change password</button>
-                    {{ include('_modal/_modal.html.twig', { modalTitle: 'Change your password' }) }}
                 </div>
                 <div>
                     <a href="{{ path('user_data') }}" class="btn btn-outline-info btn-sm mb-2">Create pdf</a>

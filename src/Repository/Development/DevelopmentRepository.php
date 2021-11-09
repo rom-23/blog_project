@@ -69,18 +69,18 @@ class DevelopmentRepository extends ServiceEntityRepository
 
     /**
      * @param mixed $words
-     * @return mixed
+     * @return Query
      */
     public
-    function searchDevelopment(mixed $words): array
+    function searchDevelopment(mixed $words): Query
     {
         $aParameter = [];
         $sql        = "
                 SELECT
                   partial e.{id,title,content,createdAt},
                   partial ljco.{id, title}
-            FROM App\Entity\Development\Development e
-            LEFT JOIN e.section ljco
+                FROM App\Entity\Development\Development e
+                LEFT JOIN e.section ljco
             ";
         if ($words != null) {
             $sql        .= "
@@ -91,6 +91,6 @@ class DevelopmentRepository extends ServiceEntityRepository
                 'words' => $words
             ];
         }
-        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter)->getResult();
+        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
     }
 }

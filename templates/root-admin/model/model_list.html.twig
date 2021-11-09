@@ -20,10 +20,12 @@
                 <th>Titre</th>
                 <th>Price</th>
                 <th>Created At</th>
+                <th>Updated</th>
                 <th>Categories</th>
                 <th>Options</th>
                 <th>Images</th>
                 <th>Thumbnail</th>
+                <th>Opinions</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -34,6 +36,7 @@
                     <td>{{ model.name }}</td>
                     <td>{{ model.price }}</td>
                     <td>{{ model.createdAt|date('d/m/Y') }}</td>
+                    <td>{{ model.updatedAt|date('d/m/y') }}</td>
                     <td><small>
                             {% for category in model.categories %}
                                 - {{ category.name }}<br>
@@ -43,10 +46,10 @@
                     <td>{{ model.options|length }}</td>
                     <td>{{ model.images|length }}</td>
                     <td><img src="{{ asset('/uploads/models/thumbnails/'~model.thumbnail)| imagine_filter('my_thumb') }}"/></td>
+                    <td>{{ model.opinions|length }}</td>
                     <td>
                         <a href="{{ path('root_admin_model_edit', {id: model.id}) }}" class="btn btn-primary btn-sm">Edit</a>
                         <a href="{{ path('root_admin_model_delete', {id: model.id}) }}"  class="btn btn-danger btn-sm">Delete</a>
-
                     </td>
                 </tr>
             {% endfor %}

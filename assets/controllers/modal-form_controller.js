@@ -28,7 +28,7 @@ export default class extends Controller {
             success: function (data) {
                 Swal.fire({
                     icon: 'success',
-                    text: 'Your '+pathArray[1]+' has been updated.',
+                    // text: 'Your '+pathArray[1]+' has been updated.',
                     timer: 2500,
                     showConfirmButton: false
                 });

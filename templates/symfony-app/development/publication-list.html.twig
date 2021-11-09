@@ -4,43 +4,56 @@
     <div class="container">
         <div class="d-flex text-center">
             <div class="container mt-1">
-                <a href="{{ path('symfony_dev_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
+                <div class="d-flex text-center">
+                    <div class="container mt-1">
+                        <span>Symfony Classic App</span><br>
+                        <span><small><em>Use Paginator service & search Form</em></small></span><br>
+                        <a href="{{ path('symfony_dev_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="jumbotron jumbotron mb-1">
             <div class="container">
-                <div class="alert alert-primary text-center p-2" role="alert">
-                    All developments posts
+                <div class="alert alert-primary text-center p-2">
+                    Search development subject
                 </div>
+            </div>
+        </div>
+        <div class="container text-center mb-3 mt-4">
+            <div class="row">
+                {{ form_start(form) }}
+                {{ form_widget(form.words) }}
+                {{ form_end(form) }}
             </div>
         </div>
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-6">
-                    <table class="table table-striped table-hover table-sm">
+                <div class="col-10">
+                    <table class="table table-striped table-hover">
                         <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Section</th>
-                            <th>Posts</th>
-                            <th>Created At</th>
+                            <th class="text-center text-muted">Title</th>
+                            <th class="text-muted">Section</th>
+                            <th class="text-muted">Posts</th>
+                            <th class="text-muted">Created At</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for dev in developments %}
                             <tr>
-                                <td><a href="{{ path('development_publication_view',{'id':dev.id}) }}">{{ dev.title }}</a></td>
-                                <td>{{ dev.section.title }}</td>
-                                <td>{% if dev.posts|length > 0 %}{{ dev.posts|length }}{% endif %}</td>
-                                <td>{{ dev.createdAt|date('d/m/y') }}</td>
+                                <td class="text-center">
+                                    <a href="{{ path('development_publication_view',{'id':dev.id}) }}" class="text-muted">{{ dev.title }}</a>
+                                </td>
+                                <td class="text-muted">{{ dev.section.title }}</td>
+                                <td class="text-muted">{% if dev.posts|length > 0 %}{{ dev.posts|length }}{% endif %}</td>
+                                <td class="text-muted"><em>{{ dev.createdAt|date('d/m/y') }}</em></td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                     <div class="row">
-                        <div class="row">
-                            {{ include('_partials/_pagination.html.twig', {path: 'development_publication'}) }}
-                        </div>
+                        {{ include('_partials/_pagination.html.twig', {path: 'development_publication'}) }}
                     </div>
                 </div>
             </div>

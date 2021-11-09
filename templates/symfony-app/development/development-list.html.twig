@@ -5,62 +5,28 @@
         <div class="d-flex text-center">
             <div class="container mt-1">
                 <span>Symfony Single Page Application</span><br>
-                <span><small><em>Use Fetch API to call Symfony controller, Response from ApiPlatform</em></small></span><br>
+                <span><small><em>Use Fetch API, Json response from ApiPlatform</em></small></span><br>
+                <span><small><em>Use Vanillas JS pagination & search bar</em></small></span><br>
                 <a href="{{ path('symfony_dev_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
             </div>
         </div>
         <div class="jumbotron jumbotron mb-1">
             <div class="container">
-                <div class="alert alert-primary text-center p-2" role="alert">
-                    All documentations and development tutorials
+                <div class="alert alert-secondary text-center p-3">
+                    All developments subjects
                 </div>
             </div>
         </div>
-        <div class="row text-center">
-            <div class="container mb-4 mt-1">
-                {{ form_start(form) }}
-                {{ form_widget(form.words) }}
-                {{ form_end(form) }}
+        <div class="container mb-3 mt-4">
+            <div class="row justify-content-center">
+                <input class="w-25 d-inline-block form-control form-control-sm" type="text" id="search_bar" placeholder="Search ..."/>
             </div>
         </div>
-        <div class="container">
+        <div class="container-fluid">
             <div class="row justify-content-center">
-                <div class="col-6">
-                    <table class="table table-striped table-hover table-sm">
-                        <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Section</th>
-                            <th>Tags</th>
-                            <th>Posts</th>
-                            <th>Created At</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for dev in developments %}
-                            <tr>
-                                <td>
-                                    <a href="{{ path('development_view',{'id':dev.id}) }}" class="dev_item">{{ dev.title }}</a>
-                                </td>
-                                <td>
-                                    <a href="{{ path('section_view',{'id':dev.section.id}) }}" class="dev_item">{{ dev.section.title }}</a>
-                                </td>
-                                <td>{% if dev.tags|length > 0 %}{{ dev.tags|length }}{% endif %}</td>
-                                <td>{% if dev.posts|length > 0 %}{{ dev.posts|length }}{% endif %}</td>
-                                <td>{{ dev.createdAt|date('d/m/y') }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-6">
-                    <div class="container text-center">Pagination Vanilla JS Example</div>
+                <div class="col-10">
                     <div class="paginationTable">
-                        <table class="tableList" id="listingTable"></table>
+                        <table class="tableList table" id="listingTable" data-development="{{ developments|json_encode|e('html_attr') }}"></table>
                         <div class="pagination-block">
                             <span class="pageButton outline-none" id="button_prev">Prev</span>
                             <span id="page_number" class="outline-none"></span>
@@ -69,145 +35,18 @@
                     </div>
                 </div>
             </div>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div id="display-view"></div>
+                </div>
+            </div>
         </div>
-        <div id="display-view"></div>
     </div>
-    <script>
-        const objJson = {{ developments|json_encode|raw }};
-        console.log(objJson);
-        (function () {
-            function Pagination() {
-                const prevButton = document.getElementById('button_prev');
-                const nextButton = document.getElementById('button_next');
-                const clickPageNumber = document.querySelectorAll('.clickPageNumber');
-                const listingTable = document.getElementById('listingTable');
-                let current_page = 1;
-                let records_per_page = 6;
-                this.init = function () {
-                    changePage(1);
-                    pageNumbers();
-                    selectedPage();
-                    clickPage();
-                    addEventListeners();
-                };
-                let addEventListeners = function () {
-                    prevButton.addEventListener('click', prevPage);
-                    nextButton.addEventListener('click', nextPage);
-                };
-                let selectedPage = function () {
-                    let page_number = document.getElementById('page_number').getElementsByClassName('clickPageNumber');
-                    for (let i = 0; i < page_number.length; i++) {
-                        if (i === current_page - 1) {
-                            page_number[i].style.opacity = '1.0';
-                        } else {
-                            page_number[i].style.opacity = '0.5';
-                        }
-                    }
-                };
-                let checkButtonOpacity = function () {
-                    current_page === 1 ? prevButton.classList.add('opacity') : prevButton.classList.remove('opacity');
-                    current_page === numPages() ? nextButton.classList.add('opacity') : nextButton.classList.remove('opacity');
-                };
-                let createTable = function () {
-                    let thead = document.createElement('thead');
-                    thead.innerHTML = "Title";
-                    listingTable.appendChild(thead);
-                    listingTable.classList.add('table');
-                    listingTable.classList.add('table-striped');
-                    listingTable.classList.add('table-sm');
-                }
-                let changePage = function (page) {
-                    if (page < 1) {
-                        page = 1;
-                    }
-                    if (page > (numPages() - 1)) {
-                        page = numPages();
-                    }
-                    listingTable.innerHTML = '';
-                    createTable();
-                    for (let i = (page - 1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
-                        let tr = listingTable.insertRow();
-                        let td = tr.insertCell();
-                        // td.appendChild(document.createTextNode(`${i}`));
-                        let DevLink = document.createElement('a');
-                        DevLink.innerHTML = objJson[i].title;
-                        DevLink.setAttribute('href', '/symfony/development/' + objJson[i].id);
-                        td.appendChild(DevLink);
-                        let td2 = tr.insertCell();
-                        let sectionLink = document.createElement('a');
-                        sectionLink.innerHTML = objJson[i].section.title;
-                        sectionLink.setAttribute('href', '/symfony/section/' + objJson[i].section.id);
-                        td2.appendChild(sectionLink);
-                        insertTableLink(DevLink, sectionLink);
-                    }
-                    checkButtonOpacity();
-                    selectedPage();
-                };
-                let insertTableLink = function (DevLink, sectionLink) {
-                    DevLink.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        const route = this.getAttribute('href');
-                        return panelView(route);
-                    });
-                    sectionLink.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        const route = this.getAttribute('href');
-                        return panelView(route);
-                    });
-                };
-                let panelView = function (route) {
-                    const view = document.querySelector('#display-view');
-                    // eslint-disable-next-line func-style
-                    const getView = async function () {
-                        try {
-                            let response = await fetch(route);
-                            if (response.ok) {
-                                view.innerHTML = '';
-                                let data = await response.json();
-                                view.innerHTML = data['view'];
-                            }
-                        } catch (e) {
-                            alert(e.message);
-                        }
-                    };
-                    return getView();
-                };
-                let prevPage = function () {
-                    if (current_page > 1) {
-                        current_page--;
-                        changePage(current_page);
-                    }
-                };
-                let nextPage = function () {
-                    if (current_page < numPages()) {
-                        current_page++;
-                        changePage(current_page);
-                    }
-                };
-                let clickPage = function () {
-                    document.addEventListener('click', function (e) {
-                        if (e.target.nodeName === 'SPAN' && e.target.classList.contains('clickPageNumber')) {
-                            current_page = e.target.textContent;
-                            changePage(current_page);
-                        }
-                    });
-                };
-                let pageNumbers = function () {
-                    let pageNumber = document.getElementById('page_number');
-                    pageNumber.innerHTML = '';
-
-                    for (let i = 1; i < numPages() + 1; i++) {
-                        pageNumber.innerHTML += "<span class='clickPageNumber'>" + i + '</span>';
-                    }
-                };
-                let numPages = function () {
-                    return Math.ceil(objJson.length / records_per_page);
-                };
-            }
-
-            let pagination = new Pagination();
-            pagination.init();
-        })();
-    </script>
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('pagination') }}
+{% endblock %}
+
+
 

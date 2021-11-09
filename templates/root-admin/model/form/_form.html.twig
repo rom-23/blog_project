@@ -17,12 +17,29 @@
         <div class="container mt-2 pt-2 text-center">
             {% if app.request.attributes.get('_route') == 'root_admin_model_edit' %}
                 <p class="text-dark pt-2"><em>Thumbnail :</em></p>
-                <img class="img-fluid"  src="{{ asset('/uploads/models/thumbnails/'~model.thumbnail)| imagine_filter('medium') }}"/>
+                <img class="img-fluid" src="{{ asset('/uploads/models/thumbnails/'~model.thumbnail)| imagine_filter('medium') }}"/>
                 {{- form_errors(form.thumbnail) -}}
                 <p class="p-3">{{- form_widget(form.thumbnail) -}}</p>
             {% else %}
                 {{- form_errors(form.thumbnail) -}}
                 <p>{{- form_label(form.thumbnail) -}}{{- form_widget(form.thumbnail) -}}</p>
+            {% endif %}
+        </div>
+        <div class="container text-center bg-white">
+            {% if app.request.attributes.get('_route') == 'root_admin_model_edit' %}
+                <p class="card-header text-center">{{ form.opinions|length }} OPINIONS</p>
+                <div class="row mt-1 bg-white"
+                     data-prototype="{{ include('root-admin/model/prototype/_opinion.html.twig', {form:form.opinions.vars.prototype})|e('html_attr') }}"
+                     data-index="{{ form.opinions|length > 0 ? form.opinions|last.vars.name + 1 : 0 }}">
+                    {% for opinion in form.opinions %}
+                        <div class="col-6">
+                            <div class="container text-end p-0">
+                                <em class="text-primary"><small>Posted by {{ opinion.vars['value'].user.email }}</small></em>
+                            </div>
+                            {{ include('root-admin/model/prototype/_opinion.html.twig', {form:opinion}) }}
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
         </div>
     </div>
@@ -35,7 +52,7 @@
             <button class="btn btn-outline-primary btn-new-image mt-3 btn-sm mb-3" type="button" data-collection="#images">Add image</button>
             {% if app.request.attributes.get('_route') == 'root_admin_model_edit' %}
                 {% for image in model.images %}
-                    <div class="col-12">
+                    <div class="col-12 text-center">
                         <img class="img-fluid" src="{{ asset('/uploads/models/modelsAttachments/'~image.name)| imagine_filter('large') }}"/>
                         <a href="{{ path('root_admin_model_delete_image', {'id':image.id}) }}" class="btn btn-outline-danger btn-sm m-4"
                            data-delete

@@ -10,8 +10,19 @@ use Symfony\Component\Mime\Address;
 
 class SendEmail
 {
+    /**
+     * @var MailerInterface
+     */
     private MailerInterface $mailer;
+
+    /**
+     * @var string
+     */
     private string $senderEmail;
+
+    /**
+     * @var string
+     */
     private string $senderName;
 
     /**
@@ -21,10 +32,11 @@ class SendEmail
      */
     public function __construct(MailerInterface $mailer, string $senderEmail, string $senderName)
     {
-        $this->mailer      = $mailer;
-        $this->senderEmail = $senderEmail;
-        $this->senderName  = $senderName;
+        $this->mailer          = $mailer;
+        $this->senderEmail     = $senderEmail;
+        $this->senderName      = $senderName;
     }
+
 
     /**
      * @param array $arguments

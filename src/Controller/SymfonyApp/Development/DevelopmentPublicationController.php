@@ -3,16 +3,15 @@
 namespace App\Controller\SymfonyApp\Development;
 
 use App\Entity\Development\Development;
-use App\Entity\Development\Note;
 use App\Entity\Development\Post;
+use App\Event\PostEvent;
 use App\Form\Development\PostType;
+use App\Form\Development\SearchDevelopmentType;
 use App\Repository\Development\DevelopmentRepository;
-use App\Security\Voter\PostVoter;
 use App\Service\ManagePaginator;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,23 +19,42 @@ use Symfony\Component\Routing\Annotation\Route;
 class DevelopmentPublicationController extends AbstractController
 {
     /**
+     * @var EventDispatcherInterface
+     */
+    private EventDispatcherInterface $eventDispatcher;
+
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
      * @param DevelopmentRepository $devRepository
      * @param Request $request
      * @param ManagePaginator $managePaginator
      * @return Response
      */
     #[Route('/symfony/development/publications', name: 'development_publication')]
-    public function listPublication(DevelopmentRepository $devRepository,Request $request, ManagePaginator $managePaginator): Response
+    public function listPublication(DevelopmentRepository $devRepository, Request $request, ManagePaginator $managePaginator): Response
     {
         $limit        = $request->get('limit', 10);
         $page         = $request->get('page', 1);
         $developments = $managePaginator->paginate($devRepository->paginateDevelopments(), $page, $limit);
+        $form         = $this->createForm(SearchDevelopmentType::class);
+        $search       = $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $developments = $managePaginator->paginate($devRepository->searchDevelopment($search->get('words')->getData()), $page, $limit);
+        }
         return $this->render('symfony-app/development/publication-list.html.twig', [
             'developments' => $developments,
             'pages'        => $managePaginator->lastPage($developments),
             'page'         => $page,
             'limit'        => $limit,
-            'range'        => $managePaginator->rangePaginator($page, $developments)
+            'range'        => $managePaginator->rangePaginator($page, $developments),
+            'form'         => $form->createView()
         ]);
     }
 
@@ -56,6 +74,8 @@ class DevelopmentPublicationController extends AbstractController
             $post->setUser($this->getUser());
             $em->persist($post);
             $em->flush();
+            $event = new PostEvent($post);
+            $this->eventDispatcher->dispatch($event);
             $this->addFlash('message', 'Your comment has been sent');
 
             return $this->redirectToRoute('development_publication_view', ['id' => $development->getId()]);
@@ -65,53 +85,6 @@ class DevelopmentPublicationController extends AbstractController
             'dev'      => $development,
             'postForm' => $postForm->createView()
         ]);
-    }
-
-    #[Route('/symfony/development/publication/post/edit/{id<\d+>}', name: 'development_publication_post_edit')]
-    public function editPublicationPost(Post $post, Request $request, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        $postEditForm = $this->createForm(PostType::class, $post);
-        $postEditForm->handleRequest($request);
-        if ($postEditForm->isSubmitted() && $postEditForm->isValid()) {
-            $post->setParent(null);
-            $post->setDevelopment($post->getDevelopment());
-            $post->setUser($this->getUser());
-            $em->flush();
-            $this->addFlash('message', 'Your comment has been updated');
-            return $this->redirectToRoute('development_publication_view', ['id' => $post->getDevelopment()->getId()]);
-        }
-        return $this->render('symfony-app/development/publication-edit.html.twig', [
-            'post'         => $post,
-            'postEditForm' => $postEditForm->createView()
-        ]);
-    }
-
-    /**
-     * @param Post $post
-     * @param Request $request
-     * @param EntityManagerInterface $em
-     * @return JsonResponse
-     */
-    #[Route('/symfony/development/publication/post/delete/{id<\d+>}', name: 'development_publication_post_delete', methods: ['DELETE'])]
-    public function deletePublicationPost(Post $post, Request $request, EntityManagerInterface $em): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-        if ($this->isCsrfTokenValid('delete' . $post->getId(), $data['_token'])) {
-            if ($post->getReplies()) {
-                foreach ($post->getReplies() as $reply) {
-                    $post->removeReply($reply);
-                }
-            }
-            $em->remove($post);
-            $post->getDevelopment()->setUpdatedAt(new DateTimeImmutable('now'));
-            $em->flush();
-
-            return new JsonResponse(['success' => 1]);
-        } else {
-
-            return new JsonResponse(['error' => 'Invalid Token'], 400);
-        }
     }
 
 }

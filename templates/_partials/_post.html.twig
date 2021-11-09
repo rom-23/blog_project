@@ -1,6 +1,7 @@
 <div class="container ml-5 mr-5">
-    {{ form_start(form) }}
-    {{ form_widget(form.title) }}
+    {{- form_start(form) -}}
+    {{- form_widget(form.title) -}}
     {{- form_widget(form.content) -}}
+    {{- form_widget(form.submit,{'label':false,'attr':{'class':'display:none'}}) -}}
     {{ form_end(form) }}
 </div>

@@ -6,7 +6,6 @@ import './plugins/multi-select';
 import './plugins/tom-select';
 import './plugins/fetch';
 import './plugins/prototype-form';
-import './plugins/development-post';
 import './controllers/modal-form_controller';
 import Swal from 'sweetalert2';
 

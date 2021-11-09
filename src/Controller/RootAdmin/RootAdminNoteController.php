@@ -23,8 +23,8 @@ class RootAdminNoteController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         if ($this->isCsrfTokenValid('delete' . $note->getId(), $data['_token'])) {
-            $em->remove($note);
             $note->getDevelopment()->setUpdatedAt(new DateTimeImmutable('now'));
+            $em->remove($note);
             $em->flush();
 
             return new JsonResponse(['success' => 1]);

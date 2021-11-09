@@ -69,13 +69,16 @@
                                                     <p class="card-title text-muted">
                                                         <span><small><em>( {{ post.replies|length }} replies )</em></small></span>
                                                     </p>
-                                                    <span class="card-text"><small>{{ post.content|raw }}</small></span>
+                                                    <span class="card-text"><small>{{ post.content|raw }}</small></span><br>
                                                     <a href="#add-post" data-reply data-id="{{ post.id }}" class="btn btn-info btn-sm text-white">Reply</a>
                                                     {% if is_granted('edit', post) %}
-                                                        <a href="{{ path('development_publication_post_edit', { id : post.id }) }}" class="btn btn-sm btn-info text-white">Update</a>
-                                                        <a href="{{ path('development_publication_post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm"
+                                                        <a href="{{ path('post_delete', { id : post.id }) }}" class="btn btn-outline-danger btn-sm"
                                                            data-delete
                                                            data-token="{{ csrf_token('delete' ~ post.id) }}">Delete</a>
+                                                        <span {{ stimulus_controller('modal-form', { formUrl: path('post_update', {id:post.id})  }) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+                                                            <button type="button" class="btn btn-outline-info btn-sm p-1" data-action="modal-form#openModal">Update</button>
+                                                            {{ include('_modal/_modal.html.twig', { modalTitle: 'Update address' }) }}
+                                                        </span>
                                                     {% endif %}
                                                 </div>
                                                 {# affichage des reponses #}
@@ -87,7 +90,6 @@
                                                     </div>
                                                 {% endfor %}
                                             {% endif %}
-
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -100,7 +102,7 @@
                                 {{ form_widget(postForm.title,{'attr':{'class':'mb-2','id':'add-post'}}) }}
                                 {{ form_widget(postForm.content) }}
                                 {% if form.author is defined %}
-                                    {{ form_widget(form.author)}}
+                                    {{ form_widget(form.author) }}
                                 {% endif %}
                                 {{ form_end(postForm) }}
                             </div>
@@ -110,4 +112,8 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('post-reply') }}
 {% endblock %}

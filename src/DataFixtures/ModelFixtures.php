@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Modelism\Category;
 use App\Entity\Modelism\Image;
 use App\Entity\Modelism\Model;
+use App\Entity\Modelism\Opinion;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ObjectManager;
@@ -30,7 +31,8 @@ class ModelFixtures extends Fixture
             $thumbnail = $this->faker->image('public/uploads/models/thumbnails');
             $category  = $this->getReference('category' . mt_rand(1, 6));
             $option    = $this->getReference('option' . mt_rand(1, 6));
-            $model     = new Model();
+
+            $model = new Model();
             $model->setName(ucfirst($this->faker->words(mt_rand(3, 4), true)));
             $model->setCreatedAt(new \DateTimeImmutable('now'));
             $model->setThumbnail(str_replace('public/uploads/models/thumbnails/', '', $thumbnail));
@@ -38,13 +40,22 @@ class ModelFixtures extends Fixture
             $model->setPrice($this->faker->randomNumber(2));
             for ($k = 1; $k <= 5; $k++) {
                 $fileName = $this->faker->image('public/uploads/models/modelsAttachments');
-                $image  = new Image();
+                $image    = new Image();
                 $image->setName(str_replace('public/uploads/models/modelsAttachments/', '', $fileName));
                 $image->setCreatedAt(new \DateTimeImmutable('now'));
                 $model->addImage($image);
             }
             $model->addCategory($category);
             $model->addOption($option);
+            for ($k = 1; $k <= 4; $k++) {
+                $opinion = new Opinion();
+                $opinion->setVote($this->faker->numberBetween(1, 5));
+                $opinion->setCreatedAt(new \DateTimeImmutable('now'));
+                $opinion->setComment(ucfirst($this->faker->realText(mt_rand(100, 500))));
+                $opinion->setUser($this->getReference('user' . mt_rand(1, 20)));
+                $opinion->setModel($model);
+                $this->manager->persist($opinion);
+            }
 
             $this->manager->persist($model);
             $this->addReference("model{$i}", $model);

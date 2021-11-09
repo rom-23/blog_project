@@ -49,6 +49,7 @@ class ModelHandler extends AbstractHandler
         $file = $this->form->get('thumbnail')->getData();
         if($file !== null){
             $this->upload->uploadThumbnail($file, $data);
+            $data->setUpdatedAt(new DateTimeImmutable('now'));
         }
         if ($this->em->getUnitOfWork()->getEntityState($data) === UnitOfWork::STATE_NEW) {
             $images = $this->form->get('images')->getData();
