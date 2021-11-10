@@ -5,6 +5,7 @@ namespace App\Form\User;
 use App\Entity\User;
 use App\Form\Development\NoteType;
 use App\Form\Development\PostType;
+use App\Form\Modelism\OpinionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -116,6 +117,17 @@ class UserAddType extends AbstractType
                     $event->getForm()->add('notes', CollectionType::class, [
                         'label'          => 'Notes',
                         'entry_type'     => NoteType::class,
+                        'prototype'      => true,
+                        'allow_add'      => true,
+                        'allow_delete'   => true,
+                        'by_reference'   => false,
+                        'required'       => false,
+                        'disabled'       => false,
+                        'error_bubbling' => false
+                    ]);
+                    $event->getForm()->add('opinions', CollectionType::class, [
+                        'label'          => 'Opinions',
+                        'entry_type'     => OpinionType::class,
                         'prototype'      => true,
                         'allow_add'      => true,
                         'allow_delete'   => true,

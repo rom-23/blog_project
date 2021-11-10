@@ -41,7 +41,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * @return array
      */
-    public function findAllUsers(): Query
+    public function paginateUsers(): Query
     {
         $sql = "
                 SELECT

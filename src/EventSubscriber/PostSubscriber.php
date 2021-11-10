@@ -26,7 +26,7 @@ class PostSubscriber implements EventSubscriberInterface
     /**
      * @throws TransportExceptionInterface
      */
-    public function onSendPost(PostEvent $event)
+    public function onSendPost(PostEvent $event): void
     {
         $post       = $event->getPost();
         $parameters = [
@@ -43,9 +43,8 @@ class PostSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @return \array[][]
+     * @return array
      */
-    #[ArrayShape([PostEvent::class => "array[]"])]
     public static function getSubscribedEvents(): array
     {
         return [

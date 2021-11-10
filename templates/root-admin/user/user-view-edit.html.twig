@@ -86,6 +86,9 @@
                          data-index="{{ form.posts|length > 0 ? form.posts|last.vars.name + 1 : 0 }}">
                         {% for post in form.posts %}
                             <div class="col-6">
+                                <div class="container text-end p-1">
+                                    <small class="text-primary"><em>About development <a href="{{ path('root_admin_dev_edit',{ id : post.vars['value'].development.id  }) }}">{{ post.vars['value'].development.title }}</a></em></small>
+                                </div>
                                 {{ include('root-admin/user/prototype/_post.html.twig', {form:post}) }}
                             </div>
                         {% endfor %}
@@ -93,34 +96,42 @@
                 </div>
             </div>
             <div class="col-6">
-                <p class="card-header text-center mb-3">{{ user.opinions|length }} Opinions</p>
-                <div class="row justify-content-around">
-                    {% for opinion in user.opinions %}
-                        <div class="col-6">
+                {% if app.request.attributes.get('_route') == 'root_admin_user_edit' %}
+                    {% for role in user.roles %}
+                        {% if role != 'ROLE_ADMIN' %}
+                            <p class="card-header text-center">{{ user.opinions|length }} Opinions</p>
                             <div class="container bg-white">
-                                <p><strong><em>Note : {{ opinion.vote }} /5</em></strong>
-                                    <span class="text-muted float-end"><small><em>Added on {{ opinion.createdAt|date('d/m/Y') }}</em></small></span>
-                                </p>
-                                <small><em>{{ opinion.comment }}</em></small><br>
-                                <a href="{{ path('root_admin_opinion_delete', { id : opinion.id }) }}" class="btn btn-outline-danger btn-sm p-1 mt-3"
-                                   data-delete
-                                   data-token="{{ csrf_token('delete' ~ opinion.id) }}">Delete</a>
+                                <div class="row"
+                                     data-prototype="{{ include('root-admin/user/prototype/_opinion.html.twig', {form:form.opinions.vars.prototype})|e('html_attr') }}"
+                                     data-index="{{ form.opinions|length > 0 ? form.opinions|last.vars.name + 1 : 0 }}">
+                                    {% for opinion in form.opinions %}
+                                        <div class="col-6">
+                                            <small class="text-primary"><em>About model <a href="{{ path('root_admin_model_edit',{ id : opinion.vars['value'].model.id  }) }}">{{ opinion.vars['value'].model.name }}</a></em></small>
+                                            {{ include('root-admin/user/prototype/_opinion.html.twig', {form:opinion}) }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% for role in user.roles %}
+                    {% if role == 'ROLE_ADMIN' %}
+                        <p class="card-header text-center mb-3 mt-3">{{ form.notes|length }} Admin Note(s)</p>
+                        <div class="container bg-white">
+                            <div class="row mt-3"
+                                 data-prototype="{{ include('root-admin/development/prototype/_note.html.twig', {form:form.notes.vars.prototype})|e('html_attr') }}"
+                                 data-index="{{ form.notes|length > 0 ? form.notes|last.vars.name + 1 : 0 }}">
+                                {% for note in form.notes %}
+                                    <div class="col-6">
+                                        <small class="text-primary"><em>About develoment <a href="{{ path('root_admin_dev_edit',{ id : note.vars['value'].development.id  }) }}">{{ note.vars['value'].development.title }}</a></em></small>
+                                        {{ include('root-admin/development/prototype/_note.html.twig', {form:note}) }}
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-                <p class="card-header text-center mb-3 mt-3">{{ form.notes|length }} Admin Note(s)</p>
-                <div class="container bg-white">
-                    <div class="row mt-3"
-                         data-prototype="{{ include('root-admin/development/prototype/_note.html.twig', {form:form.notes.vars.prototype})|e('html_attr') }}"
-                         data-index="{{ form.notes|length > 0 ? form.notes|last.vars.name + 1 : 0 }}">
-                        {% for note in form.notes %}
-                            <div class="col-6">
-                                {{ include('root-admin/development/prototype/_note.html.twig', {form:note}) }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
     </div>

@@ -122,10 +122,23 @@ class ModelRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array
+     * @return Query
      */
-    public function findAllModelkit(): array
+    public function paginateModels(): Query
     {
-        return $this->createQueryBuilder('p')->getQuery()->getResult();
+        $sql = "
+                SELECT
+                  partial e.{id,name,thumbnail, description, price, createdAt, updated_at},
+                  partial cat.{id, name},
+                  partial opt.{id, name},
+                  partial img.{id, name},
+                  partial opi.{id, vote, comment, createdAt}
+            FROM App\Entity\Modelism\Model e
+            LEFT JOIN e.categories cat
+            LEFT JOIN e.options opt
+            LEFT JOIN e.images img
+            LEFT JOIN e.opinions opi
+        ";
+        return $this->getEntityManager()->createQuery($sql);
     }
 }

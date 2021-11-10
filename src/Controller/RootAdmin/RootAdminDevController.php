@@ -27,7 +27,7 @@ class RootAdminDevController extends AbstractController
     #[Route('/root/admin/dev/list', name: 'root_admin_dev_list', methods: ['GET'])]
     public function listDevelopment(DevelopmentRepository $devRepository, Request $request, ManagePaginator $managePaginator): Response
     {
-        $limit        = $request->get('limit', 7);
+        $limit        = $request->get('limit', 15);
         $page         = $request->get('page', 1);
         $developments = $managePaginator->paginate($devRepository->paginateDevelopments(), $page, $limit);
 

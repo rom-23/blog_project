@@ -1,5 +1,6 @@
 const searchBar = document.getElementById('search_bar');
 const twigJsonData = document.querySelector('.tableList').dataset.development;
+console.log(twigJsonData);
 const jsonToArray = JSON.parse(twigJsonData);
 const objJson = jsonToArray.map(function (obj) {
     return {
@@ -9,7 +10,6 @@ const objJson = jsonToArray.map(function (obj) {
         'created' : obj.createdAt
     };
 });
-
 searchBar.addEventListener('keyup', e => {
     const searchString = e.target.value;
     const filteredDevelopment = objJson.filter(development => {

@@ -181,11 +181,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $addresses;
 
     /**
-     * @var Collection<int, Opinion>
+     * @var Collection|null<int, Opinion>
      * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
      * @Groups({"user:get"})
      */
-    private Collection $opinions;
+    private ?Collection $opinions;
 
     public function __construct()
     {
@@ -367,19 +367,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeAddress(Address $address): self
     {
-        if ($this->addresses->removeElement($address)) {
-            if ($address->getUser() === $this) {
-                $address->setUser(null);
-            }
-        }
-
+        $this->addresses->removeElement($address);
         return $this;
     }
 
     /**
-     * @return Collection|Opinion[]
+     * @return Collection|null<int, Opinion>
      */
-    public function getOpinions(): Collection
+    public function getOpinions(): ?Collection
     {
         return $this->opinions;
     }
@@ -395,11 +390,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeOpinion(Opinion $opinion): self
     {
-        if ($this->opinions->removeElement($opinion)) {
-            if ($opinion->getUser() === $this) {
-                $opinion->setUser(null);
-            }
-        }
+        $this->opinions->removeElement($opinion);
         return $this;
     }
 

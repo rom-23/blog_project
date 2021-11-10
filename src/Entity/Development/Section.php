@@ -44,7 +44,8 @@ class Section
      */
     private Collection $developments;
 
-    #[Pure] public function __construct()
+    #[Pure]
+    public function __construct()
     {
         $this->developments = new ArrayCollection();
     }

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\User\AddressType;
 use App\Repository\UserRepository;
 use App\Handler\UserHandler;
+use App\Security\Voter\RoleVoter;
 use App\Service\ManagePaginator;
 use App\Service\UploadInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,9 +32,9 @@ class RootAdminUserController extends AbstractController
     #[Route('/root/admin/users', name: 'root_admin_users')]
     public function listUser(UserRepository $userRepository, Request $request, ManagePaginator $managePaginator): Response
     {
-        $limit = $request->get('limit', 7);
+        $limit = $request->get('limit', 15);
         $page  = $request->get('page', 1);
-        $users = $managePaginator->paginate($userRepository->findAllUsers(), $page, $limit);
+        $users = $managePaginator->paginate($userRepository->paginateUsers(), $page, $limit);
         return $this->render('root-admin/user/user-list.html.twig', [
             'users' => $users,
             'pages' => $managePaginator->lastPage($users),

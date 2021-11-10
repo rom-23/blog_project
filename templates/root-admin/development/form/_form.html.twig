@@ -61,18 +61,13 @@
                  data-index="{{ form.posts|length > 0 ? form.posts|last.vars.name + 1 : 0 }}">
                 {% for post in form.posts %}
                     <div class="col-6">
-                        {% if form.author is defined %}
-                            <div class="container text-end p-0">
-                                <em class="text-primary"><small>Posted by {{ post.vars['value'].user.email }}</small></em>
-                            </div>
-                        {% endif %}
+                        <em class="text-primary"><small>Posted by <a href="{{ path('root_admin_user_edit',{ id : post.vars['value'].user.id  }) }}">{{ post.vars['value'].user.email }}</a></small></em>
                         {{ include('root-admin/development/prototype/_post.html.twig', {form:post}) }}
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-
 </div>
 
 

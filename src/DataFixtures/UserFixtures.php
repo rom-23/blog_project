@@ -18,7 +18,7 @@ class UserFixtures extends Fixture
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateUsers(20);
+        $this->generateUsers(40);
         $this->manager->flush();
     }
 

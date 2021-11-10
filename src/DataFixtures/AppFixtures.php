@@ -34,7 +34,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateDevelopments(30);
+        $this->generateDevelopments(40);
         $this->manager->flush();
     }
 
@@ -71,8 +71,8 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             }
             $this->manager->persist($dev);
 
-            for ($k = 1; $k <= 5; $k++) {
-                $user = $this->getReference('user' . mt_rand(1, 20));
+            for ($k = 1; $k <= 8; $k++) {
+                $user = $this->getReference('user' . mt_rand(1, 40));
                 $post = (new Post())
                     ->setTitle(ucfirst($this->faker->realText(mt_rand(10, 30))))
                     ->setContent(ucfirst($this->faker->realText(mt_rand(10, 350))))

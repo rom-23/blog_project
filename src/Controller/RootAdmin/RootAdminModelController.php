@@ -6,6 +6,7 @@ use App\Entity\Modelism\Image;
 use App\Entity\Modelism\Model;
 use App\Handler\ModelHandler;
 use App\Repository\Modelism\ModelRepository;
+use App\Service\ManagePaginator;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +17,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RootAdminModelController extends AbstractController
 {
+    /**
+     * @param ModelRepository $modelRepository
+     * @param Request $request
+     * @param ManagePaginator $managePaginator
+     * @return Response
+     */
     #[Route('/root/admin/model/list', name: 'root_admin_model_list')]
-    public function listModel(ModelRepository $modelRepository): Response
+    public function listModel(ModelRepository $modelRepository, Request $request, ManagePaginator $managePaginator): Response
     {
+        $limit  = $request->get('limit', 7);
+        $page   = $request->get('page', 1);
+        $models = $managePaginator->paginate($modelRepository->paginateModels(), $page, $limit);
+
         return $this->render('root-admin/model/model_list.html.twig', [
-            'models' => $modelRepository->findAll()
+            'models' => $models,
+            'pages'  => $managePaginator->lastPage($models),
+            'page'   => $page,
+            'limit'  => $limit,
+            'range'  => $managePaginator->rangePaginator($page, $models)
         ]);
     }
 
@@ -33,7 +48,7 @@ class RootAdminModelController extends AbstractController
     public function addModel(ModelHandler $modelHandler, Request $request): Response
     {
         $model = new Model();
-        if ($modelHandler->handle($request, $model,[])) {
+        if ($modelHandler->handle($request, $model, [])) {
             $this->addFlash('success', 'A new model has been created.');
             return $this->redirectToRoute('root_admin_model_list');
         }
@@ -42,10 +57,17 @@ class RootAdminModelController extends AbstractController
         ]);
     }
 
+    /**
+     * @param ModelHandler $modelHandler
+     * @param Model $model
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/root/admin/model/{id<\d+>}', name: 'root_admin_model_edit')]
     public function editModel(ModelHandler $modelHandler, Model $model, Request $request, EntityManagerInterface $em): Response
     {
-        $options = ['validation_groups'=>['Default']];
+        $options = ['validation_groups' => ['Default']];
         if ($modelHandler->handle($request, $model, $options)) {
             $this->addFlash('success', 'This model has been updated.');
             return $this->redirectToRoute('root_admin_model_list');

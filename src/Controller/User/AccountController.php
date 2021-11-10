@@ -21,7 +21,7 @@ class AccountController extends AbstractController
     #[Route(path: '/account', name: 'user_account')]
     public function home(): Response
     {
-        return $this->render('user/account/account.html.twig');
+        return $this->render('symfony-app/user/account/account.html.twig');
     }
 
     /**
@@ -39,7 +39,7 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
-        return $this->render('user/account/account-edit.html.twig', [
+        return $this->render('symfony-app/user/account/account-edit.html.twig', [
             'user' => $user,
             'form' => $userHandler->createView()
         ]);
@@ -123,7 +123,7 @@ class AccountController extends AbstractController
     #[Route(path: '/account/data', name: 'user_data')]
     public function getUserData(): Response
     {
-        return $this->render('user/account/data.html.twig');
+        return $this->render('symfony-app/user/account/data.html.twig');
     }
 
     /**
@@ -144,7 +144,7 @@ class AccountController extends AbstractController
             ]
         ]);
         $dompdf->setHttpContext($context);
-        $html = $this->renderView('user/account/download-user-data.html.twig');
+        $html = $this->renderView('symfony-app/user/account/download-user-data.html.twig');
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();

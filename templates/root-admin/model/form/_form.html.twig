@@ -33,9 +33,7 @@
                      data-index="{{ form.opinions|length > 0 ? form.opinions|last.vars.name + 1 : 0 }}">
                     {% for opinion in form.opinions %}
                         <div class="col-6">
-                            <div class="container text-end p-0">
-                                <em class="text-primary"><small>Posted by {{ opinion.vars['value'].user.email }}</small></em>
-                            </div>
+                            <em class="text-primary"><small>Posted by <a href="{{ path('root_admin_user_edit',{ id : opinion.vars['value'].user.id  }) }}">{{ opinion.vars['value'].user.email }}</a></small></em>
                             {{ include('root-admin/model/prototype/_opinion.html.twig', {form:opinion}) }}
                         </div>
                     {% endfor %}

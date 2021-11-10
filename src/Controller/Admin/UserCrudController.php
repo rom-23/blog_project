@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -28,7 +29,8 @@ class UserCrudController extends AbstractCrudController
         return [
             IdField::new('id', 'ID')->onlyOnIndex(),
             EmailField::new('email'),
-            ImageField::new('imageFile')->setUploadDir('/public/uploads/user-image')->setLabel('Images'),
+            ImageField::new('image')->setUploadDir('/public/uploads/user-image')->setLabel('Image'),
+            BooleanField::new('isVerified'),
             TextField::new('password'),
             ArrayField::new('roles'),
             AssociationField::new('posts'),

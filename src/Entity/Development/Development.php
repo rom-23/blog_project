@@ -66,9 +66,6 @@ use App\Validator\Development\{
             'delete',
             'put'
         ],
-        attributes: [
-            'order' => ['createdAt' => 'DESC']
-        ],
         denormalizationContext: ['groups' => ['development:write'], 'enable_max_depth' => true],
         normalizationContext: ['groups' => ['development:read'], 'enable_max_depth' => true],
 //        security: 'is_granted("ROLE_USER")'
@@ -108,6 +105,7 @@ class Development
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
+    #[Groups(['development:read', 'development:write'])]
     private ?DateTimeImmutable $updatedAt = null;
 
     /**

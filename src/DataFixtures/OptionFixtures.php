@@ -17,7 +17,7 @@ class OptionFixtures extends Fixture
     {
         $this->manager = $manager;
         $this->faker   = Factory::create();
-        $this->generateOptions(6);
+        $this->generateOptions(20);
         $this->manager->flush();
     }
 

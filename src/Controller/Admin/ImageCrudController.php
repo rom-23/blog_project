@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ImageCrudController extends AbstractCrudController
@@ -22,7 +23,7 @@ class ImageCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id', 'ID')->onlyOnIndex(),
-            TextField::new('path'),
+            TextField::new('name'),
             DateField::new('createdAt'),
             DateField::new('updatedAt')
         ];

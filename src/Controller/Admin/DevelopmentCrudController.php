@@ -3,10 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Development\Development;
+use App\Form\Development\DevelopmentFileType;
+use App\Form\Modelism\ImageType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -32,12 +35,20 @@ class DevelopmentCrudController extends AbstractCrudController
             TextField::new('title'),
             TextEditorField::new('content')->setFormType(CKEditorType::class),
             TextField::new('slug'),
-            ImageField::new('filename')->setUploadDir('/public/uploads/dev-files')->setLabel('Document'),
+//            CollectionField::new('files')
+//                           ->setEntryType(DevelopmentFileType::class)
+//                           ->setFormTypeOption('by_reference', false)
+//                           ->setFormTypeOption('mapped', false)
+//                           ->onlyOnForms(),
+            CollectionField::new('files')->onlyOnDetail(),
+            AssociationField::new('files'),
             AssociationField::new('section'),
             AssociationField::new('tags'),
             AssociationField::new('notes'),
             AssociationField::new('posts'),
-            DateField::new('createdAt')
+            DateField::new('createdAt'),
+            DateField::new('updatedAt')
+
         ];
 //        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
 //            $fields[]= $doc;
@@ -46,10 +57,12 @@ class DevelopmentCrudController extends AbstractCrudController
 //        }
         return $fields;
     }
-//    public function configureActions(Actions $actions): Actions
-//    {
-//        return $actions->add(CRUD::PAGE_INDEX, 'detail');
-//    }
+
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions->add(CRUD::PAGE_INDEX, 'detail');
+    }
 
     public function configureCrud(Crud $crud): Crud
     {

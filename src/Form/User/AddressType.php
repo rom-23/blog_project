@@ -18,44 +18,47 @@ class AddressType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => false,
                 'attr'  => [
-                    'placeholder' => 'Nommez votre adresse'
+                    'placeholder' => 'Enter a name for your address',
+                    'class'=>'mb-2'
                 ]
             ])
             ->add('firstname', TextType::class, [
                 'label' => false,
                 'attr'  => [
-                    'placeholder' => 'Entrez votre prénom'
+                    'placeholder' => 'Type your firstname',
+                    'class'=>'mb-2'
                 ]
             ])
             ->add('lastname', TextType::class, [
                 'label' => false,
                 'attr'  => [
-                    'placeholder' => 'Entrez votre nom'
+                    'placeholder' => 'Type your lastname',
+                    'class'=>'mb-2'
                 ]
             ])
             ->add('address', TextType::class, [
                 'label' => false,
                 'attr'  => [
-                    'placeholder' => '8 rue des Lilas...'
+                    'placeholder' => 'Your address ...',
+                    'class'=>'mb-2'
                 ]
             ])
             ->add('postal', TextType::class, [
                 'label' =>false,
                 'attr'  => [
-                    'placeholder' => 'Entrez votre code postal'
+                    'placeholder' => 'Enter your postal code',
+                    'class'=>'mb-2'
                 ]
             ])
             ->add('city', TextType::class, [
                 'label' => false,
                 'attr'  => [
-                    'placeholder' => 'Entrez votre ville'
+                    'placeholder' => 'Enter your city',
+                    'class'=>'mb-2'
                 ]
             ])
             ->add('country', CountryType::class, [
-                'label' => false,
-                'attr'  => [
-                    'placeholder' => 'Entrez votre pays'
-                ]
+                'label' => false
             ]);
     }
 

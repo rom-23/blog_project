@@ -23,7 +23,7 @@ class Opinion
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private ?string $vote = null;
+    private ?int $vote = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -39,7 +39,7 @@ class Opinion
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="opinions")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
-    private User $user;
+    private ?User $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="opinions")
@@ -87,23 +87,21 @@ class Opinion
     public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
-
         return $this;
     }
 
-    public function getModel(): Model
+    public function getModel(): ?Model
     {
         return $this->model;
     }
@@ -112,5 +110,10 @@ class Opinion
     {
         $this->model = $model;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->comment ?: '';
     }
 }

@@ -2,40 +2,42 @@
 {% extends navbar %}
 {% block body %}
     {{ form_start(form) }}
-<div class="row">
-    <div class="container form-model mb-5 mt-3">
-        <div class="jumbotron jumbotron mb-3">
-            <div class="container">
-                <span class="lead"><strong>Add new User</strong></span>
+    {{ form_widget(form._token) }}
+    <div class="row">
+        <div class="container form-model mb-5 mt-3">
+            <div class="jumbotron jumbotron mb-3">
+                <div class="container">
+                    <span class="lead"><strong>Add new User</strong></span>
+                </div>
             </div>
-        </div>
-        <hr>
-        <div class="container">
-            <div class="col-12 my-auto">
-                <table id="new-model" class="table table-expend table-sm">
-                    <tr>
-                        <td class="p-2">{{- form_widget(form.email) -}}</td>
-                        <td>{{- form_widget(form.roles) -}}</td>
-                    </tr>
-                    <tr>
-                        <td class="p-2">{{- form_widget(form.password) -}}</td>
-                        <td class="p-2">{{- form_widget(form.isVerified) -}}</td>
-                    </tr>
-                    <tr>
-                        <td class="p-3">
-                            {{- form_errors(form.imageFile) -}}{{- form_widget(form.imageFile) -}}
-                        </td>
-                    </tr>
-                </table>
-                <div class="row">
-                    <div class="container text-center mt-5">
-                        <span><a href="{{ path('root_admin_users') }}" class="btn btn-primary btn-sm"><< Back</a></span>
-                        <span>{{- form_widget(form.submit) -}}</span>
+            <hr>
+            <div class="container">
+                <div class="col-12 my-auto">
+                    <table id="new-model" class="table table-expend table-sm">
+                        <tr>
+                            <td class="p-2">{{- form_widget(form.email) -}}</td>
+                            <td>{{- form_widget(form.roles) -}}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2">{{- form_widget(form.password) -}}</td>
+                            <td class="p-2">{{- form_widget(form.isVerified) -}}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3">
+                                {{- form_errors(form.imageFile) -}}{{- form_widget(form.imageFile) -}}
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="row">
+                        <div class="container text-center mt-5">
+                            <span><a href="{{ path('root_admin_users') }}" class="btn btn-primary btn-sm"><< Back</a></span>
+                            <span>{{- form_widget(form.submit) -}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        {{ form_end(form,{ render_rest: false }) }}
     </div>
-    {{ form_end(form) }}
-    {% endblock %}
+{% endblock %}
 

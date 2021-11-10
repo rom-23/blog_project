@@ -55,6 +55,9 @@
             {% endfor %}
             </tbody>
         </table>
+        <div class="row">
+            {{ include('_partials/_pagination.html.twig', {path: 'root_admin_model_list'}) }}
+        </div>
     </div>
 {% endblock %}
 
