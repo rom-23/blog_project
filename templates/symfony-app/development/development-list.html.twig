@@ -1,43 +1,51 @@
 {%- set navbar = '/navbars/navbar.html.twig' -%}
 {% extends navbar %}
 {% block body %}
-    <div class="container">
-        <div class="d-flex text-center">
+    <div class="container-fluid">
+        <div class="d-flex float-end">
             <div class="container mt-1">
-                <span>Symfony Single Page Application</span><br>
-                <span><small><em>Use Fetch API, Json response from ApiPlatform</em></small></span><br>
-                <span><small><em>Use Vanillas JS pagination & search bar</em></small></span><br>
+                <span><small>Symfony Single Page Application</small></span><br>
+                <span><small><em> - Use Fetch API, Json response from ApiPlatform</em></small></span><br>
+                <span><small><em>- Use Vanillas JS pagination & search bar</em></small></span><br>
+            </div>
+        </div>
+        <div class="d-flex text-left">
+            <div class="container">
                 <a href="{{ path('symfony_dev_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
             </div>
         </div>
-        <div class="jumbotron jumbotron mb-1">
-            <div class="container">
-                <div class="alert alert-secondary text-center p-3">
-                    All developments subjects
+        <div class="jumbotron jumbotron mt-4">
+            <div class="container-fluid">
+                <div class="alert alert-secondary text-center p-2">All developments subjects</div>
+            </div>
+        </div>
+        <div class="container mb-3 mt-3">
+            <div class="row">
+                <div class="col-3">
+                    <input class="form-control form-control-sm" type="text" id="search_bar" placeholder="Search ..."/>
                 </div>
             </div>
         </div>
-        <div class="container mb-3 mt-4">
-            <div class="row justify-content-center">
-                <input class="w-25 d-inline-block form-control form-control-sm" type="text" id="search_bar" placeholder="Search ..."/>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-10">
-                    <div class="paginationTable">
-                        <table class="tableList table" id="listingTable" data-development="{{ developments|json_encode|e('html_attr') }}"></table>
-                        <div class="pagination-block">
-                            <span class="pageButton outline-none" id="button_prev">Prev</span>
-                            <span id="page_number" class="outline-none"></span>
-                            <span class="pageButton outline-none" id="button_next">Next</span>
+        <div class="row">
+            <div class="col-5">
+                <div class="row justify-content-center">
+                    <div class="col-10">
+                        <div class="paginationTable">
+                            <table class="tableList table table-sm" id="listingTable" data-development="{{ developments|json_encode|e('html_attr') }}"></table>
+                            <div class="pagination-block">
+                                <span class="pageButton outline-none" id="button_prev">Prev</span>
+                                <span id="page_number" class="outline-none"></span>
+                                <span class="pageButton outline-none" id="button_next">Next</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div id="display-view"></div>
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-12">
+                        <div id="display-view"></div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -14,7 +14,7 @@ class DevelopmentController extends AbstractController
     /**
      * @return Response
      */
-    #[Route('/symfony/developments', name: 'development_list')]
+    #[Route('/symfony/api/developments', name: 'api_platform_development_list')]
     public function listDevelopments(): Response
     {
         $allDev_json = json_decode(file_get_contents(self::BASE_PATH . 'developments'));
@@ -23,7 +23,7 @@ class DevelopmentController extends AbstractController
         ]);
     }
 
-    #[Route('/symfony/development/{id<\d+>}', name: 'development_view')]
+    #[Route('/symfony/api/development/{id<\d+>}', name: 'api_platform_development_view')]
     public function viewDevelopment(Request $request): Response
     {
         $dev_json = json_decode(file_get_contents(self::BASE_PATH . 'developments/' . $request->attributes->get('id')));
@@ -33,7 +33,7 @@ class DevelopmentController extends AbstractController
         return $this->json(['view' => $html]);
     }
 
-    #[Route('/symfony/development/section/{id<\d+>}', name: 'development_section_view')]
+    #[Route('/symfony/api/development/section/{id<\d+>}', name: 'api_platform_development_section_view')]
     public function viewDevelopmentBySection(Request $request): Response
     {
         $dev_json = json_decode(file_get_contents(self::BASE_PATH . 'developments/section/' . $request->attributes->get('id')));

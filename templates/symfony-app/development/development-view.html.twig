@@ -1,42 +1,67 @@
-<div class="container dev-by-section">
+<div class="container-fluid dev-by-section">
     <div class="d-flex float-end">
         <div class="container">
-            <a href="{{ path('development_list') }}" class="btn btn-outline-danger btn-sm">X</a>
+            <a href="{{ path('api_platform_development_list') }}" class="btn btn-outline-danger btn-sm p-1">X</a>
         </div>
     </div>
     <div class="dev-view">
-            <div class="card border-0 p-5" style="max-width: 55rem;">
+        <div class="col-8">
+            <div class="card border-0">
                 <div class="card-body">
-                    <h5 class="text-primary">{{ dev.title }}</h5>
-                    <h6 class="text-success">{{ dev.section.title }}</h6>
+                    <span class="text-muted"><strong>{{ dev.title }}</strong></span><br>
                     <small><em>Created on {{ dev.createdAt|date('d/m/y') }}</em></small>
-                    <p class="card-text">{{ dev.content|raw }}</p>
+                    <p class="text-success">{{ dev.section.title }}</p>
+                    <p class="card-text"><small>{{ dev.content|raw }}</small></p>
+                    <span class="card-text"><small>Attached file(s) : </small></span><br>
+                    {% for file in dev.files %}
+                        <span><small><a href="{{ asset('/uploads/dev-files/'~ file.name ) }}">{{ file.name }}</a></small></span>
+                        <br>
+                    {% endfor %}
                 </div>
-            </div>
-            <div class="card border-0 bg-transparent" style="max-width: 38rem;">
-                <div class="card-header">
-                    {% if dev.tags|length > 0 %}
-                        <p class="card-header mt-2 text-center mb-3">TAGS</p>
-                        {% for tag in dev.tags %}
-                            <span class="badge bg-info text-dark m-1">{{ tag.name }}</span>
-                        {% endfor %}
-                    {% endif %}
+                <div class="card-footer">
                     {% if dev.posts|length > 0 %}
-                        <p class="card-header mt-4 text-center mb-3">POSTS</p>
+                        <p class="card-header text-center mb-3"><small>{{ dev.posts|length }} POSTS</small></p>
                         {% for post in dev.posts %}
-                            <h6 class="card-title"><strong>{{ post.title }}</strong></h6>
-                            <p class="card-title text-muted"><em>Posted by {{ post.user.email }}</em></p>
-                            <p class="card-text">{{ post.content|raw }}</p>
-                        {% endfor %}
-                    {% endif %}
-                    {% if dev.notes|length > 0 %}
-                        <p class="card-header mt-3 text-center mb-3">NOTES</p>
-                        {% for note in dev.notes %}
-                            <p class="card-title mt-2"><strong>{{ note.title }}</strong></p>
-                            <p class="card-text"><em>{{ note.content|raw }}</em></p>
+                            <p class="card-title"><strong><small>{{ post.title }}</small></strong>
+                                <span class="card-title text-primary float-end"><small><em>Posted by {{ post.user.email }}</em></small></span>
+                            </p>
+                            <span class="card-title text-muted"><small><em>{{ post.createdAt|date('d/m/Y') }}</em></small></span>
+                            <br>
+                            <p class="card-text"><small>{{ post.content|raw }}</small></p>
+                            <hr>
                         {% endfor %}
                     {% endif %}
                 </div>
             </div>
         </div>
+        <div class="col-4">
+            <div class="card border-0 text-center">
+                <div class="card-header">
+                    {% if dev.tags|length > 0 %}
+                        <p class="card-header text-center mb-2"><small>TAGS</small></p>
+                        {% for tag in dev.tags %}
+                            <span class="badge bg-primary text-white m-1">{{ tag.name }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card border-0 text-center mt-3">
+                {% if dev.notes|length > 0 %}
+                    <div class="card-header">
+                        <p class="card-header mt-3 text-center mb-3">NOTES</p>
+                        {% for note in dev.notes %}
+                            <p class="card-title mt-2"><strong><small>{{ note.title }}</small></strong></p>
+                            <p class="card-title text-primary">
+                                <small><em>Posted by {{ note.user.email }}</em></small>
+                                <span class="card-title text-primary"><small><em>on {{ note.createdAt|date('d/m/Y') }}</em></small></span>
+                            </p>
+                            <p class="card-text"><small><em>{{ note.content|raw }}</em></small></p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
 </div>
+

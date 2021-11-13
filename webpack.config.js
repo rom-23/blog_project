@@ -7,6 +7,7 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 }
 
 Encore
+
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
@@ -23,6 +24,8 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('pagination', './assets/plugins/pagination.js')
     .addEntry('post-reply', './assets/plugins/development-post.js')
+    .addEntry('vuejs', './assets/vuejs/vue.js')
+    .addEntry('react', './assets/react/react.js')
     .addStyleEntry('style', './assets/styles/app.scss')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)

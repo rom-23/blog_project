@@ -6,6 +6,7 @@
 @import '~@mdi/font/css/materialdesignicons.css';
 @import 'form.scss';
 @import 'paginator.scss';
+@import 'vuenavbar';
 
 html{
     scroll-behavior: smooth;
@@ -58,17 +59,21 @@ a{
 }
 .dev-view{
     display: flex;
-    margin-top: 4em;
+    //margin-top: 4em;
 }
 .dev-by-section{
-    background: rgba(216, 220, 229, 0.22);
+
     padding-bottom: 3em;
 }
 .symfony-app{
-    background: #06988B;
-    box-shadow: 0 0 3px 3px rgba(91, 85, 85, 0.62);
+    background: #c8c9c9;
 }
 
 #display-view{
     background: white;
 }
+
+li{
+    list-style-type:none;
+}
+[v-cloak] { display: none; }

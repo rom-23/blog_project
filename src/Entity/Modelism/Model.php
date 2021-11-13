@@ -19,14 +19,14 @@ class Model
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"get"})
+     * @Groups({"model:get"})
      */
     private ?int $id = null;
 
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true))
-     * @Groups({"get"})
+     * @Groups({"model:get"})
      */
     private ?string $thumbnail;
 
@@ -34,7 +34,7 @@ class Model
      * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\NotBlank(message="Please enter a name")
      * @Assert\Length(min=5, minMessage="Your name is too short !")
-     * @Groups({"get"})
+     * @Groups({"model:get"})
      */
     private string $name;
 
@@ -42,56 +42,57 @@ class Model
      * @ORM\Column(type="text", nullable=false)
      * @Assert\NotBlank(message="Please enter a description")
      * @Assert\Length(min=5, minMessage="Your description is too short !")
-     * @Groups({"get"})
+     * @Groups({"model:get"})
      */
     private string $description;
 
     /**
      * @ORM\Column(type="float", nullable=false)
      * @Assert\NotBlank(message="Please enter a price")
+     * @Groups({"model:get"})
      */
     private float $price;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=false)
+     * @Groups({"model:get"})
      */
     private DateTimeImmutable $createdAt;
 
     /**
      * @var Collection<int, Option>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Option", inversedBy="models", cascade={"persist"})
-     * @Groups({"get"})
+     * @Groups({"model:get"})
      */
     private Collection $options;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"model:get"})
      */
     private ?DateTimeImmutable $updated_at = null;
 
     /**
      * @var Collection<int, Category>
      * @ORM\ManyToMany(targetEntity="App\Entity\Modelism\Category", inversedBy="models", cascade={"persist"})
-     * @Groups({"get"})
+     * @Groups({"model:get"})
      */
     private Collection $categories;
 
     /**
      * @var Collection<int, Image>
      * @ORM\OneToMany(targetEntity=Image::class, mappedBy="models", orphanRemoval=true, cascade={"persist","remove"})
+     * @Groups({"model:get"})
      */
     private Collection $images;
 
     /**
      * @var Collection<int, Opinion>
      * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="model", orphanRemoval=true, cascade={"persist","remove"})
+     * @Groups({"model:get"})
      */
     private Collection $opinions;
 
-    /**
-     * Model constructor.
-     * @throws Exception
-     */
     public function __construct()
     {
         $this->createdAt  = new DateTimeImmutable('now');
@@ -154,7 +155,6 @@ class Model
     public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 

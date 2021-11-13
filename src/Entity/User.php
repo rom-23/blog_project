@@ -72,25 +72,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"user:get"})
      */
-    #[Groups(['user:read', 'user:write', 'post:read'])]
+    #[Groups(['user:read', 'user:write', 'post:read', 'note:read'])]
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user:get"})
      * @Assert\NotBlank(message="Please enter an email")
      * @Assert\Email()
      * @UniqueEmail(groups={"create"})
      */
-    #[Groups(['user:read', 'user:write', 'post:read', 'development:read'])]
+    #[Groups(['user:read', 'user:write', 'post:read', 'note:read', 'development:read'])]
     private string $email;
 
     /**
      * @var array<int|string, mixed>
      * @ORM\Column(type="json")
-     * @Groups({"user:get"})
      */
     #[Groups(['user:read', 'user:write'])]
     private array $roles;
@@ -98,7 +95,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups({"user:get"})
      * @Assert\NotBlank(message="Choose a password!")
      * @Assert\Length(min=4, minMessage="Your password is too short !")
      */
@@ -110,6 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank(message="Please select an image")
      */
+    #[Groups(['user:read', 'user:write'])]
     private string $image;
 
     /**
@@ -120,6 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="boolean")
      */
+    #[Groups(['user:read', 'user:write'])]
     private bool $isVerified;
 
     /**
@@ -135,6 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="datetime_immutable")
      */
+    #[Groups(['user:read', 'user:write'])]
     private DateTimeImmutable $registeredAt;
 
     /**
@@ -160,7 +159,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Post>
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
-     * @Groups({"user:get"})
      */
     #[Groups(['user:read'])]
     private Collection $posts;
@@ -168,7 +166,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Note>
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
-     * @Groups({"user:get"})
      */
     #[Groups(['user:read'])]
     private Collection $notes;
@@ -176,15 +173,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Address>
      * @ORM\OneToMany(targetEntity=Address::class, mappedBy="user", cascade={"persist","remove"})
-     * @Groups({"user:get"})
      */
+    #[Groups(['user:read'])]
     private Collection $addresses;
 
     /**
      * @var Collection|null<int, Opinion>
      * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="user", orphanRemoval=true, cascade={"persist","remove"})
-     * @Groups({"user:get"})
      */
+    #[Groups(['user:read'])]
     private ?Collection $opinions;
 
     public function __construct()

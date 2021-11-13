@@ -1,0 +1,20 @@
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-around">
+            {% for model in models %}
+                <div class="card">
+                    <a href="{{ path('rest_api_get_model', { id : model.id }) }}">
+                        <div class="card-body">
+                            <img class="img-fluid" src="{{ asset('/uploads/models/thumbnails/'~ model.thumbnail )| imagine_filter('small') }}"></img>
+                            <p class="text-muted"><strong><small>{{ model.name }}</small></strong></p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

@@ -7,6 +7,7 @@ use App\Repository\Modelism\OpinionRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=OpinionRepository::class)
@@ -18,16 +19,19 @@ class Opinion
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['opinion:read', 'opinion:write','user:read'])]
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
+    #[Groups(['opinion:read', 'opinion:write','user:read'])]
     private ?int $vote = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
+    #[Groups(['opinion:read', 'opinion:write','user:read'])]
     private ?string $comment = null;
 
     /**
@@ -39,12 +43,14 @@ class Opinion
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="opinions")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
+    #[Groups(['opinion:read'])]
     private ?User $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="opinions")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
+    #[Groups(['opinion:read', 'user:read'])]
     private ?Model $model;
 
     public function __construct()

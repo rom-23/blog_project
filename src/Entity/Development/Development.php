@@ -22,54 +22,53 @@ use App\Validator\Development\{
  * @ORM\Table(name="development", indexes={@ORM\Index(columns={"title","content"}, flags={"fulltext"})})
  * @UniqueEntity(fields={"title"}, message="There is already a documentation with this title")
  */
-#[
-    ApiResource(
-        collectionOperations: [
-            'get',
-            'post',
-            'get_by_section' => [
-                'method'             => 'GET',
-                'path'               => '/developments/section/{id}',
-                'controller'         => DevSectionController::class,
-                'read'               => false,
-                'pagination_enabled' => false,
-                'openapi_context'    => [
-                    'summary'    => 'Get development by section',
-                    'parameters' => [
-                        [
-                            'name'        => 'id',
-                            'in'          => 'path',
-                            'type'        => 'integer',
-                            'required'    => true,
-                            'description' => 'Filter developments by section'
-                        ]
-                    ],
-                    'responses'  => [
-                        '200' => [
-                            'description' => 'OK',
-                            'content'     => [
-                                'application/json' => [
-                                    'schema' => [
-                                        'type'    => 'integer',
-                                        'example' => 2
-                                    ]
+#[ApiResource(
+    collectionOperations: [
+        'get',
+        'post',
+        'get_by_section' => [
+            'method'             => 'GET',
+            'path'               => '/developments/section/{id}',
+            'controller'         => DevSectionController::class,
+            'read'               => false,
+            'pagination_enabled' => false,
+            'openapi_context'    => [
+                'summary'    => 'Get development by section',
+                'parameters' => [
+                    [
+                        'name'        => 'id',
+                        'in'          => 'path',
+                        'type'        => 'integer',
+                        'required'    => true,
+                        'description' => 'Filter developments by section'
+                    ]
+                ],
+                'responses'  => [
+                    '200' => [
+                        'description' => 'OK',
+                        'content'     => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type'    => 'integer',
+                                    'example' => 2
                                 ]
                             ]
                         ]
                     ]
                 ]
             ]
-        ],
-        itemOperations: [
-            'get',
-            'patch',
-            'delete',
-            'put'
-        ],
-        denormalizationContext: ['groups' => ['development:write'], 'enable_max_depth' => true],
-        normalizationContext: ['groups' => ['development:read'], 'enable_max_depth' => true],
+        ]
+    ],
+    itemOperations: [
+        'get',
+        'patch',
+        'delete',
+        'put'
+    ],
+    denormalizationContext: ['groups' => ['development:write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['development:read'], 'enable_max_depth' => true],
 //        security: 'is_granted("ROLE_USER")'
-    )]
+)]
 class Development
 {
     /**
@@ -111,7 +110,6 @@ class Development
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Assert\Length(min: 4)]
     private string $slug;
 
     /**

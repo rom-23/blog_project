@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Repository\Modelism\CategoryRepository;
+use App\Repository\Modelism\ModelRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,12 +30,16 @@ class HomeController extends AbstractController
     }
 
     /**
+     * @param CategoryRepository $categoryRepository
      * @return Response
      */
-    #[Route('/symfony/model/app', name: 'symfony_model_app')]
-    public function symfonyModelApp(): Response
+    #[Route('/symfony/model/app', name: 'symfony_model_app', methods: 'GET')]
+    public function symfonyModelApp(CategoryRepository $categoryRepository): Response
     {
-        return $this->render('symfony-app/model/home.html.twig');
+        $categories = $categoryRepository->findAll();
+        return $this->render('symfony-app/model/home.html.twig', [
+            'categories' => $categories
+        ]);
     }
 
     /**

@@ -12,8 +12,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=DevelopmentFileRepository::class)
  */
 #[ApiResource(
-    denormalizationContext: ['groups' => ['file:write']],
-    normalizationContext: ['groups' => ['file:read']]
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'patch',
+        'delete',
+        'put'
+    ],
+    denormalizationContext: ['groups' => ['file:write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['file:read'], 'enable_max_depth' => true],
 )]
 class DevelopmentFile
 {
@@ -41,11 +51,13 @@ class DevelopmentFile
     /**
      * @ORM\Column(type="datetime_immutable")
      */
+    #[Groups(['file:read','file:write','development:read'])]
     private DateTimeImmutable $createdAt;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
+    #[Groups(['file:read','file:write','development:read'])]
     private ?DateTimeImmutable $updatedAt = null;
 
     /**
@@ -72,7 +84,6 @@ class DevelopmentFile
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -84,7 +95,6 @@ class DevelopmentFile
     public function setDevelopments(Development $developments): self
     {
         $this->developments = $developments;
-
         return $this;
     }
 

@@ -1,0 +1,48 @@
+{% block body %}
+    <div class="container-fluid">
+        <div class="col-12">
+            {% for model in models %}
+                <div class="card border-0">
+                    <div class="card-body">
+                        <img src="{{ asset('/uploads/models/thumbnails/'~ model.thumbnail ) }}"></img>
+                        <p class="text-muted"><strong>{{ model.name }}</strong></p>
+                        <small><em>Created on {{ model.createdAt|date('d/m/y') }}</em></small><br>
+                        {% for category in model.categories %}
+                            <p>{{ category.name }}></p>
+                            <br>
+                        {% endfor %}
+                        {% for option in model.options %}
+                            <p>{{ option.name }}></p>
+                            <br>
+                        {% endfor %}
+                        <p class="card-text"><small>{{ model.description|raw }}</small></p>
+                        <span class="card-text"><small>Attached file(s) : </small></span><br>
+                        {% for image in model.images %}
+                            <img src="{{ asset('/uploads/models/modelsAttachments/'~ image.name ) }}"></img>
+                            <br>
+                        {% endfor %}
+                    </div>
+                    <div class="card-footer">
+                        {% if model.opinions|length > 0 %}
+                            <p class="card-header text-center mb-3"><small>{{ model.opinions|length }} OPINIONS</small>
+                            </p>
+                            {% for opinion in model.opinions %}
+                                <p class="card-title"><strong><small>{{ opinion.vote }}</small></strong>
+                                    <span class="card-title text-primary float-end"><small><em>Posted by {{ opinion.user.email }}</em></small></span>
+                                </p>
+                                <span class="card-title text-muted"><small><em>{{ opinion.createdAt|date('d/m/Y') }}</em></small></span>
+                                <br>
+                                <p class="card-text"><small>{{ opinion.comment|raw }}</small></p>
+                                <hr>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

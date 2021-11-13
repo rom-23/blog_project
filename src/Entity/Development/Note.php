@@ -14,8 +14,18 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=NoteRepository::class)
  */
 #[ApiResource(
-    denormalizationContext: ['groups' => ['note:write']],
-    normalizationContext: ['groups' => ['note:read']]
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'patch',
+        'delete',
+        'put'
+    ],
+    denormalizationContext: ['groups' => ['note:write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['note:read'], 'enable_max_depth' => true],
 )]
 class Note
 {
@@ -23,33 +33,30 @@ class Note
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"user:get"})
      */
-    #[Groups(['note:read', 'note:write', 'development:read'])]
+    #[Groups(['note:read', 'note:write', 'user:read', 'development:read'])]
     private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:get"})
      */
-    #[Groups(['note:read', 'note:write', 'development:read'])]
+    #[Groups(['note:read', 'note:write', 'user:read', 'development:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 4)]
     private string $title;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"user:get"})
      */
-    #[Groups(['note:read', 'note:write', 'development:read'])]
+    #[Groups(['note:read', 'note:write', 'user:read', 'development:read'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 4)]
     private string $content;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=false)
-     * @Groups({"user:get"})
      */
+    #[Groups(['note:read', 'note:write', 'user:read', 'development:read'])]
     private DateTimeImmutable $createdAt;
 
     /**
@@ -63,7 +70,7 @@ class Note
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notes")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
-    #[Groups(['note:read'])]
+    #[Groups(['note:read', 'development:read'])]
     private User $user;
 
     public function __construct()

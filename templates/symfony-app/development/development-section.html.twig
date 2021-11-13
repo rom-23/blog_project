@@ -1,13 +1,13 @@
 <div class="container dev-by-section">
     <div class="d-flex float-end">
         <div class="container">
-            <a href="{{ path('development_list') }}" class="btn btn-outline-danger btn-sm">X</a>
+            <a href="{{ path('api_platform_development_list') }}" class="btn btn-outline-danger btn-sm">X</a>
         </div>
     </div>
-    <div class="dev-view">
+    <div class="dev-view flex-wrap">
         {% for development in dev %}
-            <div class="card" style="width: 25rem;">
-                <div class="card-body">
+            <div class="col-4">
+                <div class="card p-3">
                     <h5 class="card-title">{{ development.title }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ development.section.title }}</h6>
                     <a href="#" class="btn btn-outline-success btn-sm">View content...</a>

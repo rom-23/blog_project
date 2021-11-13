@@ -1,23 +1,22 @@
 {%- set navbar = '/navbars/navbar.html.twig' -%}
 {% extends navbar %}
 {% block body %}
-    <div class="container">
-        <div class="d-flex text-center">
+    <div class="container-fluid">
+        <div class="d-flex float-end">
             <div class="container mt-1">
-                <div class="d-flex text-center">
-                    <div class="container mt-1">
-                        <span>Symfony Classic App</span><br>
-                        <span><small><em>Use Paginator service & search Form</em></small></span><br>
-                        <a href="{{ path('symfony_dev_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
-                    </div>
-                </div>
+                <span></span><br>
+                <span><small>Symfony Classic App</small></span><br>
+                <span><small><em>- Use Paginator service & Search Form</em></small></span><br>
             </div>
         </div>
-        <div class="jumbotron jumbotron mb-1">
+        <div class="d-flex text-left">
             <div class="container">
-                <div class="alert alert-primary text-center p-2">
-                    Search development subject
-                </div>
+                <a href="{{ path('symfony_dev_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
+            </div>
+        </div>
+        <div class="jumbotron jumbotron mt-4">
+            <div class="container-fluid">
+                <div class="alert alert-secondary text-center p-2">All developments subjects</div>
             </div>
         </div>
         <div class="container text-center mb-3 mt-4">

@@ -10,6 +10,7 @@ const objJson = jsonToArray.map(function (obj) {
         'created' : obj.createdAt
     };
 });
+
 searchBar.addEventListener('keyup', e => {
     const searchString = e.target.value;
     const filteredDevelopment = objJson.filter(development => {
@@ -17,6 +18,7 @@ searchBar.addEventListener('keyup', e => {
     });
     console.log(filteredDevelopment);
 });
+
 (function () {
     function Pagination() {
         const prevButton = document.getElementById('button_prev');
@@ -78,10 +80,10 @@ searchBar.addEventListener('keyup', e => {
                 let cellCreatedAt = row.insertCell();
                 let devLink = document.createElement('a');
                 devLink.innerHTML = objJson[i].title.title;
-                devLink.setAttribute('href', '/symfony/development/' + objJson[i].title.id);
+                devLink.setAttribute('href', '/symfony/api/development/' + objJson[i].title.id);
                 let sectionLink = document.createElement('a');
                 sectionLink.innerHTML = objJson[i].section.title;
-                sectionLink.setAttribute('href', '/symfony/development/section/' + objJson[i].section.id);
+                sectionLink.setAttribute('href', '/symfony/api/development/section/' + objJson[i].section.id);
                 let posts = document.createTextNode(objJson[i].title.posts.length);
                 let createdAt = document.createTextNode(new Date(objJson[i].created).toLocaleDateString('en-us', {
                     weekday : 'short',

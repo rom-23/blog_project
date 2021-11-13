@@ -10,13 +10,25 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
  */
 #[ApiResource(
-    denormalizationContext: ['groups' => ['post:write']],
-    normalizationContext: ['groups' => ['post:read']]
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'patch',
+        'delete',
+        'put'
+    ],
+    denormalizationContext: ['groups' => ['post:write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['post:read'], 'enable_max_depth' => true],
 )]
 
 class Post
@@ -33,22 +45,28 @@ class Post
      * @ORM\Column(type="string", length=255)
      */
     #[Groups(['post:read','post:write','user:read','development:read'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 4)]
     private string $title;
 
     /**
      * @ORM\Column(type="text")
      */
     #[Groups(['post:read','post:write','user:read','development:read'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 5)]
     private string $content;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=false)
      */
+    #[Groups(['post:read','post:write','user:read','development:read'])]
     private DateTimeImmutable $createdAt;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
+    #[Groups(['post:read','post:write','user:read','development:read'])]
     private ?DateTimeImmutable $updatedAt = null;
 
     /**
@@ -62,19 +80,21 @@ class Post
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
-    #[Groups(['development:read','post:read','post:write'])]
+    #[Groups(['post:read','post:write', 'development:read'])]
     private ?User $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="replies", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
+    #[Groups(['post:read','post:write', 'development:read'])]
     private ?Post $parent;
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="parent", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
+    #[Groups(['post:read','post:write', 'development:read'])]
     private ?Collection $replies;
 
     public function __construct()
@@ -108,7 +128,6 @@ class Post
     public function setContent(string $content): self
     {
         $this->content = $content;
-
         return $this;
     }
 

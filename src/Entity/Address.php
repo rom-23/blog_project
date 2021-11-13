@@ -2,13 +2,29 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AddressRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AddressRepository::class)
  */
+#[ApiResource(
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'patch',
+        'delete',
+        'put'
+    ],
+    denormalizationContext: ['groups' => ['address:write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['address:read'], 'enable_max_depth' => true],
+)]
 class Address
 {
     /**
@@ -16,52 +32,62 @@ class Address
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private ?int $id = null;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="addresses")
-     */
-    private User $user;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private string $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private string $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private string $address;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private string $postal;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private string $city;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private string $country;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=false)
      */
+    #[Groups(['address:read', 'address:write', 'user:read'])]
     private DateTimeImmutable $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="addresses")
+     */
+    #[Groups(['address:read'])]
+    private User $user;
 
     public function __construct()
     {

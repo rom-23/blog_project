@@ -55,6 +55,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->getEntityManager()->createQuery($sql);
     }
 
+
+    /**
+     * @return array
+     */
+    public function findAllUsers(): Array
+    {
+        $sql = "
+                SELECT
+                  partial e.{id,email,roles,image,password,isVerified},
+                  partial pos.{id, title, content},
+                  partial not.{id, title, content},
+                  partial opi.{id, vote, comment}
+            FROM App\Entity\User e
+            LEFT JOIN e.posts pos
+            LEFT JOIN e.notes not
+            LEFT JOIN e.opinions opi
+        ";
+        return $this->getEntityManager()->createQuery($sql)->getResult();
+    }
+
     /**
      * @return array
      */

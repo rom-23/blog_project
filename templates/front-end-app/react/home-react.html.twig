@@ -1,0 +1,29 @@
+{%- set navbar = '/navbars/navbar.html.twig' -%}
+{% extends navbar %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex float-end">
+            <div class="container mt-1">
+                <span><small>Symfony & React Application</small></span><br>
+                <span><small><em>- ...</em></small></span><br>
+                <span><small><em>- ....</em></small></span><br>
+            </div>
+        </div>
+        <div class="d-flex text-left">
+            <div class="container">
+                <a href="{{ path('front_end_app') }}" class="btn btn-outline-primary btn-sm mb-2 mt-3"><< Back</a>
+            </div>
+        </div>
+        <div class="container symfony-app text-center text-white mt-5">
+            <h5>REACT App</h5>
+            {% include 'navbars/front-react-app-navbar.html.twig' %}
+        </div>
+        <div class="container">
+            <div id="user-list"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('react') }}
+{% endblock %}

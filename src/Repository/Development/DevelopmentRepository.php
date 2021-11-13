@@ -23,6 +23,20 @@ class DevelopmentRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string|null $developmentTitle
+     * @return array
+     */
+    public function search(?string $developmentTitle): array
+    {
+        return $this->createQueryBuilder('u')
+                    ->where('u.title LIKE :dev_name')
+                    ->setParameter('dev_name', "%$developmentTitle%")
+                    ->setMaxResults(15)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    /**
      * @return Query
      */
     public function paginateDevelopments(): Query

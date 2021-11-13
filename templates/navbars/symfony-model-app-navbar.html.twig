@@ -7,12 +7,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                {% for category in categories %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('development_list') }}">All tutorials</a>
+                    <div {{ stimulus_controller('model', { formUrl: path('rest_api_models_by_category',{ id : category.id }) }) }}>
+                        <a class="nav-link" href="#" data-action="model#displayData">{{category.name}}</a>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('development_publication') }}">Publish</a>
-                </li>
+                {% endfor %}
             </ul>
         </div>
     </div>

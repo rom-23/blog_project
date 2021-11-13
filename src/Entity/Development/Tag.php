@@ -7,13 +7,25 @@ use App\Repository\Development\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
  */
 #[ApiResource(
-    denormalizationContext: ['groups' => ['tag:write']],
-    normalizationContext: ['groups' => ['tag:read']]
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'patch',
+        'delete',
+        'put'
+    ],
+    denormalizationContext: ['groups' => ['tag:write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['tag:read'], 'enable_max_depth' => true],
 )]
 class Tag
 {
@@ -29,6 +41,7 @@ class Tag
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     #[Groups(['tag:read','tag:write','development:read'])]
+    #[Assert\NotBlank]
     private ?string $name;
 
     public function getId(): ?int

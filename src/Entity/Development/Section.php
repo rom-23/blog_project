@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=SectionRepository::class)
@@ -19,8 +21,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     )})
  */
 #[ApiResource(
-    denormalizationContext: ['groups' => ['section:write']],
-    normalizationContext: ['groups' => ['section:read']]
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'patch',
+        'delete',
+        'put'
+    ],
+    denormalizationContext: ['groups' => ['section:write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['section:read'], 'enable_max_depth' => true],
 )]
 class Section
 {
@@ -36,6 +48,7 @@ class Section
      * @ORM\Column(type="string", length=255)
      */
     #[Groups(['section:read', 'section:write', 'development:read'])]
+    #[Assert\NotBlank]
     private string $title;
 
     /**
@@ -74,22 +87,6 @@ class Section
     {
         return $this->developments;
     }
-
-//    public function addDevelopment(Development $development): self
-//    {
-//        if (!$this->developments->contains($development)) {
-//            $this->developments[] = $development;
-//            $development->setSection($this);
-//        }
-//
-//        return $this;
-//    }
-//
-//    public function removeDevelopment(Development $development): self
-//    {
-//        $this->developments->removeElement($development);
-//        return $this;
-//    }
 
     public function __toString()
     {

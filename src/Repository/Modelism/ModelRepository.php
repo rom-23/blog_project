@@ -21,104 +21,126 @@ class ModelRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<array|null>
+     * @return array
      */
-    public function findModelPng(): array
+    public function findAllModels(): array
     {
         $sql = "
             SELECT
                 partial e.{id, name, description, price, thumbnail, createdAt},
+                partial ljim.{id, name},
                 partial ljca.{id, name},
-                partial ljim.{id, name}
+                partial ljop.{id, name},
+                partial ljopi.{id, vote, comment, createdAt}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim
             LEFT JOIN e.categories ljca
-            ORDER BY e.name ASC
+            LEFT JOIN e.options ljop
+            LEFT JOIN e.opinions ljopi
+            WHERE ljca.name =:name
+            ORDER BY e.name ASC              
         ";
-        return $this->getEntityManager()->createQuery($sql)->getResult();
+        $aParameter = ['name' => 'Model kit'];
+        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter)->getResult();
     }
 
     /**
-     * @return Query
+     * @return array
      */
-    public function findDioramaPng(): Query
+    public function findAllDioramas(): array
     {
-        $sql        = "
-            SELECT
-                partial e.{id, name, description, price, thumbnail},
+        $sql = "
+      SELECT
+                partial e.{id, name, description, price, thumbnail, createdAt},
                 partial ljim.{id, name},
-                partial ljca.{id, name}
+                partial ljca.{id, name},
+                partial ljop.{id, name},
+                partial ljopi.{id, vote, comment, createdAt}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim
             LEFT JOIN e.categories ljca
+            LEFT JOIN e.options ljop
+            LEFT JOIN e.opinions ljopi
+            WHERE ljca.name =:name
+            ORDER BY e.name ASC              
+        ";
+        $aParameter = ['name' => 'Diorama'];
+        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter)->getResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function findAll3d(): array
+    {
+        $sql = "
+            SELECT
+                partial e.{id, name, description, price, thumbnail, createdAt},
+                partial ljim.{id, name},
+                partial ljca.{id, name},
+                partial ljop.{id, name},
+                partial ljopi.{id, vote, comment, createdAt}
+            FROM App\Entity\Modelism\Model e
+            LEFT JOIN e.images ljim
+            LEFT JOIN e.categories ljca
+            LEFT JOIN e.options ljop
+            LEFT JOIN e.opinions ljopi
             WHERE ljca.name =:name
             ORDER BY e.name ASC
         ";
-        $aParameter = ['name' => 'diorama',];
-        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
+        $aParameter = ['name' => '3D print'];
+        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter)->getResult();
     }
 
     /**
-     * @return Query
+     * @return array
      */
-    public function find3dPng(): Query
-    {
-        $sql        = "
-            SELECT
-                partial e.{id, name, description, price, thumbnail},
-                partial ljim.{id, name},
-                partial ljca.{id, name}
-            FROM App\Entity\Modelism\Model e
-            LEFT JOIN e.images ljim
-            LEFT JOIN e.categories ljca
-            WHERE ljca.name =:name
-            ORDER BY e.name ASC
-        ";
-        $aParameter = ['name' => '3d',];
-        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
-    }
-
-    /**
-     * @return Query
-     */
-    public function findCreationPng(): Query
-    {
-        $aParameter = [];
-        $sql        = "
-            SELECT
-                partial e.{id, name, description, price, thumbnail},
-                partial ljim.{id, name},
-                partial ljca.{id, name}
-            FROM App\Entity\Modelism\Model e
-            LEFT JOIN e.images ljim
-            LEFT JOIN e.categories ljca
-            WHERE ljca.name =:name
-            ORDER BY e.name ASC
-        ";
-        $aParameter = ['name' => 'original creation',];
-        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
-    }
-
-    /**
-     * @param string $name
-     * @return Query
-     */
-    public function findModelkitPng(string $name): Query
+    public function findAllOriginalCreations(): array
     {
         $aParameter = [];
         $sql        = "
             SELECT
                 partial e.{id, name, description, price, thumbnail},
                 partial ljim.{id, name},
-                partial ljca.{id, name}
+                partial ljca.{id, name},
+                partial ljop.{id, name},
+                partial ljopi.{id, vote, comment, createdAt}
             FROM App\Entity\Modelism\Model e
             LEFT JOIN e.images ljim
             LEFT JOIN e.categories ljca
+            LEFT JOIN e.options ljop
+            LEFT JOIN e.opinions ljopi
             WHERE ljca.name =:name
             ORDER BY e.name ASC
         ";
-        $aParameter = ['name' => strtolower($name),];
-        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter);
+        $aParameter = ['name' => 'original creation'];
+        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter)->getResult();
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function findModelsByCategory(int $id): array
+    {
+        $aParameter = [];
+        $sql        = "
+            SELECT
+                partial e.{id, name, description, price, thumbnail, createdAt},
+                partial ljim.{id, name},
+                partial ljca.{id, name},
+                partial ljop.{id, name},
+                partial ljopi.{id, vote, comment, createdAt}
+            FROM App\Entity\Modelism\Model e
+            LEFT JOIN e.images ljim
+            LEFT JOIN e.categories ljca
+            LEFT JOIN e.options ljop
+            LEFT JOIN e.opinions ljopi
+            WHERE ljca.id =:id
+            ORDER BY e.name ASC
+        ";
+        $aParameter = ['id' => $id];
+        return $this->getEntityManager()->createQuery($sql)->setParameters($aParameter)->getResult();
     }
 
     /**
